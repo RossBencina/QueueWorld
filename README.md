@@ -3,7 +3,7 @@ QUEUE WORLD IS UNDER CONSTRUCTION – please check back soon : )
 Queue World
 ===========
 
-_A light-weight C++ toolkit for building concurrent, message-passing programs._
+_A light-weight C++ toolkit for building concurrent, lock-free, message-passing programs._
 
 Queue World is a little collection of light-weight C++ data structures for lock-free multi-threaded programming. The focus is on providing simple primitives using well-known algorithms. Queue World makes heavy use of endogenous linking (links embedded in client structures). This avoids allocator overhead, which is especially important in time-critical code. In addition to concurrent queues, a variety of non-re-entrant endogenous linked-lists are also provided.
 
@@ -35,7 +35,7 @@ The single threaded data structures provide an STL-like interface.
 Philosophy
 ----------
 
-Queue World was envisaged as an inter-thread communication library for real-time audio applications, where mutexes are not an option due to the risk of priority inversion. The typical use-cases involve relatively low queue contention. So far, the main goals have been to keep things simple and to provide infrastructure for avoiding priority inversion.
+Queue World is envisaged as an inter-thread communication library for real-time audio applications, where mutexes are not an option due to the risk of priority inversion. The typical use-cases involve relatively low queue contention. So far, the main goals have been to keep things simple and to provide infrastructure for avoiding priority inversion.
 
 If you're looking for water-tight abstractions you might be in the wrong place. The goal here is simple and efficient implementations, even if that means having a few "pipes on the outside of the building". This is most strongly reflected in the use of endogenous linking.
 
