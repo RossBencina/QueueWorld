@@ -1,0 +1,61 @@
+/*
+    Lock free LIFO stack with ABA prevention. a.k.a. "IBM Freelist".
+
+    see:
+    
+    R.K.Treiber. "Systems Programming: Coping with Parallelism". 
+    RJ 5118, IBM Almaden Research Center, April 1986
+
+    Maged M. Michael, Michael L. Scott
+    "Non-Blocking Algorithms and Preemption-Safe Locking on Multiprogrammed Shared Memory Multiprocessors"
+    Department of Computer Science University of Rochester, Rochester, NY 14627-0226, March 1997.
+
+    D. Fober, S. Letz, Y. Orlarey
+    "Lock-Free Techniques for Concurrent Access to Shared Objects,"
+    Actes des Journées d'Informatique Musicale JIM2002, Marseille GMEM 2002 Pages 143--150.
+    NOTE: there is a 2003 revision of this paper.
+    **The FIFO in this paper is suspect, the paper is mentioned here only for the LIFO.**
+
+	See also:
+
+	Maged M. Michael
+	"The Balancing Act of Choosing Nonblocking Features"
+	ACM Queue vol. 11, no. 7
+	http://queue.acm.org/detail.cfm?id=2513575
+*/
+
+/*
+    Treiber FIFO Pseudocode from Michael and Scott 1997
+    
+    Figure 1: Structure and operation of Treiber’s non-blocking concurrent stack algorithm
+
+
+    structure pointer_t { ptr: pointer to node_t, count: unsigned integer}
+    structure node_t { value: data type, next: pointer_t }
+    structure stack_t { Top: pointer_t }
+
+    INITIALIZE(S: pointer to stack_t)
+        S->Top.ptr = NULL               # Empty stack. Top points to NULL
+
+    PUSH(S: pointer to stack_t, value: data type)
+        node = new node()               # Allocate a new node from the free list
+        node->value = value             # Copy stacked value into node
+        node->next.ptr = NULL           # Set next pointer of node to NULL
+        repeat                          # Keep trying until Push is done
+            top = S->Top                # Read Top.ptr and Top.count together
+            node->next.ptr = top.ptr    # Link new node to head of list
+        until CAS(&S->Top, top, [node, top.count+1]) # Try to swing Top to new node
+    
+    POP(S: pointer to stack_t, pvalue: pointer to data type): boolean
+        repeat                          # Keep trying until Pop is done
+            top = S->Top                # Read Top
+            if top.ptr == NULL          # Is the stack empty?
+                return FALSE            # The stack was empty, couldn't pop
+            endif
+        until CAS(&S->Top, top, [top.ptr->next.ptr, top.count+1]) # Try to swing Top to the next node
+        *pvalue = top.ptr->value        # Pop is done. Read value
+        free(top.ptr)                   # It is safe now to free the old node
+        return TRUE                     # The stack was not empty, pop succeeded
+
+    In general we use links embedded in the client node structures rather than allocating separate nodes.
+*/
