@@ -97,7 +97,7 @@ public:
 
         node_ptr_type top;
         do{
-            top = static_cast<node_ptr_type*>(mint_load_ptr_relaxed(&top_));
+            top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nodeinfo::next_ptr(back) = top;
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to client
