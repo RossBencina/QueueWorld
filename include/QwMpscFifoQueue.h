@@ -44,9 +44,20 @@ public:
     typedef typename nodeinfo::node_ptr_type node_ptr_type;
     typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
 
+    void push( node_ptr_type n )
+    {
+        return mpscLifo_.push(n);
+    }
+
+    // KNOWNBUG: indicates wasEmpty even if the consumer local-queue is non-empty. not sure that will be fixed
     void push( node_ptr_type n, bool& wasEmpty )
     {
         return mpscLifo_.push(n, wasEmpty);
+    }
+
+    bool empty() const
+    {
+        return (consumerLocalReversingQueue_.empty() && mpscLifo_.empty());
     }
 
     node_ptr_type pop()
