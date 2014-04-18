@@ -55,6 +55,7 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMPSCFifoQueue single threaded test" ) {
     mpsc_fifo_queue_t q;
 
     REQUIRE( q.consumer_empty() == true );
+    REQUIRE( q.pop() == 0 );
 
     // void push( node_ptr_type n )
     // bool consumer_empty() const
@@ -75,20 +76,20 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMPSCFifoQueue single threaded test" ) {
     REQUIRE( q.pop() == c );
     REQUIRE( q.consumer_empty() == true );
 
-    // void push( node_ptr_type n, bool& wasconsumer_empty )
+    // void push( node_ptr_type n, bool& wasEmpty )
 
-    bool wasconsumer_empty = false;
-    q.push( a, wasconsumer_empty );
-    REQUIRE( wasconsumer_empty == true );
+    bool wasEmpty = false;
+    q.push( a, wasEmpty );
+    REQUIRE( wasEmpty == true );
 
-    q.push( b, wasconsumer_empty );
-    REQUIRE( wasconsumer_empty == false );
+    q.push( b, wasEmpty );
+    REQUIRE( wasEmpty == false );
 
     REQUIRE( q.consumer_empty() == false );
     REQUIRE( q.pop() == a );
 
-    q.push( c, wasconsumer_empty );
-    // REQUIRE( wasconsumer_empty == false ); // <--- KNOWNBUG this fails.
+    q.push( c, wasEmpty );
+    // REQUIRE( wasEmpty == false ); // <--- KNOWNBUG this fails.
 
     REQUIRE( q.pop() == b );
     REQUIRE( q.pop() == c );
