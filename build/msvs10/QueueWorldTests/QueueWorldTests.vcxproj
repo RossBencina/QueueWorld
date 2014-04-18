@@ -141,6 +141,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\include\QwConfig.h" />
     <ClInclude Include="..\..\..\include\QwList.h" />
+    <ClInclude Include="..\..\..\include\QwMpmcPopAllLifoStack.h" />
+    <ClInclude Include="..\..\..\include\QwMpscFifoQueue.h" />
     <ClInclude Include="..\..\..\include\QwSingleLinkNodeInfo.h" />
     <ClInclude Include="..\..\..\include\QwSList.h" />
     <ClInclude Include="..\..\..\include\QwSTailList.h" />
@@ -151,6 +153,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\tests\QwList_test.cpp" />
+    <ClCompile Include="..\..\..\tests\QwMpmcPopAllLifoStack_test.cpp" />
+    <ClCompile Include="..\..\..\tests\QwMpscFifoQueue_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwSList_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwSTailList_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwTestMain.cpp" />
