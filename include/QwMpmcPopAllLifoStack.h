@@ -62,11 +62,14 @@ public:
     {
         nodeinfo::check_node_is_unlinked( node );
 
-        mint_thread_fence_release();
         node_ptr_type top;
         do{
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nodeinfo::next_ptr(node) = top;
+            // A fence is needed here for two reasons:
+            //   1. so that node's payload gets written before node becomes visible to client
+            //   2. ensure that node->next <-- top is written before top <-- node
+            mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, node)!=top);
     }
 
@@ -74,11 +77,14 @@ public:
     {
         nodeinfo::check_node_is_unlinked( node );
 
-        mint_thread_fence_release();
         node_ptr_type top;
         do{
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nodeinfo::next_ptr(node) = top;
+            // A fence is needed here for two reasons:
+            //   1. so that node's payload gets written before node becomes visible to client
+            //   2. ensure that node->next <-- top is written before top <-- node
+            mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, node)!=top);
 
         wasEmpty = (top==0);
@@ -89,11 +95,14 @@ public:
     {
         nodeinfo::check_node_is_unlinked( back );
 
-        mint_thread_fence_release();
         node_ptr_type top;
         do{
             top = static_cast<node_ptr_type*>(mint_load_ptr_relaxed(&top_));
             nodeinfo::next_ptr(back) = top;
+            // A fence is needed here for two reasons:
+            //   1. so that node's payload gets written before node becomes visible to client
+            //   2. ensure that node->next <-- top is written before top <-- node
+            mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
     }
     
