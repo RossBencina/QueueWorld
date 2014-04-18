@@ -44,12 +44,12 @@ public:
     typedef typename nodeinfo::node_ptr_type node_ptr_type;
     typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
 
-    void send( node_ptr_type n, bool& wasEmpty )
+    void push( node_ptr_type n, bool& wasEmpty )
     {
         return mpscLifo_.push(n, wasEmpty);
     }
 
-    node_ptr_type receive()
+    node_ptr_type pop()
     {
         if (consumerLocalReversingQueue_.empty()) {
             if (mpscLifo_.empty()) {
