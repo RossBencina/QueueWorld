@@ -55,7 +55,7 @@ public:
         return mpscLifo_.push(n, wasEmpty);
     }
 
-    bool empty() const
+    bool consumer_empty() const
     {
         return (consumerLocalReversingQueue_.empty() && mpscLifo_.empty());
     }
