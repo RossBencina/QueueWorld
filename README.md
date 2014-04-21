@@ -1,5 +1,3 @@
-QUEUE WORLD IS UNDER CONSTRUCTION – please check back soon : )
-
 Queue World
 ===========
 
