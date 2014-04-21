@@ -62,8 +62,8 @@ public:
         // link node to point to current atomicLifoTop_
         nodeinfo::next_ptr(node) = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_));
 
-        mint_thread_fence_release(); // fence for item data of r
-        mint_store_ptr_relaxed(&atomicLifoTop_, node); // push r onto head of atomic lifo
+        mint_thread_fence_release(); // fence for next ptr and item data of node
+        mint_store_ptr_relaxed(&atomicLifoTop_, node); // push node onto head of atomic lifo
     }
 
     node_ptr_type pop() // called by consumer
@@ -104,7 +104,7 @@ public:
         }
     }
 
-    // expectedResultCount acessor and manipulator to be called on consumer side only:
+    // expectedResultCount accessor and manipulator to be called on consumer side only:
 
     int expectedResultCount() const { return expectedResultCount_; }
 
