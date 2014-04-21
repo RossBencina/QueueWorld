@@ -3,6 +3,11 @@
 
     see:
     
+    International Business Machines Corporation,
+    "IBM System/370 Extended Architecture, Principles of Operation,"
+    Publication Number SA22-7085-0, File Number 5370-01. First Edition, March 1983.
+    (See Appendix A, pp. A-44 to A-45, "Free-pool Manipulation.")
+
     R.K.Treiber. "Systems Programming: Coping with Parallelism". 
     RJ 5118, IBM Almaden Research Center, April 1986
 
@@ -25,7 +30,7 @@
 */
 
 /*
-    Treiber FIFO Pseudocode from Michael and Scott 1997
+    IBM Freelist LIFO Pseudocode from Michael and Scott 1997
     
     Figure 1: Structure and operation of Treiber’s non-blocking concurrent stack algorithm
 
