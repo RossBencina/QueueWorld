@@ -19,45 +19,48 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-#ifndef INCLUDED_QWDEBUGCONFIGURATION_H
-#define INCLUDED_QWDEBUGCONFIGURATION_H
+#include "QwNodePool.h"
+#include "QwSList.h"
+
+#include "catch.hpp"
 
 
-// Cache line size. Used for rounding. TODO: provide runtime cache line size query.
+namespace {
 
-#ifndef CACHE_LINE_SIZE
-#define CACHE_LINE_SIZE ((size_t)64)
-#endif
+    struct TestNode{
+        TestNode *links_[2];
+        enum { LINK_INDEX_1, LINK_COUNT };
 
+        int value;
 
-// QW_VALIDATE_NODE_LINKS switches on the following behavior:
-//  - Node links are zeroed after use.
-//
-//  - The client should ensure that node links are correctly zeroed
-// 
+        TestNode()
+            : value( 0 )
+        {
+            for( int i=0; i < LINK_COUNT; ++i )
+                links_[i] = 0;
+        }
+    };
 
-#define QW_VALIDATE_NODE_LINKS
+    typedef QwSList<TestNode*, TestNode::LINK_INDEX_1> node_slist_t;
 
-#ifdef QW_VALIDATE_NODE_LINKS
-#define QW_CLEAR_LINK_FOR_VALIDATION(x) (x) = 0
-#else
-#define QW_CLEAR_LINK_FOR_VALIDATION(x)
-#endif
+} // end anonymous namespace
 
+TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
+    
+    size_t maxNodes = 21;
 
-// QW_DEBUG_COUNT_NODE_ALLOCATIONS causes NodePool to track the number
-// of node allocations and deallocations. When enabled, NodePool's
-// dtor will assert that all nodes have been deallocated.
+    QwNodePool<TestNode> pool( maxNodes);
 
-#define QW_DEBUG_COUNT_NODE_ALLOCATIONS
+    node_slist_t allocatedNodes;
 
+    for (int i=0; i < maxNodes; ++i) {
+        TestNode *n = pool.allocate();
+        REQUIRE( n != 0 );
+        allocatedNodes.push_front(n);
+    }
 
-// QW_DEBUG_COUNT_SHARED_BUFFER_ALLOCATIONS causes QwSharedBufferAllocator
-// to track the number of shared buffer allocations and deallocations.
-// You can call QwSharedBufferAllocator::checkForLeaks() at exit to see
-// whether any buffers have leaked.
+    REQUIRE( pool.allocate() == 0 );
 
-#define QW_DEBUG_COUNT_SHARED_BUFFER_ALLOCATIONS
-
-
-#endif /* INCLUDED_QWDEBUGCONFIGURATION_H */
+    while (!allocatedNodes.empty())
+        pool.deallocate(allocatedNodes.pop_front()); 
+}

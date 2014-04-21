@@ -143,6 +143,7 @@
     <ClInclude Include="..\..\..\include\QwList.h" />
     <ClInclude Include="..\..\..\include\QwMpmcPopAllLifoStack.h" />
     <ClInclude Include="..\..\..\include\QwMpscFifoQueue.h" />
+    <ClInclude Include="..\..\..\include\QwNodePool.h" />
     <ClInclude Include="..\..\..\include\QwSingleLinkNodeInfo.h" />
     <ClInclude Include="..\..\..\include\QwSList.h" />
     <ClInclude Include="..\..\..\include\QwSpscUnorderedResultQueue.h" />
@@ -153,9 +154,11 @@
     <ClInclude Include="..\..\..\tests\Qw_Lists_randomisedTestShared.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\src\QwNodePool.cpp" />
     <ClCompile Include="..\..\..\tests\QwList_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwMpmcPopAllLifoStack_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwMpscFifoQueue_test.cpp" />
+    <ClCompile Include="..\..\..\tests\QwNodePool_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwSList_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwSpscUnorderedResultQueue_test.cpp" />
     <ClCompile Include="..\..\..\tests\QwSTailList_test.cpp" />
