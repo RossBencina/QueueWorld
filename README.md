@@ -9,11 +9,11 @@ Queue World is a little collection of light-weight C++ data structures for lock-
 Concurrent data structures
 --------------------------
 
-**QwMpmcPopAllLifoStack** -- a multiple-producer multiple-consumer (MPMC) LIFO stack that supports push() and pop_all() operations, but not pop().
+**QwMpmcPopAllLifoStack** -- a multiple-producer multiple-consumer LIFO stack that supports push() and pop_all() operations, but not pop().
 
-**QwMpscFifoQueue** -- a multiple-producer single-consumer (MPSC) FIFO stack. Useful for a server thread that receives requests sent from many client threads.
+**QwMpscFifoQueue** -- a multiple-producer single-consumer FIFO stack. Useful for a server thread that receives requests sent from many client threads.
 
-**QwSpscUnorderedResultQueue** -- a single-producer single-consumer (SPSC) "relaxed order" queue for returning results from a server thread to a client. Includes a client-side counter for tracking expected vs. received results.
+**QwSpscUnorderedResultQueue** -- a single-producer single-consumer "relaxed order" queue for returning results from a server thread to a client. Includes a client-side counter for tracking expected vs. received results.
 
 **QwNodePool** -- a concurrent freelist that allocates and frees fixed-size nodes from a fixed-size node pool. Guarantees cache-line alignment of each node to avoid false sharing.
 
