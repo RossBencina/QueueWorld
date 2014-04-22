@@ -29,11 +29,12 @@
 #include "QwSingleLinkNodeInfo.h"
 
 /*
-    QwSTailList
-
-    Singly linked list. Terminated with a 0 (NULL) next ptr.
+    QwSTailList is a single-threaded singly linked list with support
+    for O(1) push_back().
 
     Can be used as a FIFO queue stack (push and pop to front, push to back).
+
+    The list is internally terminated with a 0 (NULL) next ptr.
 
     Constraints:
         - Don't call pop_front() on an empty list.

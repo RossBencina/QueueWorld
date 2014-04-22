@@ -105,3 +105,13 @@ QwRawNodePool::~QwRawNodePool()
 
     _aligned_free(nodeStorage_);
 }
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+Comments:
+- constructor is a bit baroque
+- factor aligned allocation into a separate module
+- implement runtime cache line size query
+-------------------------------------------------------------------------- */

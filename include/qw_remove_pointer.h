@@ -22,8 +22,13 @@
 #ifndef INCLUDED_QW_REMOVE_POINTER_H
 #define INCLUDED_QW_REMOVE_POINTER_H
 
-// in C++11 remove_pointer<> templates are in <type_traits>
-// see: http://stackoverflow.com/questions/6218813/how-do-i-get-type-from-pointer-in-a-template
+/*
+    Version of C++11 std::remove_pointer<> for compatibility.
+
+
+    In C++11 remove_pointer<> templates are in <type_traits>
+    See: http://stackoverflow.com/questions/6218813/how-do-i-get-type-from-pointer-in-a-template
+*/
 
 template<typename T>
 struct qw_remove_pointer

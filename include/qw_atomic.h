@@ -3,11 +3,18 @@
 
 #include "mintomic/mintomic.h"
 
-// additional atomics
+/*
+    Additional atomic functions:
 
-// mintomic lacks atomic swap. i've posted an issue about this
-// https://github.com/mintomic/mintomic/issues/7
-// for now provide our own version.
+        qw_mint_exchange_32_relaxed
+        qw_mint_exchange_64_relaxed
+        qw_mint_exchange_ptr_relaxed
+
+    Mintomic lacks atomic swap. I've posted an issue about this:
+        https://github.com/mintomic/mintomic/issues/7
+
+    For now we provide our own versions here. Perhaps we'll patch Mintomic later.
+*/
 
 #if MINT_COMPILER_MSVC
 
@@ -60,3 +67,11 @@ MINT_C_INLINE void* qw_mint_exchange_ptr_relaxed(mint_atomicPtr_t *object, void 
 #endif
 
 #endif /* INCLUDED_QW_ATOMIC_H */
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+Comments:
+- no gcc or OS X support
+-------------------------------------------------------------------------- */

@@ -31,13 +31,18 @@
 #include "QwSingleLinkNodeInfo.h"
 
 /*
-    This is a version of the "IBM Freelist" without ABA protection.
+    QwMPMCPopAllLifoStack is a lock-free concurrent LIFO stack that
+    provides push() and pop_all()  operations. No single-node pop()
+    operation is provided.
 
-    We don't need ABA protection because we don't provide a pop() function, only pop_all().
-    pop_all() is not subject to ABA when implemented using XCHG instead of CAS.
+    All operations may be invoked concurrently.
+
+    Implemented using the "IBM Freelist" LIFO algorithm.
     
-    This is essentially the solution suggested by Chris Thomasson here:
-    https://groups.google.com/forum/#!msg/comp.programming.threads/D6_l9ShwBAc/i7loHLS_WaMJ
+    The algorithm doesn't need ABA protection because it does not provide a pop() operation.
+    pop_all() is not subject to the ABA problem because it swaps in a 0 value and never
+    requires comparison to a non-0 value.
+    See ALGORITHMS.txt
 */
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
@@ -118,3 +123,9 @@ public:
 };
 
 #endif /* INCLUDED_QWMPMCPOPALLLIFOSTACK_H */
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+-------------------------------------------------------------------------- */

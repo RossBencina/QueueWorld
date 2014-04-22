@@ -19,6 +19,6 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-#define CATCH_CONFIG_MAIN
-#define NOMINMAX // suppress windows.h min/max
+
+#define CATCH_CONFIG_MAIN // cause this file to define Catch's main() function.
 #include "catch.hpp"

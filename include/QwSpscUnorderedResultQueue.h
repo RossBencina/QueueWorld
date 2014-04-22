@@ -30,9 +30,20 @@
 #include "QwSingleLinkNodeInfo.h"
 
 
-// Single-producer single-consumer (SPSC) wait-free relaxed-order queue
-// Used for returning results from a server to a client. 
-// We usually instantiate result queues inside Nodes, which is why this is a POD.
+/*
+    QwSpscUnorderedResultQueue is a lock-free concurrent, single-producer
+    single-consumer (SPSC) wait-free relaxed-order queue.
+
+    Used for returning results from a server to a client.
+    We usually instantiate result queues inside Nodes/messages, which is why this is a POD.
+
+    Producer operations: push()
+    Consumer operations: pop(), expectedResultCount(), incrementExpectedResultCount()
+
+    There may be only one producer and one consumer.
+
+    All operations may be invoked concurrently.
+*/
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSpscUnorderedResultQueue{
@@ -58,13 +69,13 @@ public:
 
     void push( node_ptr_type node ) // called by producer
     {
-        // Single producer, push one item onto the atomic lifo.
+        // Single producer, push one item onto the atomic LIFO.
 
         // link node to point to current atomicLifoTop_
         nodeinfo::next_ptr(node) = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_));
 
         mint_thread_fence_release(); // fence for next ptr and item data of node
-        mint_store_ptr_relaxed(&atomicLifoTop_, node); // push node onto head of atomic lifo
+        mint_store_ptr_relaxed(&atomicLifoTop_, node); // push node onto head of atomic LIFO
     }
 
     node_ptr_type pop() // called by consumer
@@ -105,7 +116,7 @@ public:
         }
     }
 
-    // expectedResultCount accessor and manipulator to be called on consumer side only:
+    // expectedResultCount getter and mutator to be called on consumer side only:
 
     int expectedResultCount() const { return expectedResultCount_; }
 
@@ -114,3 +125,9 @@ public:
 };
 
 #endif /* INCLUDED_QWSPSCUNORDEREDRESULTQUEUE_H */
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+-------------------------------------------------------------------------- */

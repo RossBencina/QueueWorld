@@ -29,11 +29,11 @@
 #include "QwSingleLinkNodeInfo.h"
 
 /*
-    QwSList
-
-    Singly linked list. Terminated with a 0 (NULL) next ptr.
+    QwSList is a single-threaded singly linked list.
 
     Can be used as a LIFO stack (push and pop to front).
+
+    The list is internally terminated with a 0 (NULL) next ptr.
 
     Constraints:
         - Don't call pop_front() on an empty list.

@@ -64,3 +64,41 @@
 
     In general we use links embedded in the client node structures rather than allocating separate nodes.
 */
+
+/*
+    Reversed IBM Freelist FIFO
+
+    I learnt of the reversed IBM Freelist FIFO algorithm from Joe Seigh,
+    posted to comp.programming.threads, July 1, 2005:
+        https://groups.google.com/d/msg/comp.programming.threads/D6_l9ShwBAc/h8sHJQjbpUkJ
+
+        Joe Seigh wrote:
+        > Way back, I came up with a scheme where you make the queue a lock-free
+        > LIFO stack using compare and swap. The single reader just grabbed the
+        > entire queue using compare and swap, reversed order making it FIFO
+        > and worked off of that util it was empty and then repeated the whole
+        > process by grabbing the shared LIFO stack again.
+
+    The algorithm was reinvented by Chris Chochran, posted to the
+    Scalable Sychronisation Algorithms group in on September 17, 2008:
+        https://groups.google.com/d/msg/lock-free/i0eE2-A7eIA/ha8oHpqKxqAJ
+
+    It was at this point that I first saw Dmitry Vyukov call the technique "Reversed IBM Freelist":
+        https://groups.google.com/d/msg/lock-free/i0eE2-A7eIA/g745KEEx2JIJ
+
+
+    Pop-all LIFO Queue
+
+    The part of the Reversed IBM Freelist that handles push and pop-all operations
+    can be factored as a separate object. (and used as-is if FIFO order is not needed).
+    The pop-all operation can be implemented using an atomic-swap operation.
+    No CAS or ABA protection is needed.
+
+    In response to Joe Seigh's quote above, Chris M. Thomasson posted
+    an implementation of the pop-all LIFO using atomic swap:
+        https://groups.google.com/forum/#!msg/comp.programming.threads/D6_l9ShwBAc/i7loHLS_WaMJ
+    and more recently, here:
+        https://groups.google.com/d/msg/comp.arch/RAm2iXLlCu4/ksBWXCJ7D60J
+
+    Chris calls the pop_all() operation flush().
+*/

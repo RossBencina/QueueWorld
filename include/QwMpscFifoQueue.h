@@ -27,9 +27,19 @@
 #include "QwSTailList.h"
 
 
-// A multiple producer, single consumer queue. Can safely be posted to from
-// multiple threads at once.
-// This uses the "Reversed IBM Freelist" technique
+/*
+    QwMPSCFifoQueue is a lock-free concurrent, multiple-producer single-consumer FIFO queue.
+
+    Producer(s) operations: push()
+    Consumer operations: consumer_empty(), pop().
+
+    There may be multiple producers, but only one consumer.
+
+    All operations may be invoked concurrently.
+
+    Implemented using the "Reversed IBM Freelist" technique.
+    See ALGORITHMS.txt
+*/
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwMPSCFifoQueue {
@@ -49,7 +59,8 @@ public:
         return mpscLifo_.push(n);
     }
 
-    // KNOWNBUG: indicates wasEmpty even if the consumer local-queue is non-empty. not sure that will be fixed
+    // KNOWNBUG: indicates wasEmpty even if the consumer local-queue is non-empty.
+    // not sure that will be fixed.
     void push( node_ptr_type n, bool& wasEmpty )
     {
         return mpscLifo_.push(n, wasEmpty);
@@ -92,3 +103,12 @@ public:
 };
 
 #endif /* INCLUDED_QWMPSCFIFOQUEUE_H */
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+Comments:
+- push( n, wasEmpty ) has a knownbug: wasEmpty is not accurate
+- should provide push_multiple()
+-------------------------------------------------------------------------- */

@@ -29,6 +29,22 @@
 #include <cassert>
 #endif
 
+/*
+    QwSingleLinkNodeInfo is an adapter that queue and list classes
+    use to access the "next link" stored in each node. It requires that
+    the Node type has a links_[] array, and uses the NEXT_LINK_INDEX
+    template parameter to determine which link to use.
+
+    Although it is not perfect for all uses, we chose this
+    link array representation because it makes it easy to declare
+    Nodes that use multiple links. It allows the same link to be
+    "overloaded" for multiple uses, and when this is done, it is
+    clear from the enum values that the index is being overloaded.
+
+    In the future we'll probably switch to parameterising the
+    queue classes by the node info structure to allow alternate
+    node info implementations for discontiguous link layouts.
+*/
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 struct QwSingleLinkNodeInfo {
 
@@ -73,3 +89,9 @@ struct QwSingleLinkNodeInfo {
 };
 
 #endif /* INCLUDED_SINGLELINKNODEINFO_H */
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+-------------------------------------------------------------------------- */

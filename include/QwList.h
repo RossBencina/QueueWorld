@@ -31,12 +31,10 @@
 
 
 /*
-    QwList
+    QwList is a single-threaded doubly linked list.
 
-    doubly linked list
-
-    bidirectional iterator supporting -- on end() 
-    (which implies that the iterator internally points to the node before *i)
+    Has bidirectional iterator supporting operator-- on end().
+    This implies that the iterator internally points to the node before *i.
 */
 
 template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>

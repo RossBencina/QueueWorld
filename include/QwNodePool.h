@@ -28,21 +28,30 @@
 
 #include "QwConfig.h"
 
-// QwNodePool provides a fixed-size pool of fixed-size "node" objects.
-// Uses the "IBM Freelist" lock-free stack mechanism (see ALGORITHMS.txt)
-// Nodes can be safely allocated and freed from any thread. 
-// Even real-time threads.
-//
-// This implementation is possibly not the most efficient. However, it is
-// portable to 64-bit systems that lack 128-bit CAS.
-// Tagged pointers are packed into 64 bit words: (count,index), 
-// where index can be converted to a node pointer into the
-// nodeArrayBase_ array.
-// More efficient alternative implementations may be provided later.
-//
-// IDEA: if we wanted to support an expandable request pool,
-// the index space could be partitioned across multiple base arrays. 
-// Additional arrays need only be allocated on demand.
+/*
+    QwNodePool provides a thread-safe, lock-free fixed-size pool of
+    fixed-size "nodes" -- memory blocks that are usually linked into
+    Queue World data structures such as lists and queues.
+
+    Nodes can be allocated and deallocated from any thread. Even
+    real-time audio threads.
+
+    QwNodePool ensures that all nodes are aligned to cache line boundaries
+    to avoid false sharing.
+
+    The implementation uses the "IBM Freelist" lock-free stack algorithm.
+    See ALGORITHMS.txt
+
+    This implementation may not be the most efficient. However, it is
+    portable to 64-bit systems that lack 128-bit CAS. Tagged pointers
+    are packed into 64 bit words as (count,index), where index can be
+    converted to a node pointer into the nodeArrayBase_ array.
+    More efficient alternative implementations may be provided later.
+
+    IDEA: if we wanted to support an expandable request pool,
+    the index space could be partitioned across multiple base arrays.
+    Additional arrays need only be allocated on demand.
+*/
 
 class QwRawNodePool {
 
@@ -231,3 +240,9 @@ public:
 };
 
 #endif /* INCLUDED_QWNODEPOOL_H */
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+-------------------------------------------------------------------------- */

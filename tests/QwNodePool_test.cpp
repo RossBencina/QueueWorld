@@ -53,7 +53,7 @@ TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
 
     node_slist_t allocatedNodes;
 
-    for (int i=0; i < maxNodes; ++i) {
+    for (size_t i=0; i < maxNodes; ++i) {
         TestNode *n = pool.allocate();
         REQUIRE( n != 0 );
         allocatedNodes.push_front(n);
@@ -64,3 +64,10 @@ TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
     while (!allocatedNodes.empty())
         pool.deallocate(allocatedNodes.pop_front()); 
 }
+
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+Comments: could add concurrent access tests, tests for ABA counter wrap-around
+-------------------------------------------------------------------------- */

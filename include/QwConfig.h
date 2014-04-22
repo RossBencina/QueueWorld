@@ -19,9 +19,14 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-#ifndef INCLUDED_QWDEBUGCONFIGURATION_H
-#define INCLUDED_QWDEBUGCONFIGURATION_H
+#ifndef INCLUDED_QWCONFIG_H
+#define INCLUDED_QWCONFIG_H
 
+/*
+    QueueWorld configuration #defines
+
+    Mostly these control validation checks used for debugging.
+*/
 
 // Cache line size. Used for rounding. TODO: provide runtime cache line size query.
 
@@ -32,32 +37,29 @@
 
 // QW_VALIDATE_NODE_LINKS switches on the following behavior:
 //  - Node links are zeroed after use.
+//  - Node links are verified as zero before collections insert them.
 //
-//  - The client should ensure that node links are correctly zeroed
+//  The client should ensure that node links are correctly zeroed
+//  before trying to add nodes to queues.
 // 
 
 #define QW_VALIDATE_NODE_LINKS
 
-#ifdef QW_VALIDATE_NODE_LINKS
-#define QW_CLEAR_LINK_FOR_VALIDATION(x) (x) = 0
-#else
-#define QW_CLEAR_LINK_FOR_VALIDATION(x)
-#endif
 
-
-// QW_DEBUG_COUNT_NODE_ALLOCATIONS causes NodePool to track the number
-// of node allocations and deallocations. When enabled, NodePool's
+// QW_DEBUG_COUNT_NODE_ALLOCATIONS causes QwNodePool to track the number
+// of node allocations and deallocations. When enabled, QwNodePool's
 // dtor will assert that all nodes have been deallocated.
 
 #define QW_DEBUG_COUNT_NODE_ALLOCATIONS
 
 
-// QW_DEBUG_COUNT_SHARED_BUFFER_ALLOCATIONS causes QwSharedBufferAllocator
-// to track the number of shared buffer allocations and deallocations.
-// You can call QwSharedBufferAllocator::checkForLeaks() at exit to see
-// whether any buffers have leaked.
+#endif /* INCLUDED_QWCONFIG_H */
 
-#define QW_DEBUG_COUNT_SHARED_BUFFER_ALLOCATIONS
-
-
-#endif /* INCLUDED_QWDEBUGCONFIGURATION_H */
+/* -----------------------------------------------------------------------
+Last reviewed: April 22, 2014
+Last reviewed by: Ross B.
+Status: OK
+Comments:
+- cache line size needs to be determined at runtime
+- consider tying debug checks to whether NDEBUG is define
+-------------------------------------------------------------------------- */
