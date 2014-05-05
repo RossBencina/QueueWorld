@@ -67,6 +67,7 @@ public:
         return mpscLifo_.push(n, wasEmpty);
     }
 
+    // NOTE: back will be the first item to be dequeued
     void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
     {
         return mpscLifo_.push_multiple(front, back, wasEmpty);
