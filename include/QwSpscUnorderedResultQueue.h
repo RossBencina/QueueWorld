@@ -57,7 +57,7 @@ public:
 private:
     mint_atomicPtr_t atomicLifoTop_; // LIFO. same algorithm as QwMpmcPopAllLifoStack. shared by producer and consumer
     node_ptr_type consumerLocalHead_; // LIFO order reader queue. only referenced by the consumer
-    int expectedResultCount_; // consumer increments this when making a request, pop() decrements it
+    size_t expectedResultCount_; // consumer increments this when making a request, pop() decrements it
 
 public:
     void init()
@@ -120,8 +120,8 @@ public:
 
     int expectedResultCount() const { return expectedResultCount_; }
 
-    void incrementExpectedResultCount() { ++expectedResultCount_; }
-    void incrementExpectedResultCount( int k ) { expectedResultCount_ += k; }
+    size_t incrementExpectedResultCount() { ++expectedResultCount_; }
+    void incrementExpectedResultCount( size_t k ) { expectedResultCount_ += k; }
 };
 
 #endif /* INCLUDED_QWSPSCUNORDEREDRESULTQUEUE_H */
