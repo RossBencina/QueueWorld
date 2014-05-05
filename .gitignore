@@ -71,3 +71,11 @@ bld/
 
 # Ignore Mac specific files
 .DS_Store
+
+# XCode workspace
+
+project.xcworkspace
+xcuserdata/
+
+
+
