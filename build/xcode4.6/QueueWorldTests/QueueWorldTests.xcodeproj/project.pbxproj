@@ -7,8 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		739ECBAA1917C3A200ED19DE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBA91917C3A200ED19DE /* main.cpp */; };
-		739ECBAC1917C3A200ED19DE /* QueueWorldTests.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 739ECBAB1917C3A200ED19DE /* QueueWorldTests.1 */; };
+		739ECBBF1917C3D200ED19DE /* QwNodePool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBBE1917C3D200ED19DE /* QwNodePool.cpp */; };
+		739ECBCC1917C3E100ED19DE /* QwList_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBC41917C3E100ED19DE /* QwList_test.cpp */; };
+		739ECBCD1917C3E100ED19DE /* QwMpmcPopAllLifoStack_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBC51917C3E100ED19DE /* QwMpmcPopAllLifoStack_test.cpp */; };
+		739ECBCE1917C3E100ED19DE /* QwMpscFifoQueue_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBC61917C3E100ED19DE /* QwMpscFifoQueue_test.cpp */; };
+		739ECBCF1917C3E100ED19DE /* QwNodePool_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBC71917C3E100ED19DE /* QwNodePool_test.cpp */; };
+		739ECBD01917C3E100ED19DE /* QwSList_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBC81917C3E100ED19DE /* QwSList_test.cpp */; };
+		739ECBD11917C3E100ED19DE /* QwSpscUnorderedResultQueue_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBC91917C3E100ED19DE /* QwSpscUnorderedResultQueue_test.cpp */; };
+		739ECBD21917C3E100ED19DE /* QwSTailList_test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBCA1917C3E100ED19DE /* QwSTailList_test.cpp */; };
+		739ECBD31917C3E100ED19DE /* QwTestMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 739ECBCB1917C3E100ED19DE /* QwTestMain.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,7 +25,6 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
-				739ECBAC1917C3A200ED19DE /* QueueWorldTests.1 in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -26,8 +32,30 @@
 
 /* Begin PBXFileReference section */
 		739ECBA61917C3A200ED19DE /* QueueWorldTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = QueueWorldTests; sourceTree = BUILT_PRODUCTS_DIR; };
-		739ECBA91917C3A200ED19DE /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		739ECBAB1917C3A200ED19DE /* QueueWorldTests.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = QueueWorldTests.1; sourceTree = "<group>"; };
+		739ECBB31917C3C700ED19DE /* qw_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qw_atomic.h; path = ../../../include/qw_atomic.h; sourceTree = "<group>"; };
+		739ECBB41917C3C700ED19DE /* qw_remove_pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qw_remove_pointer.h; path = ../../../include/qw_remove_pointer.h; sourceTree = "<group>"; };
+		739ECBB51917C3C700ED19DE /* QwConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwConfig.h; path = ../../../include/QwConfig.h; sourceTree = "<group>"; };
+		739ECBB61917C3C700ED19DE /* QwList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwList.h; path = ../../../include/QwList.h; sourceTree = "<group>"; };
+		739ECBB71917C3C700ED19DE /* QwMpmcPopAllLifoStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwMpmcPopAllLifoStack.h; path = ../../../include/QwMpmcPopAllLifoStack.h; sourceTree = "<group>"; };
+		739ECBB81917C3C700ED19DE /* QwMpscFifoQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwMpscFifoQueue.h; path = ../../../include/QwMpscFifoQueue.h; sourceTree = "<group>"; };
+		739ECBB91917C3C700ED19DE /* QwNodePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwNodePool.h; path = ../../../include/QwNodePool.h; sourceTree = "<group>"; };
+		739ECBBA1917C3C700ED19DE /* QwSingleLinkNodeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSingleLinkNodeInfo.h; path = ../../../include/QwSingleLinkNodeInfo.h; sourceTree = "<group>"; };
+		739ECBBB1917C3C700ED19DE /* QwSList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSList.h; path = ../../../include/QwSList.h; sourceTree = "<group>"; };
+		739ECBBC1917C3C700ED19DE /* QwSpscUnorderedResultQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSpscUnorderedResultQueue.h; path = ../../../include/QwSpscUnorderedResultQueue.h; sourceTree = "<group>"; };
+		739ECBBD1917C3C700ED19DE /* QwSTailList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSTailList.h; path = ../../../include/QwSTailList.h; sourceTree = "<group>"; };
+		739ECBBE1917C3D200ED19DE /* QwNodePool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwNodePool.cpp; path = ../../../src/QwNodePool.cpp; sourceTree = "<group>"; };
+		739ECBC01917C3E100ED19DE /* catch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = catch.hpp; path = ../../../tests/catch.hpp; sourceTree = "<group>"; };
+		739ECBC11917C3E100ED19DE /* Qw_Lists_adhocTestsShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Qw_Lists_adhocTestsShared.h; path = ../../../tests/Qw_Lists_adhocTestsShared.h; sourceTree = "<group>"; };
+		739ECBC21917C3E100ED19DE /* Qw_Lists_axiomaticTestsShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Qw_Lists_axiomaticTestsShared.h; path = ../../../tests/Qw_Lists_axiomaticTestsShared.h; sourceTree = "<group>"; };
+		739ECBC31917C3E100ED19DE /* Qw_Lists_randomisedTestShared.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Qw_Lists_randomisedTestShared.h; path = ../../../tests/Qw_Lists_randomisedTestShared.h; sourceTree = "<group>"; };
+		739ECBC41917C3E100ED19DE /* QwList_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwList_test.cpp; path = ../../../tests/QwList_test.cpp; sourceTree = "<group>"; };
+		739ECBC51917C3E100ED19DE /* QwMpmcPopAllLifoStack_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwMpmcPopAllLifoStack_test.cpp; path = ../../../tests/QwMpmcPopAllLifoStack_test.cpp; sourceTree = "<group>"; };
+		739ECBC61917C3E100ED19DE /* QwMpscFifoQueue_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwMpscFifoQueue_test.cpp; path = ../../../tests/QwMpscFifoQueue_test.cpp; sourceTree = "<group>"; };
+		739ECBC71917C3E100ED19DE /* QwNodePool_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwNodePool_test.cpp; path = ../../../tests/QwNodePool_test.cpp; sourceTree = "<group>"; };
+		739ECBC81917C3E100ED19DE /* QwSList_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwSList_test.cpp; path = ../../../tests/QwSList_test.cpp; sourceTree = "<group>"; };
+		739ECBC91917C3E100ED19DE /* QwSpscUnorderedResultQueue_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwSpscUnorderedResultQueue_test.cpp; path = ../../../tests/QwSpscUnorderedResultQueue_test.cpp; sourceTree = "<group>"; };
+		739ECBCA1917C3E100ED19DE /* QwSTailList_test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwSTailList_test.cpp; path = ../../../tests/QwSTailList_test.cpp; sourceTree = "<group>"; };
+		739ECBCB1917C3E100ED19DE /* QwTestMain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QwTestMain.cpp; path = ../../../tests/QwTestMain.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,7 +72,7 @@
 		739ECB9D1917C3A100ED19DE = {
 			isa = PBXGroup;
 			children = (
-				739ECBA81917C3A200ED19DE /* QueueWorldTests */,
+				739ECBB21917C3AD00ED19DE /* QueueWorldTests */,
 				739ECBA71917C3A200ED19DE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -57,13 +85,35 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		739ECBA81917C3A200ED19DE /* QueueWorldTests */ = {
+		739ECBB21917C3AD00ED19DE /* QueueWorldTests */ = {
 			isa = PBXGroup;
 			children = (
-				739ECBA91917C3A200ED19DE /* main.cpp */,
-				739ECBAB1917C3A200ED19DE /* QueueWorldTests.1 */,
+				739ECBC01917C3E100ED19DE /* catch.hpp */,
+				739ECBC11917C3E100ED19DE /* Qw_Lists_adhocTestsShared.h */,
+				739ECBC21917C3E100ED19DE /* Qw_Lists_axiomaticTestsShared.h */,
+				739ECBC31917C3E100ED19DE /* Qw_Lists_randomisedTestShared.h */,
+				739ECBC41917C3E100ED19DE /* QwList_test.cpp */,
+				739ECBC51917C3E100ED19DE /* QwMpmcPopAllLifoStack_test.cpp */,
+				739ECBC61917C3E100ED19DE /* QwMpscFifoQueue_test.cpp */,
+				739ECBC71917C3E100ED19DE /* QwNodePool_test.cpp */,
+				739ECBC81917C3E100ED19DE /* QwSList_test.cpp */,
+				739ECBC91917C3E100ED19DE /* QwSpscUnorderedResultQueue_test.cpp */,
+				739ECBCA1917C3E100ED19DE /* QwSTailList_test.cpp */,
+				739ECBCB1917C3E100ED19DE /* QwTestMain.cpp */,
+				739ECBBE1917C3D200ED19DE /* QwNodePool.cpp */,
+				739ECBB31917C3C700ED19DE /* qw_atomic.h */,
+				739ECBB41917C3C700ED19DE /* qw_remove_pointer.h */,
+				739ECBB51917C3C700ED19DE /* QwConfig.h */,
+				739ECBB61917C3C700ED19DE /* QwList.h */,
+				739ECBB71917C3C700ED19DE /* QwMpmcPopAllLifoStack.h */,
+				739ECBB81917C3C700ED19DE /* QwMpscFifoQueue.h */,
+				739ECBB91917C3C700ED19DE /* QwNodePool.h */,
+				739ECBBA1917C3C700ED19DE /* QwSingleLinkNodeInfo.h */,
+				739ECBBB1917C3C700ED19DE /* QwSList.h */,
+				739ECBBC1917C3C700ED19DE /* QwSpscUnorderedResultQueue.h */,
+				739ECBBD1917C3C700ED19DE /* QwSTailList.h */,
 			);
-			path = QueueWorldTests;
+			name = QueueWorldTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -117,7 +167,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				739ECBAA1917C3A200ED19DE /* main.cpp in Sources */,
+				739ECBBF1917C3D200ED19DE /* QwNodePool.cpp in Sources */,
+				739ECBCC1917C3E100ED19DE /* QwList_test.cpp in Sources */,
+				739ECBCD1917C3E100ED19DE /* QwMpmcPopAllLifoStack_test.cpp in Sources */,
+				739ECBCE1917C3E100ED19DE /* QwMpscFifoQueue_test.cpp in Sources */,
+				739ECBCF1917C3E100ED19DE /* QwNodePool_test.cpp in Sources */,
+				739ECBD01917C3E100ED19DE /* QwSList_test.cpp in Sources */,
+				739ECBD11917C3E100ED19DE /* QwSpscUnorderedResultQueue_test.cpp in Sources */,
+				739ECBD21917C3E100ED19DE /* QwSTailList_test.cpp in Sources */,
+				739ECBD31917C3E100ED19DE /* QwTestMain.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +208,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../mintomic/include;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -176,6 +235,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../mintomic/include;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
 			};
