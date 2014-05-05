@@ -43,6 +43,39 @@ static size_t roundUpToNextPowerOfTwo(size_t x)
     return x;
 }
 
+#ifdef WIN32
+
+void *qw_aligned_malloc( size_t size, size_t alignment )
+{
+    return _aligned_malloc(size, alignment);
+}
+
+void qw_aligned_free( void *memblock )
+{
+    _aligned_free(memblock);    
+}
+
+#else
+
+void *qw_aligned_malloc( size_t size, size_t alignment )
+{
+    void *result = 0;
+    
+    if (posix_memalign(&result, alignment, size)!=0)
+        result = 0;
+    
+    return result;
+}
+
+void qw_aligned_free( void *memblock )
+{
+    free(memblock);
+}
+
+#endif
+
+
+
 QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
 {
 #ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
@@ -61,7 +94,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
     // see also http://cottonvibes.blogspot.com.au/2011/01/dynamically-allocate-aligned-memory.html
     // and http://stackoverflow.com/questions/17378444/stdalign-and-stdaligned-storage-for-aligned-allocation-of-memory-blocks
 
-    nodeStorage_ = (int8_t*)_aligned_malloc(nodeSize_*maxNodes,CACHE_LINE_SIZE);
+    nodeStorage_ = (int8_t*)qw_aligned_malloc(nodeSize_*maxNodes,CACHE_LINE_SIZE);
     assert( nodeStorage_ != 0 );
 
     nodeArrayBase_ = nodeStorage_ - nodeSize_; // node index 0 is the null index, so we want nodeArrayBase_[1] --> nodeStorage_[0]
@@ -103,7 +136,7 @@ QwRawNodePool::~QwRawNodePool()
     assert( allocCount_._nonatomic == 0 );
 #endif
 
-    _aligned_free(nodeStorage_);
+    qw_aligned_free(nodeStorage_);
 }
 
 /* -----------------------------------------------------------------------
