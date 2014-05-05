@@ -54,10 +54,22 @@ MINT_C_INLINE uint64_t qw_mint_exchange_64_relaxed(mint_atomic64_t *object, uint
 
 #elif MINT_COMPILER_GCC && (MINT_CPU_X86 || MINT_CPU_X64)
 
-// FIXME TODO
-// see http://stackoverflow.com/questions/8268243/porting-interlockedexchange-using-gcc-intrinsics-only
-// apparently for gcc we should use the __sync_lock_test_and_set  (which is supposedly just an atomic exchange)
-// http://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html#_005f_005fsync-Builtins
+MINT_C_INLINE uint32_t qw_mint_exchange_32_relaxed(mint_atomic32_t *object, uint32_t operand)
+{
+    // __sync_lock_test_and_set is equivalent to LOCK XCHG on Intel
+    // "This built-in function, as described by Intel, is not a traditional test-and-set operation,"
+    // "but rather an atomic exchange operation. It writes value into *ptr, and returns the"
+    // "previous contents of *ptr."
+    // http://gcc.gnu.org/onlinedocs/gcc/_005f_005fsync-Builtins.html#_005f_005fsync-Builtins
+    // see also http://stackoverflow.com/questions/8268243/porting-interlockedexchange-using-gcc-intrinsics-only
+
+    return __sync_lock_test_and_set(&(object->_nonatomic), operand);
+}
+
+MINT_C_INLINE uint64_t qw_mint_exchange_64_relaxed(mint_atomic64_t *object, uint64_t operand)
+{
+    return __sync_lock_test_and_set(&(object->_nonatomic), operand);
+}
 
 #else
 
@@ -90,9 +102,9 @@ MINT_C_INLINE void* qw_mint_exchange_ptr_relaxed(mint_atomicPtr_t *object, void 
 #endif /* INCLUDED_QW_ATOMIC_H */
 
 /* -----------------------------------------------------------------------
-Last reviewed: April 22, 2014
+Last reviewed: May 5, 2014
 Last reviewed by: Ross B.
 Status: OK
 Comments:
-- no gcc or OS X support
+- no ARM or PPC support for atomic exchange
 -------------------------------------------------------------------------- */
