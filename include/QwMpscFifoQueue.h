@@ -23,12 +23,12 @@
 #define INCLUDED_QWMPSCFIFOQUEUE_H
 
 #include "QwSingleLinkNodeInfo.h"
-#include "QwMPMCPopAllLifoStack.h"
+#include "QwMpmcPopAllLifoStack.h"
 #include "QwSTailList.h"
 
 
 /*
-    QwMPSCFifoQueue is a lock-free concurrent, multiple-producer single-consumer FIFO queue.
+    QwMpscFifoQueue is a lock-free concurrent, multiple-producer single-consumer FIFO queue.
 
     Producer(s) operations: push()
     Consumer operations: consumer_empty(), pop().
@@ -42,11 +42,11 @@
 */
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
-class QwMPSCFifoQueue {
+class QwMpscFifoQueue {
 
     typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nodeinfo;
 
-    QwMPMCPopAllLifoStack<NodePtrT, NEXT_LINK_INDEX> mpscLifo_;
+    QwMpmcPopAllLifoStack<NodePtrT, NEXT_LINK_INDEX> mpscLifo_;
     QwSTailList<NodePtrT, NEXT_LINK_INDEX> consumerLocalReversingQueue_;
 
 public:

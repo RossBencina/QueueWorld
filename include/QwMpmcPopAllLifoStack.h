@@ -31,7 +31,7 @@
 #include "QwSingleLinkNodeInfo.h"
 
 /*
-    QwMPMCPopAllLifoStack is a lock-free concurrent LIFO stack that
+    QwMpmcPopAllLifoStack is a lock-free concurrent LIFO stack that
     provides push() and pop_all()  operations. No single-node pop()
     operation is provided.
 
@@ -46,7 +46,7 @@
 */
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
-class QwMPMCPopAllLifoStack{
+class QwMpmcPopAllLifoStack{
     typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nodeinfo;
 
     mint_atomicPtr_t top_;
@@ -56,7 +56,7 @@ public:
     typedef typename nodeinfo::node_ptr_type node_ptr_type;
     typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
     
-    QwMPMCPopAllLifoStack()
+    QwMpmcPopAllLifoStack()
     {
         top_._nonatomic = 0;
     }

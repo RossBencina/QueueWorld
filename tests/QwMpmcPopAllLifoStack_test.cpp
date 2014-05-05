@@ -40,11 +40,11 @@ namespace {
         }
     };
 
-    typedef QwMPMCPopAllLifoStack<TestNode*, TestNode::LINK_INDEX_1> mpmc_pop_all_lifo_stack_t;
+    typedef QwMpmcPopAllLifoStack<TestNode*, TestNode::LINK_INDEX_1> mpmc_pop_all_lifo_stack_t;
 
 } // end anonymous namespace
 
-TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMPMCPopAllLifoStack single threaded test" ) {
+TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMpmcPopAllLifoStack single threaded test" ) {
 
     TestNode nodes[10];
     TestNode *a = &nodes[0];

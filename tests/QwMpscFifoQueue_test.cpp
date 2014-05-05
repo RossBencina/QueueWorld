@@ -40,14 +40,14 @@ namespace {
         }
     };
 
-    typedef QwMPSCFifoQueue<TestNode*, TestNode::LINK_INDEX_1> mpsc_fifo_queue_t;
+    typedef QwMpscFifoQueue<TestNode*, TestNode::LINK_INDEX_1> mpsc_fifo_queue_t;
 
     TestNode*& next_(TestNode*n) { return n->links_[TestNode::LINK_INDEX_1]; }
 
 } // end anonymous namespace
 
 
-TEST_CASE( "qw/mpsc_fifo_queue", "QwMPSCFifoQueue single threaded test" ) {
+TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
 
     TestNode nodes[4];
     TestNode *a = &nodes[0];
