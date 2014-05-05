@@ -118,9 +118,9 @@ public:
 
     // expectedResultCount getter and mutator to be called on consumer side only:
 
-    int expectedResultCount() const { return expectedResultCount_; }
+    size_t expectedResultCount() const { return expectedResultCount_; }
 
-    size_t incrementExpectedResultCount() { ++expectedResultCount_; }
+    void incrementExpectedResultCount() { ++expectedResultCount_; }
     void incrementExpectedResultCount( size_t k ) { expectedResultCount_ += k; }
 };
 
