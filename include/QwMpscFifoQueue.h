@@ -59,11 +59,17 @@ public:
         return mpscLifo_.push(n);
     }
 
-    // KNOWNBUG: indicates wasEmpty even if the consumer local-queue is non-empty.
+    // KNOWNBUG: push and push_multiple indicates wasEmpty
+    // even if the consumer local-queue is non-empty.
     // not sure that will be fixed.
     void push( node_ptr_type n, bool& wasEmpty )
     {
         return mpscLifo_.push(n, wasEmpty);
+    }
+
+    void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
+    {
+        return mpscLifo_.push_multiple(front, back, wasEmpty);
     }
 
     bool consumer_empty() const

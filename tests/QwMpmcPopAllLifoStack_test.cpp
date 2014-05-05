@@ -50,6 +50,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMPMCPopAllLifoStack single threaded 
     TestNode *a = &nodes[0];
     TestNode *b = &nodes[1];
     TestNode *c = &nodes[2];
+    TestNode *d = &nodes[3];
 
     mpmc_pop_all_lifo_stack_t stack;
 
@@ -85,6 +86,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMPMCPopAllLifoStack single threaded 
 
     // void push( node_ptr_type node, bool& wasEmpty )
 
+    REQUIRE( stack.empty() );
     bool wasEmpty=false;
     stack.push(a,wasEmpty);
     REQUIRE( wasEmpty == true );
@@ -116,5 +118,33 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMPMCPopAllLifoStack single threaded 
         a->links_[TestNode::LINK_INDEX_1] = 0;
         b->links_[TestNode::LINK_INDEX_1] = 0;
         c->links_[TestNode::LINK_INDEX_1] = 0;
+    }
+
+    // test push_multiple(...,wasEmpty)
+
+    a->links_[TestNode::LINK_INDEX_1] = b;
+    b->links_[TestNode::LINK_INDEX_1] = c;
+    c->links_[TestNode::LINK_INDEX_1] = 0;
+    d->links_[TestNode::LINK_INDEX_1] = 0;
+    REQUIRE( stack.empty() );
+    wasEmpty = false;
+    stack.push_multiple(a, c, wasEmpty);
+    REQUIRE( wasEmpty == true );
+    stack.push_multiple(d, d, wasEmpty);
+    REQUIRE( wasEmpty == false );
+
+    { // verify that pop-all returns items in LIFO order:
+        TestNode *xs = stack.pop_all();
+        REQUIRE( stack.empty() );
+
+        REQUIRE( xs == d );
+        REQUIRE( xs->links_[TestNode::LINK_INDEX_1] == a );
+        REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == b );
+        REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == c );
+
+        a->links_[TestNode::LINK_INDEX_1] = 0;
+        b->links_[TestNode::LINK_INDEX_1] = 0;
+        c->links_[TestNode::LINK_INDEX_1] = 0;
+        d->links_[TestNode::LINK_INDEX_1] = 0;
     }
 }

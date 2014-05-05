@@ -61,6 +61,11 @@ public:
         top_._nonatomic = 0;
     }
 
+    // The following four push variants use the same algorithm. Theh differ
+    // only in whether one or multiple items are pushed, and whether they
+    // provide the was-empty check.
+    // push(n), push(n,&wasEmpty), push_multiple(a,b) and push_multiple(a,b,&wasEmpty)
+
     void push( node_ptr_type node )
     {
         nodeinfo::check_node_is_unlinked( node );
@@ -107,6 +112,23 @@ public:
             //   2. ensure that node->next <-- top is written before top <-- node
             mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
+    }
+
+    void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
+    {
+        nodeinfo::check_node_is_unlinked( back );
+
+        node_ptr_type top;
+        do{
+            top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
+            nodeinfo::next_ptr(back) = top;
+            // A fence is needed here for two reasons:
+            //   1. so that node's payload gets written before node becomes visible to client
+            //   2. ensure that node->next <-- top is written before top <-- node
+            mint_thread_fence_release();
+        } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
+
+        wasEmpty = (top==0);
     }
     
     bool empty() const

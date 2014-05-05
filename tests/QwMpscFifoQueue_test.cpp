@@ -42,15 +42,18 @@ namespace {
 
     typedef QwMPSCFifoQueue<TestNode*, TestNode::LINK_INDEX_1> mpsc_fifo_queue_t;
 
+    TestNode*& next_(TestNode*n) { return n->links_[TestNode::LINK_INDEX_1]; }
+
 } // end anonymous namespace
 
 
 TEST_CASE( "qw/mpsc_fifo_queue", "QwMPSCFifoQueue single threaded test" ) {
 
-    TestNode nodes[3];
+    TestNode nodes[4];
     TestNode *a = &nodes[0];
     TestNode *b = &nodes[1];
     TestNode *c = &nodes[2];
+    TestNode *d = &nodes[3];
 
     mpsc_fifo_queue_t q;
 
@@ -94,4 +97,23 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMPSCFifoQueue single threaded test" ) {
     REQUIRE( q.pop() == b );
     REQUIRE( q.pop() == c );
     REQUIRE( q.consumer_empty() == true );
+
+    // void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
+
+    // Notice that when using push_multiple,
+    // the last item in the list (a) is the first to be popped from the FIFO.
+    next_(c) = b;
+    next_(b) = a;
+    next_(a) = 0;
+    wasEmpty=false;
+    q.push_multiple( c, a, wasEmpty );
+    REQUIRE( wasEmpty == true );
+    next_(d) = 0;
+    q.push_multiple( d, d, wasEmpty );
+    REQUIRE( wasEmpty == false );
+
+    REQUIRE( q.pop() == a );
+    REQUIRE( q.pop() == b );
+    REQUIRE( q.pop() == c );
+    REQUIRE( q.pop() == d );
 }
