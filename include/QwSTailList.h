@@ -211,7 +211,7 @@ public:
             back_ = n;
     }
 
-    void insert_after( iterator &before, node_ptr_type n ) // insert n after node before. 
+    void insert_after( iterator before, node_ptr_type n ) // insert n after node before. 
                                                            // works even with before_begin() on an empty list.
     {
         insert_after( *before, n );
@@ -236,14 +236,14 @@ public:
         return result;
     }
 
-    void remove_after( iterator &before )
+    void remove_after( iterator before )
     {
         remove_after( *before );
     }
 
     // erase_after returns an iterator to the item past the 
     // item that was erased or end() if it was the last item
-    iterator erase_after( iterator &before )
+    iterator erase_after( iterator before )
     {
         assert( before != end() );
 
@@ -303,7 +303,7 @@ public:
 };
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
-inline void swap( typename QwSTailList<NodePtrT,NEXT_LINK_INDEX>& a, typename QwSTailList<NodePtrT,NEXT_LINK_INDEX>& b )
+inline void swap( QwSTailList<NodePtrT,NEXT_LINK_INDEX>& a, QwSTailList<NodePtrT,NEXT_LINK_INDEX>& b )
 {
     a.swap(b);
 }

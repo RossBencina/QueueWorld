@@ -72,11 +72,11 @@ void verifyForwards( list_t& list, int expectedCount )
     if( expectedCount == 0 ){
         REQUIRE( list.empty() );
     }else{
-        list_t::node_ptr_type n = list.front();
-        list_t::node_ptr_type past_back = 0;
+        typename list_t::node_ptr_type n = list.front();
+        typename list_t::node_ptr_type past_back = 0;
 
-        list_t::iterator i = list.begin();
-        list_t::iterator end = list.end();
+        typename list_t::iterator i = list.begin();
+        typename list_t::iterator end = list.end();
 
         for( int j=0; j < expectedCount; ++j )
         {
@@ -98,11 +98,11 @@ void verifyBackwards( list_t& list, int expectedCount )
     if( expectedCount == 0 ){
         REQUIRE( list.empty() );
     }else{
-        list_t::node_ptr_type n = list.back();
-        list_t::node_ptr_type past_front = list.before_front_();
+        typename list_t::node_ptr_type n = list.back();
+        typename list_t::node_ptr_type past_front = list.before_front_();
 
-        list_t::iterator i = list.end();
-        list_t::iterator begin = list.begin();
+        typename list_t::iterator i = list.end();
+        typename list_t::iterator begin = list.begin();
 
         for( int j=0; j < expectedCount; ++j )
         {
@@ -129,11 +129,13 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
     std::srand(static_cast<unsigned int>(std::time(0)));
 
     list_t a;
-
+    typedef typename list_t::node_type node_t;
+    
+    
     const int NODE_COUNT = QW_RANDOMISED_TEST_OBJECT_COUNT;
-    TestNode nodes[NODE_COUNT];
+    node_t nodes[NODE_COUNT];
 
-    TestNode *nodeStack[NODE_COUNT];
+    node_t *nodeStack[NODE_COUNT];
     for( int i=0; i < NODE_COUNT; ++i ){
         nodeStack[i] = &nodes[i];
         nodeStack[i]->value = 0;
@@ -152,7 +154,7 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
 
         if( (rand() < bias[biasState] || nodesInListCount == 0) && nodeStackTop != 0 ){
             // insert
-            TestNode *node = nodeStack[ --nodeStackTop ];
+            node_t *node = nodeStack[ --nodeStackTop ];
 
             REQUIRE( node->value == 0 );
             node->value = 1;
@@ -166,7 +168,7 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
                 biasState = BIAS_REMOVING;
         }else{
             // remove
-            TestNode *node = randomisedRemove( a, nodesInListCount );
+            node_t *node = randomisedRemove( a, nodesInListCount );
             --nodesInListCount;
 
             REQUIRE( node->value == 1 );

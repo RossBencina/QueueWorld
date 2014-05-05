@@ -65,11 +65,11 @@ inline void singleItemSListTest( ListT& a, ListT& b, typename ListT::node_ptr_ty
     REQUIRE( *(a.begin()) == nodePtr );
 
     {
-        ListT::iterator i = a.before_begin();
+        typename ListT::iterator i = a.before_begin();
         ++i;
         REQUIRE( i == a.begin() );
 
-        ListT::iterator j = a.before_begin();
+        typename ListT::iterator j = a.before_begin();
         j++;
         REQUIRE( j == a.begin() );
     }
@@ -203,23 +203,23 @@ inline void twoItemSListTest( ListT& a, ListT& b,
     REQUIRE( *(a.begin()) == node1Ptr );
 
     {
-        ListT::iterator i = a.before_begin();
+        typename ListT::iterator i = a.before_begin();
         ++i;
         REQUIRE( i == a.begin() );
 
-        ListT::iterator j = a.before_begin();
+        typename ListT::iterator j = a.before_begin();
         j++;
         REQUIRE( j == a.begin() );
     }
 
     // iterator pre-increment
     int j=0;
-    for( ListT::iterator i=a.begin(); i != a.end(); ++i, ++j )
+    for( typename ListT::iterator i=a.begin(); i != a.end(); ++i, ++j )
         REQUIRE( (*i)->value == j );
 
     // iterator post-increment
     j=0;
-    for( ListT::iterator i=a.begin(); i != a.end(); i++, ++j )
+    for( typename ListT::iterator i=a.begin(); i != a.end(); i++, ++j )
         REQUIRE( (*i)->value == j );
 
     a.swap( b );
@@ -315,17 +315,17 @@ inline void twoItemListTest( ListT& a, ListT& b,
 
     // iterator pre-increment
     int j=0;
-    for( ListT::iterator i=a.begin(); i != a.end(); ++i, ++j )
+    for( typename ListT::iterator i=a.begin(); i != a.end(); ++i, ++j )
         REQUIRE( (*i)->value == j );
 
     // iterator post-increment
     j=0;
-    for( ListT::iterator i=a.begin(); i != a.end(); i++, ++j )
+    for( typename ListT::iterator i=a.begin(); i != a.end(); i++, ++j )
         REQUIRE( (*i)->value == j );
 
     // iterator pre-decrement
     {
-        ListT::iterator i=a.end();
+        typename ListT::iterator i=a.end();
         REQUIRE( (*--i)->value == 1 );
         REQUIRE( (*--i)->value == 0 );
         REQUIRE( i == a.begin() );
@@ -333,7 +333,7 @@ inline void twoItemListTest( ListT& a, ListT& b,
     
     // iterator post-decrement
     {
-        ListT::iterator i=a.end();
+        typename ListT::iterator i=a.end();
         i--; REQUIRE( (*i--)->value == 1 );
         REQUIRE( (*i)->value == 0 );
         REQUIRE( i == a.begin() );
@@ -529,12 +529,12 @@ inline void manyItemsSListTest( typename ListT::node_ptr_type nodes )
 
         // preincrement iteration
         int j=0;
-        for( ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
+        for( typename ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
             REQUIRE( (*i)->value == j );
 
         // postincrement iteration
         j=0;
-        for( ListT::iterator i = a.begin(); i != a.end(); i++, ++j )
+        for( typename ListT::iterator i = a.begin(); i != a.end(); i++, ++j )
             REQUIRE( (*i)->value == j );
 
         for( int i=0; i < MAX_COUNT; ++i )
@@ -576,14 +576,14 @@ inline void manyItemsSListTest( typename ListT::node_ptr_type nodes )
     // in order insert using iterator
     {
         ListT a;
-        ListT::iterator i=a.before_begin();
+        typename ListT::iterator i=a.before_begin();
         for( int j=0; j < MAX_COUNT; ++j ){
             a.insert_after( i, &nodes[j] );
             ++i;
         }
         {
             int j=0;
-            for( ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
+            for( typename ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
                 REQUIRE( (*i)->value == j );
         }
         a.clear();
@@ -592,8 +592,8 @@ inline void manyItemsSListTest( typename ListT::node_ptr_type nodes )
     // in order insert then removal in reverse order using saved iterators
     {
         ListT a;
-        ListT::iterator i=a.before_begin();
-        ListT::iterator is[MAX_COUNT];
+        typename ListT::iterator i=a.before_begin();
+        typename ListT::iterator is[MAX_COUNT];
         for( int j=0; j < MAX_COUNT; ++j ){
             is[j] = i;
             a.insert_after( i, &nodes[j] );
@@ -629,17 +629,17 @@ inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
 
         // preincrement iteration
         int j=0;
-        for( ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
+        for( typename ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
             REQUIRE( (*i)->value == j );
 
         // postincrement iteration
         j=0;
-        for( ListT::iterator i = a.begin(); i != a.end(); i++, ++j )
+        for( typename ListT::iterator i = a.begin(); i != a.end(); i++, ++j )
             REQUIRE( (*i)->value == j );
 
         // predecrement iteration
         {
-            ListT::iterator i = --a.end();
+            typename ListT::iterator i = --a.end();
             for( j = MAX_COUNT - 1; j >= 0; --j ){
                 REQUIRE( (*i)->value == j );
                 --i;
@@ -647,7 +647,7 @@ inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
         }
         // postdecrement iteration
         {
-            ListT::iterator i = a.end();
+            typename ListT::iterator i = a.end();
             i--;
             for( j = MAX_COUNT - 1; j >= 0; --j ){
                 REQUIRE( (*i)->value == j );
@@ -696,14 +696,14 @@ inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
     // in order insert using iterator
     {
         ListT a;
-        ListT::iterator i=a.begin();
+        typename ListT::iterator i=a.begin();
         for( int j=0; j < MAX_COUNT; ++j ){
             a.insert( i, &nodes[j] );
             ++i;
         }
         {
             int j=0;
-            for( ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
+            for( typename ListT::iterator i = a.begin(); i != a.end(); ++i, ++j )
                 REQUIRE( (*i)->value == j );
         }
         a.clear();
@@ -713,8 +713,8 @@ inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
     // in order insert then removal in reverse order using saved iterators
     {
         ListT a;
-        ListT::iterator i=a.begin();
-        ListT::iterator is[MAX_COUNT];
+        typename ListT::iterator i=a.begin();
+        typename ListT::iterator is[MAX_COUNT];
         for( int j=0; j < MAX_COUNT; ++j ){
             is[j] = i;
             a.insert( i, &nodes[j] );
@@ -735,7 +735,7 @@ inline size_t countElements( const ListT& list )
 {
     size_t result = 0;
 
-    for( ListT::const_iterator i = list.begin(); i != list.end(); ++i )
+    for( typename ListT::const_iterator i = list.begin(); i != list.end(); ++i )
         ++result;
 
     return result;

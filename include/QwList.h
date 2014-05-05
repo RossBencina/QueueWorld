@@ -131,7 +131,7 @@ public: /// ONLY PUBLIC FOR TESTING
 public:
 
     class iterator{
-        friend typename this_list_t;
+        friend this_list_t;
         node_ptr_type p_;
     public:
 #ifdef QW_VALIDATE_NODE_LINKS
@@ -180,7 +180,7 @@ public:
     };
 
     class const_iterator{
-        friend typename this_list_t;
+        friend this_list_t;
         const node_type *p_;
     public:
 #ifdef QW_VALIDATE_NODE_LINKS
@@ -410,7 +410,7 @@ public:
         NEXT_PTR( PREVIOUS_PTR(n) ) = n;
     }
 
-    void insert( iterator &at, node_ptr_type n ) // insert n before node at
+    void insert( iterator at, node_ptr_type n ) // insert n before node at
     {
         insert_after( at.p_, n ); // use insert_after because iterator.p_ points to the previous item
     }
@@ -441,7 +441,7 @@ public:
         CLEAR_NODE_LINKS( at );
     }
 
-    void erase( iterator &at ) // remove node at at
+    void erase( iterator at ) // remove node at at
     {
         remove_after( at.p_ );
     }
@@ -459,7 +459,7 @@ public:
 };
 
 template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>
-inline void swap( typename QwList<NodePtrT,NEXT_LINK_INDEX,PREVIOUS_LINK_INDEX>& a, typename QwList<NodePtrT,NEXT_LINK_INDEX,PREVIOUS_LINK_INDEX>& b )
+inline void swap( QwList<NodePtrT,NEXT_LINK_INDEX,PREVIOUS_LINK_INDEX>& a, QwList<NodePtrT,NEXT_LINK_INDEX,PREVIOUS_LINK_INDEX>& b )
 {
     a.swap(b);
 }

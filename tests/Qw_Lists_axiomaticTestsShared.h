@@ -50,7 +50,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticBaselineTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     /*
@@ -106,7 +106,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticPushBackTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "one", "push one item")
@@ -138,7 +138,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticSwapTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     // we conclude by inspection that swap(a, b) also tests a.swap(b)
@@ -156,7 +156,7 @@ void axiomaticSwapTest( requireEmptyInvariantsT& requireEmptyInvariants,
     SECTION( "one", "swap one item lists")
     {
         list_t a, b;
-        list_t::node_type node;
+        typename list_t::node_type node;
         a.push_front( &node );
         requireSingleNodeInvariants( a, &node );
         requireEmptyInvariants( b );
@@ -171,7 +171,7 @@ void axiomaticSwapTest( requireEmptyInvariantsT& requireEmptyInvariants,
     SECTION( "many", "swap many item lists")
     {
         for( int count = 2; count <= 5; ++count ){
-            list_t::node_type nodes[5];
+            typename list_t::node_type nodes[5];
             list_t a, b;
             pushFrontN( a, nodes, count );
             requireMoreThanOneNodeInvariants( a, nodes, count );
@@ -191,7 +191,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticPopFrontTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "one", "init with one item, pop front")
@@ -253,7 +253,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticInsertAfterNodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "one", "init with one item, insert after front")
@@ -307,7 +307,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticInsertAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "empty", "init empty, insert after before_begin")
@@ -359,7 +359,7 @@ void axiomaticInsertAfterIterTest( requireEmptyInvariantsT& requireEmptyInvarian
         a.push_front( &nodes[2] );
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
-        list_t::iterator i = a.begin();
+        typename list_t::iterator i = a.begin();
         ++i;
         ++i;
         ++i;
@@ -396,7 +396,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticRemoveAfterBeforeBeginTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "one", "initially one item, remove after before_begin")
@@ -438,7 +438,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticRemoveAfter2NodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "two/front", "init with two items, remove after front")
@@ -496,7 +496,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticRemoveAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "one/before_begin", "init with one item, remove_after before_begin")
@@ -576,7 +576,7 @@ void axiomaticRemoveAfterIterTest( requireEmptyInvariantsT& requireEmptyInvarian
         a.push_front( &nodes[3] );
         a.push_front( &nodes[2] );
         a.push_front( &nodes[1] );
-        list_t::iterator i = a.begin();
+        typename list_t::iterator i = a.begin();
         ++i;
         ++i;
         ++i;
@@ -590,7 +590,7 @@ template<typename list_t,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
 void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants, 
-    requireSingleNodeInvariantsT& requireSingleNodeInvariantsT,
+    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     // similar tests to remove_after except test the return value of erase_after
@@ -600,7 +600,7 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         list_t a;
         typename list_t::node_type node;
         a.push_front( &node );
-        list_t::iterator i = a.erase_after( a.before_begin() );
+        typename list_t::iterator i = a.erase_after( a.before_begin() );
         REQUIRE( i == a.end() );
         requireEmptyInvariants( a );
     }
@@ -611,7 +611,7 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         typename list_t::node_type nodes[2];
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
-        list_t::iterator i = a.erase_after( a.before_begin() );
+        typename list_t::iterator i = a.erase_after( a.before_begin() );
         REQUIRE( i == a.begin() );
         requireSingleNodeInvariants( a, &nodes[1] );
     }
@@ -622,7 +622,7 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         typename list_t::node_type nodes[2];
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
-        list_t::iterator i = a.erase_after( a.begin() );
+        typename list_t::iterator i = a.erase_after( a.begin() );
         REQUIRE( i == a.end() );
         requireSingleNodeInvariants( a, &nodes[0] );
     }
@@ -636,7 +636,7 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         a.push_front( &nodes[2] );
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
-        list_t::iterator i = a.erase_after( a.before_begin() );
+        typename list_t::iterator i = a.erase_after( a.before_begin() );
         REQUIRE( i == a.begin() );
         requireMoreThanOneNodeInvariants( a, &nodes[1], 4 );
     }
@@ -650,8 +650,8 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         a.push_front( &nodes[2] );
         a.push_front( &nodes[0] );
         a.push_front( &nodes[1] );
-        list_t::iterator i = a.erase_after( a.begin() );
-        list_t::iterator j = a.begin();
+        typename list_t::iterator i = a.erase_after( a.begin() );
+        typename list_t::iterator j = a.begin();
         ++j;
         REQUIRE( i == j ); 
         requireMoreThanOneNodeInvariants( a, &nodes[1], 4 );
@@ -666,8 +666,8 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         a.push_front( &nodes[0] );
         a.push_front( &nodes[2] );
         a.push_front( &nodes[1] );
-        list_t::iterator i = a.erase_after( ++a.begin() );
-        list_t::iterator j = a.begin();
+        typename list_t::iterator i = a.erase_after( ++a.begin() );
+        typename list_t::iterator j = a.begin();
         ++j;
         ++j;
         REQUIRE( i == j );
@@ -683,11 +683,11 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         a.push_front( &nodes[3] );
         a.push_front( &nodes[2] );
         a.push_front( &nodes[1] );
-        list_t::iterator i = a.begin();
+        typename list_t::iterator i = a.begin();
         ++i;
         ++i;
         ++i;
-        list_t::iterator j = a.erase_after( i );
+        typename list_t::iterator j = a.erase_after( i );
         REQUIRE( j == a.end() );
         requireMoreThanOneNodeInvariants( a, &nodes[1], 4 );
     }
