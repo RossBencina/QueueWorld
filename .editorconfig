@@ -1,0 +1,29 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# For reference, VS Code plugin supports the following properties
+#
+# indent_style
+# indent_size
+# tab_width
+# end_of_line
+# insert_final_newline
+# trim_trailing_whitespace
+#
+# See https://github.com/editorconfig/editorconfig-vscode
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[CMakeLists.txt]
+indent_style = space
+indent_size = 2
+
+[*.yml]
+indent_style = space
+indent_size = 2
