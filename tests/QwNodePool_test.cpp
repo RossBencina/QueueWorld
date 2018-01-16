@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -46,7 +46,7 @@ namespace {
 } // end anonymous namespace
 
 TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
-    
+
     size_t maxNodes = 21;
 
     QwNodePool<TestNode> pool( maxNodes);
@@ -62,7 +62,7 @@ TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
     REQUIRE( pool.allocate() == 0 );
 
     while (!allocatedNodes.empty())
-        pool.deallocate(allocatedNodes.pop_front()); 
+        pool.deallocate(allocatedNodes.pop_front());
 }
 
 /* -----------------------------------------------------------------------

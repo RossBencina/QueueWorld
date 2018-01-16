@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -208,8 +208,8 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
     node3.value = 2;
 
     list_1_t a;
-    
-    // we only test iterator insert and remove because these use 
+
+    // we only test iterator insert and remove because these use
     // node based insert and remove under the hood
 
     // insert using iterators
@@ -318,14 +318,14 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
     constructed list contains exactly the expected items in the expected order.
     we then test each other function separately by constructing all of
     the different scenarios, which amount to treating lists of
-    zero, one or many items, and inserting at the beginning, middle or end 
+    zero, one or many items, and inserting at the beginning, middle or end
     of the list.
 */
 
 // requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants
 //
 // used to test accessors
-// 
+//
 // iterator construction, prefix and postfix ++
 //
 // empty, size_is_1, size_is_greater_than_1
@@ -406,7 +406,7 @@ static void requireSingleNodeInvariants( list_1_t& a, TestNode *node )
 
     // bidirectional iterator should be able to decrement end():
     // see: http://www.sgi.com/tech/stl/BidirectionalIterator.html
- 
+
     { // begin comes directly before end (pre-decrement)
         list_1_t::iterator i = a.end();
         --i;
@@ -610,7 +610,7 @@ TEST_CASE( "qw/list/axiomatic/erase_after/iter", "QwList axiomatic test of erase
 */
 
 TEST_CASE( "qw/list/axiomatic/insert/node_ptr", "QwList axiomatic test of insert(node_ptr,n)" ) {
-    // note that you can't use insert(node_ptr,n) on an empty list. 
+    // note that you can't use insert(node_ptr,n) on an empty list.
 	// you can use the iterator version to insert at end() though.
 
     SECTION( "one", "init with one item, insert at front (or back, same thing)")
@@ -800,7 +800,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
         a.remove( a.back() );
         requireSingleNodeInvariants( a, &nodes[0] );
     }
-    
+
     SECTION( "many/front", "init with many items, remove front")
     {
         list_1_t a;
@@ -813,7 +813,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
         a.remove( a.front() );
         requireMoreThanOneNodeInvariants( a, &nodes[1], 4 );
     }
-    
+
     SECTION( "many/next-to-front", "init with many items, remove next(front)")
     {
         list_1_t a;
@@ -826,7 +826,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
         a.remove( a.next(a.front()) );
         requireMoreThanOneNodeInvariants( a, &nodes[1], 4 );
     }
-    
+
     SECTION( "many/previous-to-back", "init with many items, remove previous(back)")
     {
         list_1_t a;

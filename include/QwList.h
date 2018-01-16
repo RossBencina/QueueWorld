@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -89,8 +89,8 @@ private:
         assert( NEXT_PTR(n) == 0 );
         assert( PREVIOUS_PTR(n) == 0 );
 
-        // if the list has only one element n->next will be 0 but could 
-        // still be in our list (or another list, but we can only check our list) 
+        // if the list has only one element n->next will be 0 but could
+        // still be in our list (or another list, but we can only check our list)
         assert( n != front_ );
     }
 
@@ -111,7 +111,7 @@ public: /// ONLY PUBLIC FOR TESTING
 
     // internal use. exposed for testing only
     node_ptr_type before_front_()
-    { 
+    {
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.
@@ -119,7 +119,7 @@ public: /// ONLY PUBLIC FOR TESTING
     }
 
     const node_type* before_front_() const
-    { 
+    {
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.
@@ -144,7 +144,7 @@ public:
         // end() can be constructed with a private ctor with a dummy parameter
 
         explicit iterator( node_ptr_type p ) : p_( p ) {} // an iterator pointing to p->next
-      
+
         iterator& operator++ ()     // prefix ++
         {
             p_ = NEXT_PTR(p_);
@@ -228,7 +228,7 @@ public:
 
     QwList() : front_( before_front_() ), back_( before_front_() ) {}
 
-    void clear() { 
+    void clear() {
 #ifdef QW_VALIDATE_NODE_LINKS
         while( !empty() ) pop_front();
 #else
@@ -237,8 +237,8 @@ public:
 #endif
     }
 
-    void swap( QwList& other ) { 
-        std::swap( front_, other.front_ ); 
+    void swap( QwList& other ) {
+        std::swap( front_, other.front_ );
         std::swap( back_, other.back_ );
 
         if( front_ == other.before_front_() ){ // empty
@@ -294,7 +294,7 @@ public:
 
     node_ptr_type pop_front()
     {
-        assert( !empty() ); // this version of pop_front doesn't work on an empty list. 
+        assert( !empty() ); // this version of pop_front doesn't work on an empty list.
 							// caller should check is_empty() first.
 
         node_ptr_type result = front_;
@@ -361,7 +361,7 @@ public:
         node_ptr_type result = NEXT_PTR(before);
         node_ptr_type after = NEXT_PTR(result);
 
-        NEXT_PTR(before) = after; // (NEXT_PTR(before) aliases front when using before_front_()) 
+        NEXT_PTR(before) = after; // (NEXT_PTR(before) aliases front when using before_front_())
         // so this will correctly zero front_ if list is empty
 
         if( after ){
@@ -379,11 +379,11 @@ public:
 
     node_ptr_type pop_back()
     {
-        assert( !empty() ); // this version of pop_back doesn't work on an empty list. 
+        assert( !empty() ); // this version of pop_back doesn't work on an empty list.
 							// caller should check is_empty() first.
 
         node_ptr_type result = back_;
-        
+
         back_ = PREVIOUS_PTR(back_);
         if( back_ == before_front_() ){
             front_ = before_front_();

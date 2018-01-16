@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -105,14 +105,14 @@ TEST_CASE( "qw/slist/stack", "QwSList front stack test" ) {
     constructed list contains exactly the expected items in the expected order.
     we then test each other function separately by constructing all of
     the different scenarios, which amount to treating lists of
-    zero, one or many items, and inserting at the beginning, middle or end 
+    zero, one or many items, and inserting at the beginning, middle or end
     of the list.
 */
 
 // requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants
 //
 // used to test accessors
-// 
+//
 // iterator construction, prefix and postfix ++
 //
 // empty, size_is_1, size_is_greater_than_1

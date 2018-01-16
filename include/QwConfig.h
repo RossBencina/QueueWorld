@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -41,7 +41,7 @@
 //
 //  The client should ensure that node links are correctly zeroed
 //  before trying to add nodes to queues.
-// 
+//
 
 #define QW_VALIDATE_NODE_LINKS
 

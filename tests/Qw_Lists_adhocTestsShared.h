@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -330,7 +330,7 @@ inline void twoItemListTest( ListT& a, ListT& b,
         REQUIRE( (*--i)->value == 0 );
         REQUIRE( i == a.begin() );
     }
-    
+
     // iterator post-decrement
     {
         typename ListT::iterator i=a.end();
@@ -413,7 +413,7 @@ inline void twoItemListTest( ListT& a, ListT& b,
     REQUIRE( a.size_is_1() == true );
     a.remove( a.front() );
     REQUIRE( a.empty() == true );
-    
+
     // test eraser iterator
     a.push_front( node2Ptr );
     a.push_front( node1Ptr );
@@ -430,7 +430,7 @@ inline void backAndPushBackListTest( ListT& a, ListT& b,
     typename ListT::node_ptr_type node2Ptr,
     typename ListT::node_ptr_type node3Ptr )
 {
-    // test that back() and front() are correct when pushing from 
+    // test that back() and front() are correct when pushing from
     // back or front, one, two or three elements
     // test that back and front are correct after swapping
 
@@ -511,7 +511,7 @@ inline void backAndPushBackListTest( ListT& a, ListT& b,
 
 template< typename ListT, int MAX_COUNT >
 inline void manyItemsSListTest( typename ListT::node_ptr_type nodes )
-{   
+{
     // slist operations with many nodes/elements
 
     for( int i=0; i < MAX_COUNT; ++i )
@@ -611,7 +611,7 @@ inline void manyItemsSListTest( typename ListT::node_ptr_type nodes )
 
 template< typename ListT, int MAX_COUNT >
 inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
-{   
+{
     // list operations with many nodes/elements
 
     for( int i=0; i < MAX_COUNT; ++i )
@@ -653,7 +653,7 @@ inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
                 REQUIRE( (*i)->value == j );
                 i--;
             }
-        }        
+        }
 
         for( int i=0; i < MAX_COUNT; ++i )
             REQUIRE( a.pop_front()->value == i );

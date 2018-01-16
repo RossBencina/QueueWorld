@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -52,7 +52,7 @@ void *qw_aligned_malloc( size_t size, size_t alignment )
 
 void qw_aligned_free( void *memblock )
 {
-    _aligned_free(memblock);    
+    _aligned_free(memblock);
 }
 
 #else
@@ -60,10 +60,10 @@ void qw_aligned_free( void *memblock )
 void *qw_aligned_malloc( size_t size, size_t alignment )
 {
     void *result = 0;
-    
+
     if (posix_memalign(&result, alignment, size)!=0)
         result = 0;
-    
+
     return result;
 }
 
@@ -86,7 +86,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
 
     // Align nodes on cache line boundaries to avoid false sharing
     size_t minNodeSize = sizeof(nodeindex_t); // nodes need to be large enough to embed their next ptr
-    // Make node size a power of two to allow for using bit shift to convert between pointers and indices 
+    // Make node size a power of two to allow for using bit shift to convert between pointers and indices
     nodeSize_ = roundUpToNextPowerOfTwo(std::max(nodeSize, std::max(minNodeSize,CACHE_LINE_SIZE)));
 
     // Aligned allocation
@@ -119,7 +119,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
 
     countMask_ = ~indexMask_; // count is in the high part
     countIncrement_ = nodeIndexEnd;
-    
+
     // now that everything has been set up, push all nodes onto the stack
     stack_init();
 

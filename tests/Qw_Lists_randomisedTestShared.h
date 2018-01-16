@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -48,8 +48,8 @@
     keep track of how many nodes are currently the list under test
 
     each node has a flag to keep track of whether it's in the list (value= 0/1)
-    
-    at each step, choose randomly between available options 
+
+    at each step, choose randomly between available options
     (when full/empty there is only one option):
         a) insert a node (set its list membership flag before adding) :randomisedInsert()
         b) remove a node, check its list membership flag is correct and clear it :randomisedRemove()
@@ -118,11 +118,11 @@ void verifyBackwards( list_t& list, int expectedCount )
     }
 }
 
-template<typename list_t, 
-    typename randomisedInsertT, 
+template<typename list_t,
+    typename randomisedInsertT,
     typename randomisedRemoveT,
     typename verifyT >
-void fuzzTest( randomisedInsertT& randomisedInsert, 
+void fuzzTest( randomisedInsertT& randomisedInsert,
     randomisedRemoveT& randomisedRemove,
     verifyT& verify )
 {
@@ -130,8 +130,8 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
 
     list_t a;
     typedef typename list_t::node_type node_t;
-    
-    
+
+
     const int NODE_COUNT = QW_RANDOMISED_TEST_OBJECT_COUNT;
     node_t nodes[NODE_COUNT];
 

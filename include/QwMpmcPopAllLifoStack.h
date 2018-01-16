@@ -38,7 +38,7 @@
     All operations may be invoked concurrently.
 
     Implemented using the "IBM Freelist" LIFO algorithm.
-    
+
     The algorithm doesn't need ABA protection because it does not provide a pop() operation.
     pop_all() is not subject to the ABA problem because it swaps in a 0 value and never
     requires comparison to a non-0 value.
@@ -55,7 +55,7 @@ public:
     typedef typename nodeinfo::node_type node_type;
     typedef typename nodeinfo::node_ptr_type node_ptr_type;
     typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
-    
+
     QwMpmcPopAllLifoStack()
     {
         top_._nonatomic = 0;
@@ -130,7 +130,7 @@ public:
 
         wasEmpty = (top==0);
     }
-    
+
     bool empty() const
     {
         return (mint_load_ptr_relaxed(const_cast<mint_atomicPtr_t*>(&top_)) == 0);

@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -64,7 +64,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMpmcPopAllLifoStack single threaded 
     REQUIRE( stack.pop_all() == a );
     REQUIRE( stack.empty() );
     REQUIRE( stack.pop_all() == 0 );
-    
+
     for (int i=0; i < 10; ++i)
         stack.push(&nodes[i]);
 
@@ -73,7 +73,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMpmcPopAllLifoStack single threaded 
     { // verify that pop-all returns items in LIFO order:
         TestNode *xs = stack.pop_all();
         REQUIRE( stack.empty() );
-        
+
         for (int i=9; i >=0; --i) {
             REQUIRE( xs == &nodes[i] );
             TestNode *next = xs->links_[TestNode::LINK_INDEX_1];

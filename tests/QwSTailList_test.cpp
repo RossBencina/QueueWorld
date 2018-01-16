@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,7 +53,7 @@ back_ is tested by:
     size_is_1
     size_is_greater_than_1
 
-the axiomatic tests below validate back() and there is a test for 
+the axiomatic tests below validate back() and there is a test for
 list construction using push_back()
 */
 
@@ -118,7 +118,7 @@ TEST_CASE( "qw/staillist/two", "QwSTailList list operations with 2 nodes/element
 TEST_CASE( "qw/staillist/back-and-push_back", "QwSTailList test back() and push_back()" ) {
 
     // back() and push_back() are the only two members that IoSList doesn't have that QwSTailList does.
-    
+
     TestNode node1;
     node1.value = 0;
 
@@ -143,7 +143,7 @@ TEST_CASE( "qw/staillist/many", "QwSTailList list operations with many nodes/ele
 }
 
 TEST_CASE( "qw/staillist/front-stack", "QwSTailList front stack test" ) {
-    
+
     staillist_1_t a;
 
     const int NODE_COUNT = 10;
@@ -174,14 +174,14 @@ TEST_CASE( "qw/staillist/back-queue", "QwSTailList back queue test" ) {
     constructed list contains exactly the expected items in the expected order.
     we then test each other function separately by constructing all of
     the different scenarios, which amount to treating lists of
-    zero, one or many items, and inserting at the beginning, middle or end 
+    zero, one or many items, and inserting at the beginning, middle or end
     of the list.
 */
 
 // requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants
 //
 // used to test accessors
-// 
+//
 // iterator construction, prefix and postfix ++
 //
 // empty, size_is_1, size_is_greater_than_1

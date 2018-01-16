@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +30,7 @@
     constructed list contains exactly the expected items in the expected order.
     we then test each other function separately by constructing all of
     the different scenarios, which amount to treating lists of
-    zero, one or many items, and inserting at the beginning, middle or end 
+    zero, one or many items, and inserting at the beginning, middle or end
     of the list.
 */
 
@@ -45,11 +45,11 @@ static void pushFrontN( list_t& a, typename list_t::node_ptr_type nodes, int nod
     }
 }
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticBaselineTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticBaselineTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -65,10 +65,10 @@ void axiomaticBaselineTest( requireEmptyInvariantsT& requireEmptyInvariants,
         tests:
 
         constructors: default and head node ptr constructors
-        
+
         push_front
     */
-    
+
     SECTION( "empty", "test empty list")
     {
         list_t a;
@@ -87,7 +87,7 @@ void axiomaticBaselineTest( requireEmptyInvariantsT& requireEmptyInvariants,
         a.clear();
         requireEmptyInvariants( a );
     }
-    
+
     SECTION( "many", "push many items, clear")
     {
         for( int count = 2; count <= 5; ++count ){
@@ -101,11 +101,11 @@ void axiomaticBaselineTest( requireEmptyInvariantsT& requireEmptyInvariants,
     }
 }
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticPushBackTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticPushBackTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -133,11 +133,11 @@ void axiomaticPushBackTest( requireEmptyInvariantsT& requireEmptyInvariants,
     }
 }
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticSwapTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticSwapTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -186,11 +186,11 @@ void axiomaticSwapTest( requireEmptyInvariantsT& requireEmptyInvariants,
     }
 }
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticPopFrontTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticPopFrontTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -231,7 +231,7 @@ void axiomaticPopFrontTest( requireEmptyInvariantsT& requireEmptyInvariants,
 
     list is empty:
         insert_after( before_begin(), n ) // only possible with the iter version
-        
+
     list is non-empty (1 item):
         insert_after( begin(), n )
         insert_after( front(), n )
@@ -248,11 +248,11 @@ void axiomaticPopFrontTest( requireEmptyInvariantsT& requireEmptyInvariants,
 
 // empty case is treated separately for each concrete list type
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticInsertAfterNodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticInsertAfterNodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -302,11 +302,11 @@ void axiomaticInsertAfterNodePtrTest( requireEmptyInvariantsT& requireEmptyInvar
     }
 }
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticInsertAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticInsertAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -391,11 +391,11 @@ void axiomaticInsertAfterIterTest( requireEmptyInvariantsT& requireEmptyInvarian
 */
 
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticRemoveAfterBeforeBeginTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticRemoveAfterBeforeBeginTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -433,11 +433,11 @@ void axiomaticRemoveAfterBeforeBeginTest( requireEmptyInvariantsT& requireEmptyI
 }
 
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticRemoveAfter2NodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticRemoveAfter2NodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -491,11 +491,11 @@ void axiomaticRemoveAfter2NodePtrTest( requireEmptyInvariantsT& requireEmptyInva
     }
 }
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticRemoveAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticRemoveAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -585,11 +585,11 @@ void axiomaticRemoveAfterIterTest( requireEmptyInvariantsT& requireEmptyInvarian
     }
 }
 
-template<typename list_t, 
-    typename requireEmptyInvariantsT, 
+template<typename list_t,
+    typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants, 
+void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -653,7 +653,7 @@ void axiomaticEraseAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariant
         typename list_t::iterator i = a.erase_after( a.begin() );
         typename list_t::iterator j = a.begin();
         ++j;
-        REQUIRE( i == j ); 
+        REQUIRE( i == j );
         requireMoreThanOneNodeInvariants( a, &nodes[1], 4 );
     }
 

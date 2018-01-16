@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -49,7 +49,7 @@
         - O(1) swap contents of two lists
 
     Nodes must contain a links_ field that is an array of pointers to nodes.
-    NEXT_LINK_INDEX specifies the element of this array that is used for the 
+    NEXT_LINK_INDEX specifies the element of this array that is used for the
 	next ptr.
 
     struct ExampleNodeType{
@@ -59,7 +59,7 @@
 
         // ... other fields
     }
-    
+
     typedef IoSList<ExampleNodeType*, ExampleNodeType::EXAMPLE_LINK_INDEX_1> list_1_t;
 
     see forward_list for an interface reference:
@@ -69,16 +69,16 @@
 /*
     Some desirable properties of endogenous linked list:
 
-    - errors should be easily caught when you try to add the same 
+    - errors should be easily caught when you try to add the same
         list/item to multiple containers
         (nodeinfo::check_node_is_unlinked handles this)
 
     - invariants involving membership should be easily caught:
-        e.g. when adding the list to a freelist should be easy to 
+        e.g. when adding the list to a freelist should be easy to
         check that it has been removed from other lists
 
-    - which pointer field(s) are used to link the list together 
-        should be encoded in the container and in the list, not in 
+    - which pointer field(s) are used to link the list together
+        should be encoded in the container and in the list, not in
         the individual calls (as it is in the BSD version)
 */
 
@@ -92,7 +92,7 @@ public:
     typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
 
 private:
-    
+
     node_ptr_type front_; // aka head. first link in list
 
 public:
@@ -107,7 +107,7 @@ public:
 #endif
 
         explicit iterator( node_ptr_type p ) : p_( p ) {}
-      
+
         iterator& operator++ ()     // prefix ++
         {
             p_ = nodeinfo::next_ptr(p_);
@@ -137,7 +137,7 @@ public:
     explicit QwSList( node_ptr_type front ) // construct from raw head pointer
         : front_( front ) {}
 
-    void clear() { 
+    void clear() {
 #ifdef QW_VALIDATE_NODE_LINKS
         while( !empty() ) pop_front();
 #else
@@ -178,7 +178,7 @@ public:
 
     node_ptr_type pop_front()
     {
-        assert( !empty() ); // this version of pop_front doesn't work on an empty list. 
+        assert( !empty() ); // this version of pop_front doesn't work on an empty list.
 							// caller should check is_empty() first.
 
         node_ptr_type result = front_;
@@ -198,7 +198,7 @@ public:
         nodeinfo::next_ptr(before) = n;
     }
 
-    void insert_after( iterator before, node_ptr_type n ) // insert n after node before. 
+    void insert_after( iterator before, node_ptr_type n ) // insert n after node before.
                                                            // works even with before_begin() on an empty list.
     {
         insert_after( *before, n );
@@ -207,10 +207,10 @@ public:
     node_ptr_type remove_after( node_ptr_type before ) // returns the removed node
     {
         assert( nodeinfo::next_ptr(before) != 0 ); // can't remove an item after the last item
-        
+
         node_ptr_type result = nodeinfo::next_ptr(before);
         nodeinfo::next_ptr(before) = nodeinfo::next_ptr(result);
-       
+
         nodeinfo::clear_node_link_for_validation( result );
         return result;
     }
@@ -220,7 +220,7 @@ public:
         remove_after( *before );
     }
 
-    // erase_after returns an iterator to the item past the 
+    // erase_after returns an iterator to the item past the
     // item that was erased or end() if it was the last item
     iterator erase_after( iterator before )
     {
@@ -238,7 +238,7 @@ public:
     // forward_list provides remove() and remove_if()
 
     iterator before_begin()
-    { 
+    {
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.

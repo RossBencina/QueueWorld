@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -46,7 +46,7 @@
         - O(1) swap contents of two lists
 
     Nodes must contain a links_ field that is an array of pointers to nodes.
-    NEXT_LINK_INDEX specifies the element of this array that is used for the 
+    NEXT_LINK_INDEX specifies the element of this array that is used for the
     next ptr.
 
 	struct ExampleNodeType{
@@ -55,7 +55,7 @@
 
         // ... other fields
     }
-    
+
     typedef IoSList<ExampleNodeType*, ExampleNodeType::EXAMPLE_LINK_INDEX_1> list_1_t;
 
     see forward_list for an interface reference:
@@ -88,7 +88,7 @@ public:
 #endif
 
         explicit iterator( node_ptr_type p ) : p_( p ) {}
-      
+
         iterator& operator++ ()     // prefix ++
         {
             p_ = nodeinfo::next_ptr(p_);
@@ -159,7 +159,7 @@ public:
         nodeinfo::check_node_is_unlinked( n );
 
         nodeinfo::next_ptr(n) = front_; // this works even if front_ is 0 when the list is empty.
-        
+
         if( !front_ )
             back_ = n;
 
@@ -168,7 +168,7 @@ public:
 
     node_ptr_type pop_front()
     {
-        assert( !empty() ); // this version of pop_front doesn't work on an empty list. 
+        assert( !empty() ); // this version of pop_front doesn't work on an empty list.
 							// caller should check is_empty() first.
 
         node_ptr_type result = front_;
@@ -211,7 +211,7 @@ public:
             back_ = n;
     }
 
-    void insert_after( iterator before, node_ptr_type n ) // insert n after node before. 
+    void insert_after( iterator before, node_ptr_type n ) // insert n after node before.
                                                            // works even with before_begin() on an empty list.
     {
         insert_after( *before, n );
@@ -231,7 +231,7 @@ public:
             else
                 back_ = before;
         }
-       
+
         nodeinfo::clear_node_link_for_validation( result );
         return result;
     }
@@ -241,7 +241,7 @@ public:
         remove_after( *before );
     }
 
-    // erase_after returns an iterator to the item past the 
+    // erase_after returns an iterator to the item past the
     // item that was erased or end() if it was the last item
     iterator erase_after( iterator before )
     {
@@ -267,7 +267,7 @@ public:
     // forward_list provides remove() and remove_if()
 
     iterator before_begin()
-    { 
+    {
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.

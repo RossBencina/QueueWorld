@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -57,7 +57,7 @@ TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single
 
     REQUIRE( q.expectedResultCount() == 0 );
     REQUIRE( q.pop() == 0 );
-    
+
     q.incrementExpectedResultCount();
     q.push( a );
     REQUIRE( q.expectedResultCount() == 1 );

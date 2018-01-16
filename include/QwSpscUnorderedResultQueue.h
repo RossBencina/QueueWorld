@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -80,7 +80,7 @@ public:
 
     node_ptr_type pop() // called by consumer
     {
-        // Single consumer, pop one item: either from the consumer-local queue, 
+        // Single consumer, pop one item: either from the consumer-local queue,
         // or by capturing a new segment from the atomic LIFO.
 
         if (consumerLocalHead_ == 0) {

@@ -101,7 +101,7 @@ public:
                     return 0;
                 }
             }
-            
+
         } else {
             // (know consumerLocalReversingQueue_ is not empty here)
             return consumerLocalReversingQueue_.pop_front();
