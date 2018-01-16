@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -55,7 +55,10 @@
 
 class QwRawNodePool {
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-private-field"
     int8_t padding1_[CACHE_LINE_SIZE]; // avoid false sharing. TODO FIXME: give this more thought
+#pragma GCC diagnostic pop
 
     int8_t *nodeStorage_;       // The raw memory buffer that is allocated and freed
 
@@ -67,7 +70,7 @@ class QwRawNodePool {
     //////////////////////////////////////////////////////////////////////
     // Packed pointer representation with ABA-prevention count.
 
-    // important: must use uint to get correct wrap-around behavior on count,  
+    // important: must use uint to get correct wrap-around behavior on count,
     // because signed int overflow is undefined in C and C++
     typedef uint64_t abapointer_t; // (node-index, aba-count)
     typedef size_t nodeindex_t;
@@ -76,8 +79,8 @@ class QwRawNodePool {
     abapointer_t indexMask_;
     abapointer_t countMask_;
     abacount_t countIncrement_;
-    
-    nodeindex_t ap_index( abapointer_t ptr ) const { 
+
+    nodeindex_t ap_index( abapointer_t ptr ) const {
         // index is in low bits, no shift needed
         return static_cast<nodeindex_t>(ptr & indexMask_);
     }
@@ -100,17 +103,20 @@ class QwRawNodePool {
     mint_atomic32_t allocCount_;
 #endif
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-private-field"
     int8_t padding2_[CACHE_LINE_SIZE]; // avoid false sharing
+#pragma GCC diagnostic pop
 
     // Node representation. Since this is a freelist, there is no node content.
     // When stored on the stack, each node contains a next index at the start:
-    // 
+    //
     //  Node {
     //     nodeindex_t next;
     //  }
 
     // node->next = x; --> node_next_lvalue(node) = x
-    nodeindex_t& node_next_lvalue(void *node) const 
+    nodeindex_t& node_next_lvalue(void *node) const
     {
         return *static_cast<nodeindex_t*>(node);
     }
@@ -187,7 +193,7 @@ class QwRawNodePool {
             // Try to swing top to the next node:
             node = node_at_index(nodeIndex);
         } while (mint_compare_exchange_strong_64_relaxed(&top_, top, make_abapointer(node_next(node),ap_count(top)+countIncrement_))!=top);
-        
+
         return node;
     }
 
@@ -205,7 +211,7 @@ public:
 #endif
         return result;
     }
-    
+
     void deallocate( void *node )
     {
 #ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
@@ -229,7 +235,10 @@ public:
 
     node_type *allocate()
     {
-        return new (rawPool_.allocate()) node_type();
+        void *p = rawPool_.allocate();
+        if (!p)
+            return 0;
+        return new (p) node_type();
     }
 
     void deallocate( node_type *p )
