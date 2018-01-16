@@ -1,4 +1,4 @@
-/* 
+/*
     Queue World is copyright (c) 2014 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,6 +29,9 @@
 #include <cassert>
 #endif
 
+#include <cstddef> // std::size_t
+
+
 /*
     QwSingleLinkNodeInfo is an adapter that queue and list classes
     use to access the "next link" stored in each node. It requires that
@@ -47,6 +50,7 @@
 */
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 struct QwSingleLinkNodeInfo {
+    using size_t = std::size_t;
 
     typedef typename qw_remove_pointer<NodePtrT>::type node_type;
 
@@ -73,9 +77,9 @@ struct QwSingleLinkNodeInfo {
     {
         assert( next_ptr(n) == 0 );
 
-        // if the list has only one element n->next will be 0 but could 
-        // still be in our list (or another list, but we can only check our list) 
-        //assert( n != COUNTPTR_PTR(top_) ); 
+        // if the list has only one element n->next will be 0 but could
+        // still be in our list (or another list, but we can only check our list)
+        //assert( n != COUNTPTR_PTR(top_) );
     }
 
     static void clear_node_link_for_validation( node_ptr_type n )
