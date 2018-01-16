@@ -1,8 +1,14 @@
+# C++ (derived from https://github.com/github/gitignore Global/C++.gitignore)
+
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
+
+# Precompiled Headers
+*.gch
+*.pch
 
 # Compiled Dynamic libraries
 *.so
@@ -20,6 +26,52 @@
 *.out
 *.app
 
+# annoying files
+
+# OS X
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# XCode workspace
+
+xcuserdata/
+
+
+# Linux (from https://github.com/github/gitignore Global/Linux.gitignore)
+
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+
+# Windows (derived from https://github.com/github/gitignore Global/Windows.gitignore)
+
+# Windows thumbnail cache files
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows shortcuts
+*.lnk
+
+# Visual Studio
 
 # User-specific files
 *.suo
@@ -67,14 +119,3 @@ bld/
 *.pidb
 *.svclog
 *.scc
-
-
-# Ignore Mac specific files
-.DS_Store
-
-# XCode workspace
-
-xcuserdata/
-
-
-
