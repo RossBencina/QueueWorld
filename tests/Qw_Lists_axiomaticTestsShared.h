@@ -252,8 +252,8 @@ template<typename list_t,
     typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticInsertAfterNodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants,
-    requireSingleNodeInvariantsT& requireSingleNodeInvariants,
+void axiomaticInsertAfterNodePtrTest( requireEmptyInvariantsT& /*requireEmptyInvariants*/,
+    requireSingleNodeInvariantsT& /*requireSingleNodeInvariants*/,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
     SECTION( "one", "init with one item, insert after front")
@@ -306,7 +306,7 @@ template<typename list_t,
     typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticInsertAfterIterTest( requireEmptyInvariantsT& requireEmptyInvariants,
+void axiomaticInsertAfterIterTest( requireEmptyInvariantsT& /*requireEmptyInvariants*/,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
@@ -437,7 +437,7 @@ template<typename list_t,
     typename requireEmptyInvariantsT,
     typename requireSingleNodeInvariantsT,
     typename requireMoreThanOneNodeInvariantsT >
-void axiomaticRemoveAfter2NodePtrTest( requireEmptyInvariantsT& requireEmptyInvariants,
+void axiomaticRemoveAfter2NodePtrTest( requireEmptyInvariantsT& /*requireEmptyInvariants*/,
     requireSingleNodeInvariantsT& requireSingleNodeInvariants,
     requireMoreThanOneNodeInvariantsT& requireMoreThanOneNodeInvariants )
 {
