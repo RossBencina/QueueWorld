@@ -683,7 +683,7 @@ inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
 
         // test removing after begin keeps first element in place
         for( int i=0; i < (MAX_COUNT-1); ++i ){
-            REQUIRE( a.front()->value ==  0 );
+            REQUIRE( a.front()->value == 0 );
             a.remove( *(++a.begin()) );
         }
 
@@ -746,17 +746,17 @@ inline size_t countElements( const ListT& list )
 }
 
 template< typename ListT >
-inline void frontStackTest( ListT& list, typename ListT::node_ptr_type testNodes, int maxCount )
+inline void frontStackTest( ListT& list, typename ListT::node_ptr_type testNodes, size_t maxCount )
 {
     REQUIRE( list.empty() );
     REQUIRE( countElements( list ) == 0 );
 
     // push_front + pop_front up to i, checking that correct counts are present
 
-    for( int i=1; i < maxCount; ++i ){
+    for( size_t i=1; i < maxCount; ++i ){
 
         REQUIRE( list.empty() );
-        for( int j=0; j < i; ++j ){
+        for( size_t j=0; j < i; ++j ){
             REQUIRE( countElements( list ) == j );
             list.push_front( &(testNodes[j]) );
             REQUIRE( countElements( list ) == j + 1 );
@@ -774,10 +774,10 @@ inline void frontStackTest( ListT& list, typename ListT::node_ptr_type testNodes
             REQUIRE( list.front() == *list.begin() );
         }
 
-        for( int j=i-1; j >= 0; --j ){
-            REQUIRE( countElements( list ) == j + 1 );
-            list.pop_front();
+        for( size_t j=i; j > 0; --j ){
             REQUIRE( countElements( list ) == j );
+            list.pop_front();
+            REQUIRE( countElements( list ) == j - 1 );
         }
 
         REQUIRE( list.empty() );
@@ -785,17 +785,17 @@ inline void frontStackTest( ListT& list, typename ListT::node_ptr_type testNodes
 }
 
 template< typename ListT >
-inline void frontStackTest_withBackChecks( ListT& list, typename ListT::node_ptr_type testNodes, int maxCount )
+inline void frontStackTest_withBackChecks( ListT& list, typename ListT::node_ptr_type testNodes, size_t maxCount )
 {
     REQUIRE( list.empty() );
     REQUIRE( countElements( list ) == 0 );
 
     // push_front + pop_front up to i, checking that correct counts are present
 
-    for( int i=1; i < maxCount; ++i ){
+    for( size_t i=1; i < maxCount; ++i ){
 
         REQUIRE( list.empty() );
-        for( int j=0; j < i; ++j ){
+        for( size_t j=0; j < i; ++j ){
             REQUIRE( countElements( list ) == j );
             list.push_front( &(testNodes[j]) );
             REQUIRE( countElements( list ) == j + 1 );
@@ -817,10 +817,10 @@ inline void frontStackTest_withBackChecks( ListT& list, typename ListT::node_ptr
             REQUIRE( list.back() != *list.begin() );
         }
 
-        for( int j=i-1; j >= 0; --j ){
-            REQUIRE( countElements( list ) == j + 1 );
-            list.pop_front();
+        for( size_t j=i; j > 0; --j ){
             REQUIRE( countElements( list ) == j );
+            list.pop_front();
+            REQUIRE( countElements( list ) == j - 1 );
         }
 
         REQUIRE( list.empty() );
@@ -828,7 +828,7 @@ inline void frontStackTest_withBackChecks( ListT& list, typename ListT::node_ptr
 }
 
 template< typename ListT >
-inline void backStackTest_withBackChecks( ListT& list, typename ListT::node_ptr_type testNodes, int maxCount )
+inline void backStackTest_withBackChecks( ListT& list, typename ListT::node_ptr_type testNodes, size_t maxCount )
 {
     // same as frontStackTest_withBackChecks except front and back are reversed
 
@@ -837,10 +837,10 @@ inline void backStackTest_withBackChecks( ListT& list, typename ListT::node_ptr_
 
     // push_back + pop_back up to i, checking that correct counts are present
 
-    for( int i=1; i < maxCount; ++i ){
+    for( size_t i=1; i < maxCount; ++i ){
 
         REQUIRE( list.empty() );
-        for( int j=0; j < i; ++j ){
+        for( size_t j=0; j < i; ++j ){
             REQUIRE( countElements( list ) == j );
             list.push_back( &(testNodes[j]) );
             REQUIRE( countElements( list ) == j + 1 );
@@ -862,10 +862,10 @@ inline void backStackTest_withBackChecks( ListT& list, typename ListT::node_ptr_
             REQUIRE( list.back() != *list.begin() );
         }
 
-        for( int j=i-1; j >= 0; --j ){
-            REQUIRE( countElements( list ) == j + 1 );
-            list.pop_back();
+        for( size_t j=i; j > 0; --j ){
             REQUIRE( countElements( list ) == j );
+            list.pop_back();
+            REQUIRE( countElements( list ) == j - 1 );
         }
 
         REQUIRE( list.empty() );
@@ -873,17 +873,17 @@ inline void backStackTest_withBackChecks( ListT& list, typename ListT::node_ptr_
 }
 
 template< typename ListT >
-inline void backQueueTest( ListT& list, typename ListT::node_ptr_type testNodes, int maxCount )
+inline void backQueueTest( ListT& list, typename ListT::node_ptr_type testNodes, size_t maxCount )
 {
     REQUIRE( list.empty() );
     REQUIRE( countElements( list ) == 0 );
 
     // push_back + pop_front up to i, checking that correct counts are present
 
-    for( int i=1; i < maxCount; ++i ){
+    for( size_t i=1; i < maxCount; ++i ){
 
         REQUIRE( list.empty() );
-        for( int j=0; j < i; ++j ){
+        for( size_t j=0; j < i; ++j ){
             REQUIRE( countElements( list ) == j );
             list.push_back( &(testNodes[j]) );
             REQUIRE( countElements( list ) == j + 1 );
@@ -905,10 +905,10 @@ inline void backQueueTest( ListT& list, typename ListT::node_ptr_type testNodes,
             REQUIRE( list.back() != *list.begin() );
         }
 
-        for( int j=i-1; j >= 0; --j ){
-            REQUIRE( countElements( list ) == j + 1 );
-            list.pop_front();
+        for( size_t j=i; j > 0; --j ){
             REQUIRE( countElements( list ) == j );
+            list.pop_front();
+            REQUIRE( countElements( list ) == j - 1 );
         }
 
         REQUIRE( list.empty() );
@@ -916,17 +916,17 @@ inline void backQueueTest( ListT& list, typename ListT::node_ptr_type testNodes,
 }
 
 template< typename ListT >
-inline void frontQueueTest( ListT& list, typename ListT::node_ptr_type testNodes, int maxCount )
+inline void frontQueueTest( ListT& list, typename ListT::node_ptr_type testNodes, size_t maxCount )
 {
     REQUIRE( list.empty() );
     REQUIRE( countElements( list ) == 0 );
 
     // push_front + pop_back up to i, checking that correct counts are present
 
-    for( int i=1; i < maxCount; ++i ){
+    for( size_t i=1; i < maxCount; ++i ){
 
         REQUIRE( list.empty() );
-        for( int j=0; j < i; ++j ){
+        for( size_t j=0; j < i; ++j ){
             REQUIRE( countElements( list ) == j );
             list.push_front( &(testNodes[j]) );
             REQUIRE( countElements( list ) == j + 1 );
@@ -948,10 +948,10 @@ inline void frontQueueTest( ListT& list, typename ListT::node_ptr_type testNodes
             REQUIRE( list.back() != *list.begin() );
         }
 
-        for( int j=i-1; j >= 0; --j ){
-            REQUIRE( countElements( list ) == j + 1 );
-            list.pop_back();
+        for( size_t j=i; j > 0; --j ){
             REQUIRE( countElements( list ) == j );
+            list.pop_back();
+            REQUIRE( countElements( list ) == j - 1 );
         }
 
         REQUIRE( list.empty() );
