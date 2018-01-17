@@ -67,7 +67,7 @@ struct QwSingleLinkNodeInfo {
         return n->links_[ NEXT_LINK_INDEX ];
     }
 
-    static const size_t offsetof_next_ptr()
+    static size_t offsetof_next_ptr()
     {
         return (size_t)&next_ptr(((node_ptr_type)0));
     }

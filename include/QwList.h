@@ -58,7 +58,7 @@ private:
         return n->links_[ NEXT_LINK_INDEX ];
     }
 
-    static const size_t OFFSETOF_NEXT_PTR()
+    static size_t OFFSETOF_NEXT_PTR()
     {
         return (size_t)&(((node_ptr_type)0)->links_[ NEXT_LINK_INDEX ]);
     }
@@ -73,7 +73,7 @@ private:
         return n->links_[ PREVIOUS_LINK_INDEX ];
     }
 
-    static const size_t OFFSETOF_PREVIOUS_PTR()
+    static size_t OFFSETOF_PREVIOUS_PTR()
     {
         return (size_t)&(((node_ptr_type)0)->links_[ PREVIOUS_LINK_INDEX ]);
     }
