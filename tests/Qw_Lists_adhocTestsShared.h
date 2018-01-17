@@ -576,10 +576,12 @@ inline void manyItemsSListTest( typename ListT::node_ptr_type nodes )
     // in order insert using iterator
     {
         ListT a;
-        typename ListT::iterator i=a.before_begin();
-        for( int j=0; j < MAX_COUNT; ++j ){
-            a.insert_after( i, &nodes[j] );
-            ++i;
+        {
+            typename ListT::iterator i=a.before_begin();
+            for( int j=0; j < MAX_COUNT; ++j ){
+                a.insert_after( i, &nodes[j] );
+                ++i;
+            }
         }
         {
             int j=0;
@@ -696,10 +698,12 @@ inline void manyItemsListTest( typename ListT::node_ptr_type nodes )
     // in order insert using iterator
     {
         ListT a;
-        typename ListT::iterator i=a.begin();
-        for( int j=0; j < MAX_COUNT; ++j ){
-            a.insert( i, &nodes[j] );
-            ++i;
+        {
+            typename ListT::iterator i=a.begin();
+            for( int j=0; j < MAX_COUNT; ++j ){
+                a.insert( i, &nodes[j] );
+                ++i;
+            }
         }
         {
             int j=0;
