@@ -427,8 +427,8 @@ static TestNode* randomisedRemove( staillist_1_t& list, int currentCount )
     switch( currentCount > 1 ? rand() % 2 : 0 ){
     case 0:
         return list.pop_front();
-        break;
     case 1:
+        // falls through
     default:
         {
             int atj = rand() % (currentCount - 1); // -1 because we can't remove after the last item
@@ -436,7 +436,6 @@ static TestNode* randomisedRemove( staillist_1_t& list, int currentCount )
             for( int i=0; i<atj; ++i )
                 at = list.next(at);
             return list.remove_after( at ); // returns the removed node
-            break;
         }
     }
 }

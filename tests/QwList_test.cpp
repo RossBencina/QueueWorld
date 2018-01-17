@@ -909,10 +909,8 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
     switch( currentCount > 1 ? rand() % 5 : rand() % 4 ){
     case 0:
         return list.pop_front();
-        break;
     case 1:
         return list.pop_back();
-        break;
     case 2:
         {
             int atj = rand() % currentCount;
@@ -921,7 +919,6 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
                 at = list.next(at);
             list.remove( at ); // remove node at
             return at;
-            break;
         }
     case 3:
         {
@@ -932,9 +929,9 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
             list_1_t::node_ptr_type result = *at;
             list.erase( at ); // remove node at at
             return result;
-            break;
         }
     case 4:
+        // falls through
     default:
         {
             int atj = rand() % (currentCount - 1); // -1 because we can't remove after the last item
@@ -942,7 +939,6 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
             for( int i=0; i<atj; ++i )
                 at = list.next(at);
             return list.remove_after( at ); // returns the removed node
-            break;
         }
     }
 }
