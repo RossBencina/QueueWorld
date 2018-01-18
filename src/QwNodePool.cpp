@@ -45,19 +45,19 @@ static size_t roundUpToNextPowerOfTwo(size_t x)
 
 #ifdef WIN32
 
-void *qw_aligned_malloc( size_t size, size_t alignment )
+static void *qw_aligned_malloc( size_t size, size_t alignment )
 {
     return _aligned_malloc(size, alignment);
 }
 
-void qw_aligned_free( void *memblock )
+static void qw_aligned_free( void *memblock )
 {
     _aligned_free(memblock);
 }
 
 #else
 
-void *qw_aligned_malloc( size_t size, size_t alignment )
+static void *qw_aligned_malloc( size_t size, size_t alignment )
 {
     void *result = 0;
 
@@ -67,7 +67,7 @@ void *qw_aligned_malloc( size_t size, size_t alignment )
     return result;
 }
 
-void qw_aligned_free( void *memblock )
+static void qw_aligned_free( void *memblock )
 {
     free(memblock);
 }
