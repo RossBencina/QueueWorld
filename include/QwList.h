@@ -48,6 +48,11 @@ public:
     typedef const node_type* const_node_ptr_type;
 
 private:
+    static const node_ptr_type& NEXT_PTR( const node_ptr_type& n )
+    {
+        return n->links_[ NEXT_LINK_INDEX ];
+    }
+
     static node_ptr_type& NEXT_PTR( node_ptr_type& n )
     {
         return n->links_[ NEXT_LINK_INDEX ];
@@ -61,6 +66,11 @@ private:
     static size_t OFFSETOF_NEXT_PTR()
     {
         return reinterpret_cast<size_t>(&(static_cast<node_ptr_type>(0)->links_[ NEXT_LINK_INDEX ]));
+    }
+
+    static const node_ptr_type& PREVIOUS_PTR( const node_ptr_type& n )
+    {
+        return n->links_[ PREVIOUS_LINK_INDEX ];
     }
 
     static node_ptr_type& PREVIOUS_PTR( node_ptr_type& n )
@@ -172,8 +182,8 @@ public:
         }
 
         // it's a container of pointers so dereferencing the iterator gives a pointer
-        node_ptr_type operator*() { return NEXT_PTR(p_); }
-        const node_ptr_type* operator->() { return &NEXT_PTR(p_); }
+        node_ptr_type operator*() const { return NEXT_PTR(p_); }
+        const node_ptr_type* operator->() const { return &NEXT_PTR(p_); }
 
         bool operator!=(const iterator& rhs) const { return rhs.p_ != p_; }
         bool operator==(const iterator& rhs) const { return rhs.p_ == p_; }
@@ -219,8 +229,8 @@ public:
         }
 
         // it's a container of pointers so dereferencing the iterator gives a pointer
-        const node_type* operator*() { return NEXT_PTR(p_); }
-        const node_type** operator->() { return &NEXT_PTR(p_); }
+        const node_type* operator*() const { return NEXT_PTR(p_); }
+        const node_type** operator->() const { return &NEXT_PTR(p_); }
 
         bool operator!=(const const_iterator& rhs) const { return rhs.p_ != p_; }
         bool operator==(const const_iterator& rhs) const { return rhs.p_ == p_; }

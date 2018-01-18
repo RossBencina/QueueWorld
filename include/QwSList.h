@@ -122,8 +122,8 @@ public:
         }
 
         // it's a container of pointers so dereferencing the iterator gives a pointer
-        node_ptr_type operator*() { return p_; }
-        const node_ptr_type* operator->() { return &p_; }
+        node_ptr_type operator*() const { return p_; }
+        const node_ptr_type* operator->() const { return &p_; }
 
         bool operator!=(const iterator& rhs) const { return rhs.p_ != p_; }
         bool operator==(const iterator& rhs) const { return rhs.p_ == p_; }
