@@ -99,6 +99,52 @@ TEST_CASE( "qw/slist/stack", "QwSList front stack test" ) {
     frontStackTest( a, nodes, NODE_COUNT );
 }
 
+TEST_CASE( "qw/slist/remove", "QwSList remove free function" ) {
+
+    TestNode node0;
+    node0.value = 0;
+
+    TestNode node1;
+    node1.value = 1;
+
+    TestNode node2;
+    node2.value = 2;
+
+    TestSList a;
+    // 0, 1, 2
+    a.push_front(&node2);
+    a.push_front(&node1);
+    a.push_front(&node0);
+
+    SECTION("remove first node") {
+        remove(a, &node0);
+        REQUIRE(a.front() == &node1);
+        a.pop_front();
+        REQUIRE(a.front() == &node2);
+        a.pop_front();
+        REQUIRE(a.empty());
+    }
+
+    SECTION("remove middle node") {
+        remove(a, &node1);
+        REQUIRE(a.front() == &node0);
+        a.pop_front();
+        REQUIRE(a.front() == &node2);
+        a.pop_front();
+        REQUIRE(a.empty());
+    }
+
+    SECTION("remove last node") {
+        remove(a, &node2);
+        REQUIRE(a.front() == &node0);
+        a.pop_front();
+        REQUIRE(a.front() == &node1);
+        a.pop_front();
+        REQUIRE(a.empty());
+    }
+}
+
+
 /*
     The following "axiomatic" tests aim to build base invariants
     for a list constructed with push_back: size functions operate correctly,
@@ -359,10 +405,19 @@ static void randomisedInsert( TestSList& list, TestNode* node, int currentCount 
 
 static TestNode* randomisedRemove( TestSList& list, int currentCount )
 {
-    switch( currentCount > 1 ? rand() % 2 : 0 ){
+    switch( currentCount > 1 ? rand() % 3 : 0 ){
     case 0:
         return list.pop_front();
     case 1:
+        {
+            int atj = rand() % currentCount;
+            TestSList::node_ptr_type at = list.front();
+            for( int i=0; i<atj; ++i )
+                at = list.next(at);
+            remove(list, at);
+            return at;
+        }
+    case 2:
         // falls through
     default:
         {

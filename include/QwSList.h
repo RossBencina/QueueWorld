@@ -279,6 +279,26 @@ inline void swap( QwSList<NodePtrT,NEXT_LINK_INDEX>& a, QwSList<NodePtrT,NEXT_LI
     a.swap(b);
 }
 
+template<typename NodePtrT, int NEXT_LINK_INDEX>
+inline void remove( QwSList<NodePtrT,NEXT_LINK_INDEX>& slist, NodePtrT req)
+{
+    assert(!slist.empty());
+
+    typename QwSList<NodePtrT,NEXT_LINK_INDEX>::iterator i = slist.before_begin();
+    typename QwSList<NodePtrT,NEXT_LINK_INDEX>::iterator j = slist.begin();
+
+    do {
+        if (*j == req) {
+            slist.remove_after(i);
+            return;
+        }
+        i = j;
+        ++j;
+    } while (j != slist.end());
+
+    assert(false); // attempt to remove an item not in the list
+}
+
 #endif /* INCLUDED_QWSLIST_H */
 
 /* -----------------------------------------------------------------------
