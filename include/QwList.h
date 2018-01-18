@@ -39,7 +39,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>
 class QwList{
-    typedef QwList<NodePtrT, NEXT_LINK_INDEX, PREVIOUS_LINK_INDEX> this_list_t;
+    typedef QwList<NodePtrT, NEXT_LINK_INDEX, PREVIOUS_LINK_INDEX> list_type;
 
 public:
     typedef typename qw_remove_pointer<NodePtrT>::type node_type;
@@ -141,7 +141,7 @@ public: /// ONLY PUBLIC FOR TESTING
 public:
 
     class iterator{
-        friend this_list_t;
+        friend list_type;
         node_ptr_type p_;
     public:
 #ifdef QW_VALIDATE_NODE_LINKS
@@ -190,7 +190,7 @@ public:
     };
 
     class const_iterator{
-        friend this_list_t;
+        friend list_type;
         const node_type *p_;
     public:
 #ifdef QW_VALIDATE_NODE_LINKS

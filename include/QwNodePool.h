@@ -72,32 +72,32 @@ class QwRawNodePool {
 
     // important: must use uint to get correct wrap-around behavior on count,
     // because signed int overflow is undefined in C and C++
-    typedef uint64_t abapointer_t; // (node-index, aba-count)
-    typedef size_t nodeindex_t;
-    typedef abapointer_t abacount_t;
+    typedef uint64_t abapointer_type; // (node-index, aba-count)
+    typedef size_t nodeindex_type;
+    typedef abapointer_type abacount_type;
 
-    abapointer_t indexMask_;
-    abapointer_t countMask_;
-    abacount_t countIncrement_;
+    abapointer_type indexMask_;
+    abapointer_type countMask_;
+    abacount_type countIncrement_;
 
-    nodeindex_t ap_index( abapointer_t ptr ) const {
+    nodeindex_type ap_index( abapointer_type ptr ) const {
         // index is in low bits, no shift needed
-        return static_cast<nodeindex_t>(ptr & indexMask_);
+        return static_cast<nodeindex_type>(ptr & indexMask_);
     }
 
-    abacount_t ap_count( abapointer_t ptr ) const {
+    abacount_type ap_count( abapointer_type ptr ) const {
         // count is in high bits, no shift needed because we always add countIncrement_, which is also shifted
-        return static_cast<abacount_t>(ptr & countMask_);
+        return static_cast<abacount_type>(ptr & countMask_);
     }
 
-    abapointer_t make_abapointer( nodeindex_t index, abacount_t count ) const {
-        return static_cast<abapointer_t>(index) | (static_cast<abapointer_t>(count)&countMask_);
+    abapointer_type make_abapointer( nodeindex_type index, abacount_type count ) const {
+        return static_cast<abapointer_type>(index) | (static_cast<abapointer_type>(count)&countMask_);
     }
 
     // end packed pointer representation.
     //////////////////////////////////////////////////////////////////////
 
-    mint_atomic64_t top_; // must be large enough to store abapointer_t
+    mint_atomic64_t top_; // must be large enough to store abapointer_type
 
 #ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
     mint_atomic32_t allocCount_;
@@ -112,30 +112,30 @@ class QwRawNodePool {
     // When stored on the stack, each node contains a next index at the start:
     //
     //  Node {
-    //     nodeindex_t next;
+    //     nodeindex_type next;
     //  }
 
     // node->next = x; --> node_next_lvalue(node) = x
-    nodeindex_t& node_next_lvalue(void *node) const
+    nodeindex_type& node_next_lvalue(void *node) const
     {
-        return *static_cast<nodeindex_t*>(node);
+        return *static_cast<nodeindex_type*>(node);
     }
 
     // x = node->next; --> x = node_next(node)
-    nodeindex_t node_next(void *node) const // when stored on the stack, each node contains a next index at the start
+    nodeindex_type node_next(void *node) const // when stored on the stack, each node contains a next index at the start
     {
-        return *static_cast<nodeindex_t*>(node);
+        return *static_cast<nodeindex_type*>(node);
     }
 
     // convert a node pointer to an array index
-    nodeindex_t index_of_node(void *node)
+    nodeindex_type index_of_node(void *node)
     {
         ptrdiff_t i = (static_cast<int8_t*>(node) - nodeArrayBase_) >> nodeBitShift_;
-        return static_cast<nodeindex_t>(i);
+        return static_cast<nodeindex_type>(i);
     }
 
     // convert array index to a pointer
-    void *node_at_index(nodeindex_t index)
+    void *node_at_index(nodeindex_type index)
     {
         int8_t *p = nodeArrayBase_ + (static_cast<ptrdiff_t>(index) << nodeBitShift_);
         return p;
@@ -161,7 +161,7 @@ class QwRawNodePool {
     void stack_push_nonatomic( void *node )
     {
         assert( node != 0 );
-        nodeindex_t nodeIndex = index_of_node(node);
+        nodeindex_type nodeIndex = index_of_node(node);
         node_next_lvalue(node) = ap_index(top_._nonatomic); // Link new node to head of list (node.next <- top.ptr)
         top_._nonatomic = make_abapointer(nodeIndex,0); // Set top to new node. no need for ABA counter during thread-unsafe code
     }
@@ -169,9 +169,9 @@ class QwRawNodePool {
     void stack_push( void *node )
     {
         assert( node != 0 );
-        nodeindex_t nodeIndex = index_of_node(node);
+        nodeindex_type nodeIndex = index_of_node(node);
 
-        abapointer_t top;
+        abapointer_type top;
         do {                                        // Keep trying until push is done
             top = mint_load_64_relaxed(&top_);      // Read top.ptr and top.count together
             node_next_lvalue(node) = ap_index(top); // Link new node to head of list (node.next <- top.ptr)
@@ -182,12 +182,12 @@ class QwRawNodePool {
 
     void *stack_pop()
     {
-        abapointer_t top;
+        abapointer_type top;
         void *node;
         do {                                        // Keep trying until pop is done
             top = mint_load_64_relaxed(&top_);      // Read top
             mint_thread_fence_acquire();            // (Acquire top.next)
-            nodeindex_t nodeIndex = ap_index(top);
+            nodeindex_type nodeIndex = ap_index(top);
             if (nodeIndex==NULL_NODE_INDEX)         // Is the stack empty?
                 return 0;                           // The stack was empty, couldn't pop
             // Try to swing top to the next node:

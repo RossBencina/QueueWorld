@@ -40,7 +40,7 @@ namespace {
         }
     };
 
-    typedef QwSpscUnorderedResultQueue<TestNode*, TestNode::LINK_INDEX_1> spsc_undordered_result_queue_t;
+    typedef QwSpscUnorderedResultQueue<TestNode*, TestNode::LINK_INDEX_1> TestSpscUnorderedResultQueue;
 
 } // end anonymous namespace
 
@@ -52,7 +52,7 @@ TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single
     TestNode *b = &nodes[1];
     TestNode *c = &nodes[2];
 
-    spsc_undordered_result_queue_t q;
+    TestSpscUnorderedResultQueue q;
     q.init();
 
     REQUIRE( q.expectedResultCount() == 0 );

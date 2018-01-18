@@ -41,7 +41,7 @@ namespace {
         }
     };
 
-    typedef QwSList<TestNode*, TestNode::LINK_INDEX_1> node_slist_t;
+    typedef QwSList<TestNode*, TestNode::LINK_INDEX_1> TestSList;
 
 } // end anonymous namespace
 
@@ -51,7 +51,7 @@ TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
 
     QwNodePool<TestNode> pool( maxNodes);
 
-    node_slist_t allocatedNodes;
+    TestSList allocatedNodes;
 
     for (size_t i=0; i < maxNodes; ++i) {
         TestNode *n = pool.allocate();

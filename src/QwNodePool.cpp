@@ -82,10 +82,10 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
     allocCount_._nonatomic = 0;
 #endif
 
-    assert( sizeof(top_) >= sizeof(abapointer_t) );
+    assert( sizeof(top_) >= sizeof(abapointer_type) );
 
     // Align nodes on cache line boundaries to avoid false sharing
-    size_t minNodeSize = sizeof(nodeindex_t); // nodes need to be large enough to embed their next ptr
+    size_t minNodeSize = sizeof(nodeindex_type); // nodes need to be large enough to embed their next ptr
     // Make node size a power of two to allow for using bit shift to convert between pointers and indices
     nodeSize_ = roundUpToNextPowerOfTwo(std::max(nodeSize, std::max(minNodeSize,CACHE_LINE_SIZE)));
 

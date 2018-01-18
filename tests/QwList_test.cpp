@@ -73,14 +73,14 @@ namespace {
         }
     };
 
-    typedef QwList<TestNode*, TestNode::LINK_INDEX_1, TestNode::LINK_INDEX_2> list_1_t;
+    typedef QwList<TestNode*, TestNode::LINK_INDEX_1, TestNode::LINK_INDEX_2> TestList;
 
 } // end anonymous namespace
 
 
 TEST_CASE( "qw/list/empty", "QwList operations on empty lists" ) {
 
-    list_1_t a, b;
+    TestList a, b;
     emptyListTest( a, b );
 }
 
@@ -90,7 +90,7 @@ TEST_CASE( "qw/list/one", "QwList list operations with 1 node/element" ) {
     TestNode node;
     node.value = 42;
 
-    list_1_t a, b;
+    TestList a, b;
     a.push_back( &node );
 
     REQUIRE( a.empty() == false );
@@ -107,9 +107,9 @@ TEST_CASE( "qw/list/two", "QwList list operations with 2 nodes/elements" ) {
     TestNode node2;
     node2.value = 1;
 
-    list_1_t a;
+    TestList a;
     a.push_back( &node2 );
-    list_1_t b;
+    TestList b;
 
     twoItemListTest( a, b, &node1, &node2 );
 }
@@ -119,7 +119,7 @@ TEST_CASE( "qw/list/many", "QwList list operations with many nodes/elements" ) {
     const int NODE_COUNT = 5;
     TestNode nodes[NODE_COUNT];
 
-    manyItemsListTest<list_1_t,NODE_COUNT>( nodes );
+    manyItemsListTest<TestList,NODE_COUNT>( nodes );
 }
 
 TEST_CASE( "qw/list/back-and-push_back", "QwList test back() and push_back()" ) {
@@ -133,15 +133,15 @@ TEST_CASE( "qw/list/back-and-push_back", "QwList test back() and push_back()" ) 
     TestNode node3;
     node3.value = 2;
 
-    list_1_t a;
-    list_1_t b;
+    TestList a;
+    TestList b;
 
     backAndPushBackListTest( a, b, &node1, &node2, &node3 );
 }
 
 TEST_CASE( "qw/list/front-stack", "QwList front stack test" ) {
 
-    list_1_t a;
+    TestList a;
 
     const int NODE_COUNT = 10;
 
@@ -156,7 +156,7 @@ TEST_CASE( "qw/list/back-stack", "QwList back stack test" ) {
 
     // pop_back() is unique to QwList. back stack test uses it for dequeue
 
-    list_1_t a;
+    TestList a;
 
     const int NODE_COUNT = 10;
 
@@ -169,7 +169,7 @@ TEST_CASE( "qw/list/back-stack", "QwList back stack test" ) {
 
 TEST_CASE( "qw/list/back-queue", "QwList back queue test" ) {
 
-    list_1_t a;
+    TestList a;
 
     const int NODE_COUNT = 10;
 
@@ -184,7 +184,7 @@ TEST_CASE( "qw/list/front-queue", "QwList front queue test" ) {
 
     // pop_back() is unique to QwList. front queue test uses it for dequeue
 
-    list_1_t a;
+    TestList a;
 
     const int NODE_COUNT = 10;
 
@@ -207,7 +207,7 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
     TestNode node3;
     node3.value = 2;
 
-    list_1_t a;
+    TestList a;
 
     // we only test iterator insert and remove because these use
     // node based insert and remove under the hood
@@ -232,7 +232,7 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
     REQUIRE( a.back() == &node2 );
 
     {
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         ++i;
         a.insert(i, &node3 ); // insert node3 in the middle of the list
     }
@@ -263,7 +263,7 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
     a.push_front( &node2 );
     a.push_front( &node1 );
     {
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         ++i;
         a.erase(i);
     }
@@ -286,7 +286,7 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
     a.push_front( &node2 );
     a.push_front( &node1 );
     {
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         ++i;
         ++i;
         a.erase(i);
@@ -301,7 +301,7 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
     a.push_front( &node2 );
     a.push_front( &node1 );
     {
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         ++i;
         a.erase(i);
     }
@@ -333,7 +333,7 @@ TEST_CASE( "qw/list/insert-erase", "QwList test insert() and erase()" ) {
 // before_begin, begin, end
 // next
 
-static void requireEmptyInvariants( list_1_t& a )
+static void requireEmptyInvariants( TestList& a )
 {
     // size related attributes
 
@@ -346,7 +346,7 @@ static void requireEmptyInvariants( list_1_t& a )
     REQUIRE( a.begin() == a.end() );
 }
 
-static void requireSingleNodeInvariants( list_1_t& a, TestNode *node )
+static void requireSingleNodeInvariants( TestList& a, TestNode *node )
 {
     // size related attributes
 
@@ -378,14 +378,14 @@ static void requireSingleNodeInvariants( list_1_t& a, TestNode *node )
     REQUIRE( a.begin() != a.end() );
 
     { // end comes directly after begin in a one item list (pre-increment)
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         REQUIRE( *i == node );
         ++i;
         REQUIRE( i == a.end() );
     }
 
     { // end comes directly after begin in a one item list (post-increment)
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         REQUIRE( *i == node );
         i++;
         REQUIRE( i == a.end() );
@@ -393,13 +393,13 @@ static void requireSingleNodeInvariants( list_1_t& a, TestNode *node )
 
 
     { // begin comes directly before begin (pre-decrement)
-        list_1_t::iterator i = a.end();
+        TestList::iterator i = a.end();
         --i;
         REQUIRE( i == a.begin() );
     }
 
     { // begin comes directly before end (post-decrement)
-        list_1_t::iterator i = a.end();
+        TestList::iterator i = a.end();
         i--;
         REQUIRE( i == a.begin() );
     }
@@ -408,19 +408,19 @@ static void requireSingleNodeInvariants( list_1_t& a, TestNode *node )
     // see: http://www.sgi.com/tech/stl/BidirectionalIterator.html
 
     { // begin comes directly before end (pre-decrement)
-        list_1_t::iterator i = a.end();
+        TestList::iterator i = a.end();
         --i;
         REQUIRE( i == a.begin() );
     }
 
     { // begin comes directly before end (post-decrement)
-        list_1_t::iterator i = a.end();
+        TestList::iterator i = a.end();
         i--;
         REQUIRE( i == a.begin() );
     }
 }
 
-static void requireMoreThanOneNodeInvariants( list_1_t& a, TestNode *nodes, int nodeCount )
+static void requireMoreThanOneNodeInvariants( TestList& a, TestNode *nodes, int nodeCount )
 {
     // size related attributes
 
@@ -451,14 +451,14 @@ static void requireMoreThanOneNodeInvariants( list_1_t& a, TestNode *nodes, int 
     REQUIRE( a.begin() != a.end() );
 
     { // --end references back (pre-decrement)
-        list_1_t::iterator i = a.end();
+        TestList::iterator i = a.end();
         --i;
         REQUIRE( i != a.begin() );
         REQUIRE( *i == a.back() );
     }
 
     { // --end references back (post-decrement)
-        list_1_t::iterator i = a.end();
+        TestList::iterator i = a.end();
         i--;
         REQUIRE( i != a.begin() );
         REQUIRE( *i == a.back() );
@@ -474,10 +474,10 @@ static void requireMoreThanOneNodeInvariants( list_1_t& a, TestNode *nodes, int 
     // forwards using increment / next:
 
     TestNode *n = a.front();
-    list_1_t::iterator i_pre = a.begin();
-    list_1_t::iterator i_post = a.begin();
-    list_1_t::iterator i_pre_prev; // iterators with a lag of 1
-    list_1_t::iterator i_post_prev;// so we can perform reverse iteration
+    TestList::iterator i_pre = a.begin();
+    TestList::iterator i_post = a.begin();
+    TestList::iterator i_pre_prev; // iterators with a lag of 1
+    TestList::iterator i_post_prev;// so we can perform reverse iteration
     for( int j = 0; j < nodeCount; ++j ){
 
         i_pre_prev = i_pre;
@@ -521,26 +521,26 @@ static void requireMoreThanOneNodeInvariants( list_1_t& a, TestNode *nodes, int 
 }
 
 TEST_CASE( "qw/list/axiomatic/baseline", "QwList baseline axiomatic tests" ) {
-    axiomaticBaselineTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticBaselineTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 
 TEST_CASE( "qw/list/axiomatic/push_back", "QwList push_back" ) {
-    axiomaticPushBackTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticPushBackTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 
 TEST_CASE( "qw/list/axiomatic/swap", "QwList axiomatic test of swap" ) {
-    axiomaticSwapTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticSwapTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 
 TEST_CASE( "qw/list/axiomatic/pop_front", "QwList axiomatic test of pop_front" ) {
-    axiomaticPopFrontTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticPopFrontTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 
 TEST_CASE( "qw/list/axiomatic/insert_after/node_ptr/empty", "QwList axiomatic test of insert_after(node_ptr,n) for empty list" ) {
 
     SECTION( "empty", "empty list, insert after before_begin")
     {
-        list_1_t a;
+        TestList a;
         TestNode node;
         a.insert_after( a.before_front_(), &node ); // strictly you shouldn't de-ref the before_begin iterator, it doesn't point to a node
         requireSingleNodeInvariants( a, &node );
@@ -548,12 +548,12 @@ TEST_CASE( "qw/list/axiomatic/insert_after/node_ptr/empty", "QwList axiomatic te
 }
 
 TEST_CASE( "qw/list/axiomatic/insert_after/node_ptr", "QwList axiomatic test of insert_after(node_ptr,n)" ) {
-    axiomaticInsertAfterNodePtrTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticInsertAfterNodePtrTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 
 /*
 TEST_CASE( "qw/list/axiomatic/insert_after/iter", "QwList axiomatic test of insert_after(iter,n)" ) {
-    axiomaticInsertAfterIterTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticInsertAfterIterTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 */
 
@@ -561,7 +561,7 @@ TEST_CASE( "qw/list/axiomatic/remove_after/before_front_/node_ptr", "QwList axio
 
     SECTION( "one", "init with one item, remove after before_front_")
     {
-        list_1_t a;
+        TestList a;
         TestNode node;
         a.push_front( &node );
         REQUIRE( a.remove_after( a.before_front_() ) == &node ); // strictly you shouldn't de-ref the before_front_ iterator, it doesn't point to a node
@@ -570,7 +570,7 @@ TEST_CASE( "qw/list/axiomatic/remove_after/before_front_/node_ptr", "QwList axio
 
     SECTION( "two/before-begin", "init with two items, remove after before_front_")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[2];
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
@@ -580,7 +580,7 @@ TEST_CASE( "qw/list/axiomatic/remove_after/before_front_/node_ptr", "QwList axio
 
     SECTION( "many/before_front_", "init with many items, remove after before_front_")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -594,18 +594,18 @@ TEST_CASE( "qw/list/axiomatic/remove_after/before_front_/node_ptr", "QwList axio
 }
 
 TEST_CASE( "qw/list/axiomatic/remove_after/2/node_ptr", "QwList axiomatic test of remove_after(node_ptr) using front" ) {
-    axiomaticRemoveAfter2NodePtrTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticRemoveAfter2NodePtrTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 
 /*
 TEST_CASE( "qw/list/axiomatic/remove_after/iter", "QwList axiomatic test of remove_after(iter)" ) {
-    axiomaticRemoveAfterIterTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticRemoveAfterIterTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 */
 
 /*
 TEST_CASE( "qw/list/axiomatic/erase_after/iter", "QwList axiomatic test of erase_after(iter)" ) {
-    axiomaticEraseAfterIterTest<list_1_t>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+    axiomaticEraseAfterIterTest<TestList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
 }
 */
 
@@ -615,7 +615,7 @@ TEST_CASE( "qw/list/axiomatic/insert/node_ptr", "QwList axiomatic test of insert
 
     SECTION( "one", "init with one item, insert at front (or back, same thing)")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[2];
         a.push_front( &nodes[1] );
         REQUIRE( a.front() == a.back() );
@@ -625,7 +625,7 @@ TEST_CASE( "qw/list/axiomatic/insert/node_ptr", "QwList axiomatic test of insert
 
     SECTION( "many/at-front", "init with many items, insert at front")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -637,7 +637,7 @@ TEST_CASE( "qw/list/axiomatic/insert/node_ptr", "QwList axiomatic test of insert
 
     SECTION( "many/at-next-to-front", "init with many items, insert at next(front)")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -649,7 +649,7 @@ TEST_CASE( "qw/list/axiomatic/insert/node_ptr", "QwList axiomatic test of insert
 
     SECTION( "many/at-back", "init with many items, insert at back")
     { // (back stays at back)
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[2] );
@@ -661,7 +661,7 @@ TEST_CASE( "qw/list/axiomatic/insert/node_ptr", "QwList axiomatic test of insert
 
     SECTION( "many/at-previous-to-back", "init with many items, insert at previous(back)")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -676,7 +676,7 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "empty", "init empty, insert at begin (or end, same thing)")
     {
-        list_1_t a;
+        TestList a;
         TestNode node;
         REQUIRE( a.begin() == a.end() );
         a.insert( a.begin(), &node );
@@ -685,7 +685,7 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "one/begin", "init with one item, insert at begin")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[2];
         a.push_front( &nodes[1] );
         a.insert( a.begin(), &nodes[0] );
@@ -694,7 +694,7 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "one/end", "init with one item, insert at end")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[2];
         a.push_front( &nodes[0] );
         a.insert( a.end(), &nodes[1] );
@@ -703,7 +703,7 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "many/at-begin", "init with many items, insert at begin")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -715,7 +715,7 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "many/at-inc-begin", "init with many items, insert at ++begin")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -727,13 +727,13 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "many/at-last", "init with many items, insert at last")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[2] );
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         ++i;
         ++i;
         ++i;
@@ -743,13 +743,13 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "many/at-previous-to-last", "init with many items, insert at previous to last")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
-        list_1_t::iterator i = a.begin();
+        TestList::iterator i = a.begin();
         ++i;
         ++i;
         a.insert( i, &nodes[2] );
@@ -758,7 +758,7 @@ TEST_CASE( "qw/list/axiomatic/insert/iter", "QwList axiomatic test of insert(ite
 
     SECTION( "many/at-end", "init with many items, insert at end")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[3] );
         a.push_front( &nodes[2] );
@@ -773,7 +773,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
     SECTION( "one", "init with one item, remove front (or back, same thing)")
     {
-        list_1_t a;
+        TestList a;
         TestNode node;
         a.push_front( &node );
         REQUIRE( a.front() == a.back() );
@@ -783,7 +783,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
     SECTION( "two/front", "init with two items, remove front")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[2];
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
@@ -793,7 +793,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
     SECTION( "two/back", "init with two items, remove back")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[2];
         a.push_front( &nodes[1] );
         a.push_front( &nodes[0] );
@@ -803,7 +803,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
     SECTION( "many/front", "init with many items, remove front")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -816,7 +816,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
     SECTION( "many/next-to-front", "init with many items, remove next(front)")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[3] );
@@ -829,7 +829,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
     SECTION( "many/previous-to-back", "init with many items, remove previous(back)")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[4] );
         a.push_front( &nodes[0] );
@@ -842,7 +842,7 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
     SECTION( "many/back", "init with many items, remove back")
     {
-        list_1_t a;
+        TestList a;
         TestNode nodes[5];
         a.push_front( &nodes[0] );
         a.push_front( &nodes[4] );
@@ -858,13 +858,13 @@ TEST_CASE( "qw/list/axiomatic/remove/node_ptr", "QwList axiomatic test of remove
 
 /* fuzz test */
 
-static void verify( list_1_t& list, int expectedCount )
+static void verify( TestList& list, int expectedCount )
 {
     verifyForwards( list, expectedCount );
     verifyBackwards( list, expectedCount );
 }
 
-static void randomisedInsert( list_1_t& list, TestNode* node, int currentCount )
+static void randomisedInsert( TestList& list, TestNode* node, int currentCount )
 {
     switch( list.empty() ? rand() % 2 : rand() % 5 ){
     case 0:
@@ -876,7 +876,7 @@ static void randomisedInsert( list_1_t& list, TestNode* node, int currentCount )
     case 2:
         {
             int atj = rand() % currentCount;
-            list_1_t::node_ptr_type at = list.front();
+            TestList::node_ptr_type at = list.front();
             for( int i=0; i<atj; ++i )
                 at = list.next(at);
             list.insert( at, node ); // insert n before node at
@@ -885,7 +885,7 @@ static void randomisedInsert( list_1_t& list, TestNode* node, int currentCount )
     case 3:
         {
             int atj = rand() % currentCount;
-            list_1_t::iterator at = list.begin();
+            TestList::iterator at = list.begin();
             for( int i=0; i<=atj; ++i ) // list allows inserting at end
                 ++at;
             list.insert( at, node ); // insert n before node at
@@ -895,7 +895,7 @@ static void randomisedInsert( list_1_t& list, TestNode* node, int currentCount )
     default:
         {
             int atj = rand() % currentCount;
-            list_1_t::node_ptr_type at = list.front();
+            TestList::node_ptr_type at = list.front();
             for( int i=0; i<atj; ++i )
                 at = list.next(at);
             list.insert_after( at, node ); // insert n after node before
@@ -904,7 +904,7 @@ static void randomisedInsert( list_1_t& list, TestNode* node, int currentCount )
     }
 }
 
-static TestNode* randomisedRemove( list_1_t& list, int currentCount )
+static TestNode* randomisedRemove( TestList& list, int currentCount )
 {
     switch( currentCount > 1 ? rand() % 5 : rand() % 4 ){
     case 0:
@@ -914,7 +914,7 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
     case 2:
         {
             int atj = rand() % currentCount;
-            list_1_t::node_ptr_type at = list.front();
+            TestList::node_ptr_type at = list.front();
             for( int i=0; i<atj; ++i )
                 at = list.next(at);
             list.remove( at ); // remove node at
@@ -923,10 +923,10 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
     case 3:
         {
             int atj = rand() % currentCount;
-            list_1_t::iterator at = list.begin();
+            TestList::iterator at = list.begin();
             for( int i=0; i<atj; ++i )
                 ++at;
-            list_1_t::node_ptr_type result = *at;
+            TestList::node_ptr_type result = *at;
             list.erase( at ); // remove node at at
             return result;
         }
@@ -935,7 +935,7 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
     default:
         {
             int atj = rand() % (currentCount - 1); // -1 because we can't remove after the last item
-            list_1_t::node_ptr_type at = list.front();
+            TestList::node_ptr_type at = list.front();
             for( int i=0; i<atj; ++i )
                 at = list.next(at);
             return list.remove_after( at ); // returns the removed node
@@ -944,7 +944,7 @@ static TestNode* randomisedRemove( list_1_t& list, int currentCount )
 }
 
 TEST_CASE( "qw/list/fuzz", "[fuzz] QwList fuzz test" ) {
-    fuzzTest<list_1_t>( randomisedInsert, randomisedRemove, verify );
+    fuzzTest<TestList>( randomisedInsert, randomisedRemove, verify );
 }
 
 /* -----------------------------------------------------------------------

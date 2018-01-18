@@ -66,17 +66,17 @@
 // by requiring that the traversal from front to back takes exactly
 // expected count iterations. i.e. we don't reach the end early,
 // and after expectedCount iterations we are at the end.
-template<typename list_t>
-void verifyForwards( list_t& list, int expectedCount )
+template<typename list_type>
+void verifyForwards( list_type& list, int expectedCount )
 {
     if( expectedCount == 0 ){
         REQUIRE( list.empty() );
     }else{
-        typename list_t::node_ptr_type n = list.front();
-        typename list_t::node_ptr_type past_back = 0;
+        typename list_type::node_ptr_type n = list.front();
+        typename list_type::node_ptr_type past_back = 0;
 
-        typename list_t::iterator i = list.begin();
-        typename list_t::iterator end = list.end();
+        typename list_type::iterator i = list.begin();
+        typename list_type::iterator end = list.end();
 
         for( int j=0; j < expectedCount; ++j )
         {
@@ -92,17 +92,17 @@ void verifyForwards( list_t& list, int expectedCount )
     }
 }
 
-template<typename list_t>
-void verifyBackwards( list_t& list, int expectedCount )
+template<typename list_type>
+void verifyBackwards( list_type& list, int expectedCount )
 {
     if( expectedCount == 0 ){
         REQUIRE( list.empty() );
     }else{
-        typename list_t::node_ptr_type n = list.back();
-        typename list_t::node_ptr_type past_front = list.before_front_();
+        typename list_type::node_ptr_type n = list.back();
+        typename list_type::node_ptr_type past_front = list.before_front_();
 
-        typename list_t::iterator i = list.end();
-        typename list_t::iterator begin = list.begin();
+        typename list_type::iterator i = list.end();
+        typename list_type::iterator begin = list.begin();
 
         for( int j=0; j < expectedCount; ++j )
         {
@@ -118,7 +118,7 @@ void verifyBackwards( list_t& list, int expectedCount )
     }
 }
 
-template<typename list_t,
+template<typename list_type,
     typename randomisedInsertT,
     typename randomisedRemoveT,
     typename verifyT >
@@ -128,14 +128,14 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
 {
     std::srand(static_cast<unsigned int>(std::time(0)));
 
-    list_t a;
-    typedef typename list_t::node_type node_t;
+    list_type a;
+    typedef typename list_type::node_type node_type;
 
 
     const int NODE_COUNT = QW_RANDOMISED_TEST_OBJECT_COUNT;
-    node_t nodes[NODE_COUNT];
+    node_type nodes[NODE_COUNT];
 
-    node_t *nodeStack[NODE_COUNT];
+    node_type *nodeStack[NODE_COUNT];
     for( int i=0; i < NODE_COUNT; ++i ){
         nodeStack[i] = &nodes[i];
         nodeStack[i]->value = 0;
@@ -154,7 +154,7 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
 
         if( (rand() < bias[biasState] || nodesInListCount == 0) && nodeStackTop != 0 ){
             // insert
-            node_t *node = nodeStack[ --nodeStackTop ];
+            node_type *node = nodeStack[ --nodeStackTop ];
 
             REQUIRE( node->value == 0 );
             node->value = 1;
@@ -168,7 +168,7 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
                 biasState = BIAS_REMOVING;
         }else{
             // remove
-            node_t *node = randomisedRemove( a, nodesInListCount );
+            node_type *node = randomisedRemove( a, nodesInListCount );
             --nodesInListCount;
 
             REQUIRE( node->value == 1 );

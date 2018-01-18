@@ -40,7 +40,7 @@ namespace {
         }
     };
 
-    typedef QwMpscFifoQueue<TestNode*, TestNode::LINK_INDEX_1> mpsc_fifo_queue_t;
+    typedef QwMpscFifoQueue<TestNode*, TestNode::LINK_INDEX_1> TestMpscFifoQueue;
 
     TestNode*& next_(TestNode*n) { return n->links_[TestNode::LINK_INDEX_1]; }
 
@@ -55,7 +55,7 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
     TestNode *c = &nodes[2];
     TestNode *d = &nodes[3];
 
-    mpsc_fifo_queue_t q;
+    TestMpscFifoQueue q;
 
     REQUIRE( q.consumer_empty() == true );
     REQUIRE( q.pop() == 0 );
