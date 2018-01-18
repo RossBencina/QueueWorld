@@ -69,7 +69,7 @@ struct QwSingleLinkNodeInfo {
 
     static size_t offsetof_next_ptr()
     {
-        return (size_t)&next_ptr(((node_ptr_type)0));
+        return reinterpret_cast<size_t>(&next_ptr(static_cast<node_ptr_type>(0)));
     }
 
 #ifdef QW_VALIDATE_NODE_LINKS

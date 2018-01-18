@@ -148,7 +148,7 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
 
     enum { BIAS_INSERTING=0, BIAS_REMOVING=1 };
     int biasState = BIAS_INSERTING;
-    int bias[2] = { (int)(RAND_MAX * 0.55), (int)(RAND_MAX * 0.45) };
+    int bias[2] = { static_cast<int>(RAND_MAX * 0.55), static_cast<int>(RAND_MAX * 0.45) };
 
     for( int i=0; i < ITERATION_COUNT; ++i ){
 

@@ -89,7 +89,7 @@ public:
                 // there are new items in the atomic LIFO
 
                 // capture all nodes from the atomic LIFO
-                node_ptr_type result = (node_ptr_type)qw_mint_exchange_ptr_relaxed( &atomicLifoTop_, 0 ); // we'll return the first item
+                node_ptr_type result = static_cast<node_ptr_type>(qw_mint_exchange_ptr_relaxed( &atomicLifoTop_, 0 )); // we'll return the first item
                 mint_thread_fence_acquire(); // fence for all captured node data
 
                 // retain all but the first item for future pops

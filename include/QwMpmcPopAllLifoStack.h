@@ -138,7 +138,7 @@ public:
 
     node_ptr_type pop_all()
     {
-        node_ptr_type result = (node_ptr_type)qw_mint_exchange_ptr_relaxed( &top_, 0 ); // we'll return the first item
+        node_ptr_type result = static_cast<node_ptr_type>(qw_mint_exchange_ptr_relaxed( &top_, 0 )); // we'll return the first item
         mint_thread_fence_acquire(); // fence for all captured node data
         return result;
     }

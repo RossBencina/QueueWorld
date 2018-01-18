@@ -60,7 +60,7 @@ private:
 
     static size_t OFFSETOF_NEXT_PTR()
     {
-        return (size_t)&(((node_ptr_type)0)->links_[ NEXT_LINK_INDEX ]);
+        return reinterpret_cast<size_t>(&(static_cast<node_ptr_type>(0)->links_[ NEXT_LINK_INDEX ]));
     }
 
     static node_ptr_type& PREVIOUS_PTR( node_ptr_type& n )
@@ -75,7 +75,7 @@ private:
 
     static size_t OFFSETOF_PREVIOUS_PTR()
     {
-        return (size_t)&(((node_ptr_type)0)->links_[ PREVIOUS_LINK_INDEX ]);
+        return reinterpret_cast<size_t>(&(static_cast<node_ptr_type>(0)->links_[ PREVIOUS_LINK_INDEX ]));
     }
 
     bool NODE_IS_LINKED( const_node_ptr_type n )
@@ -125,7 +125,7 @@ public: /// ONLY PUBLIC FOR TESTING
         // this is probably not strictly portable but it allows us to insert at the beginning.
         //return reinterpret_cast<const_node_ptr_type>(reinterpret_cast<const char*>(&front_) - OFFSETOF_NEXT_PTR());
 
-        return (const node_type*)(reinterpret_cast<const char*>(&front_) - OFFSETOF_NEXT_PTR());
+        return reinterpret_cast<const node_type*>(reinterpret_cast<const char*>(&front_) - OFFSETOF_NEXT_PTR());
     }
 
 public:

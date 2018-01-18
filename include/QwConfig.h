@@ -31,7 +31,7 @@
 // Cache line size. Used for rounding. TODO: provide runtime cache line size query.
 
 #ifndef CACHE_LINE_SIZE
-#define CACHE_LINE_SIZE ((size_t)64)
+#define CACHE_LINE_SIZE (static_cast<size_t>(64))
 #endif
 
 
