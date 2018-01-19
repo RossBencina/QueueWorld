@@ -146,7 +146,7 @@ public:
             return result;
         }
 
-        // it's a container of pointers so dereferencing the iterator gives a pointer
+        // list is a container of pointers so dereferencing the iterator gives a pointer
         node_ptr_type operator*() const { return p_; }
         const node_ptr_type* operator->() const { return &p_; }
 

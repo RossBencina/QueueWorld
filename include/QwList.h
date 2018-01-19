@@ -138,12 +138,12 @@ public: /// ONLY PUBLIC FOR TESTING
         return reinterpret_cast<node_ptr_type>(reinterpret_cast<char*>(&front_) - links::offsetof_next_link());
     }
 
-    const node_type* before_front_() const
+    const_node_ptr_type before_front_() const
     {
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.
-        return reinterpret_cast<const node_type*>(reinterpret_cast<const char*>(&front_) - links::offsetof_next_link());
+        return reinterpret_cast<const_node_ptr_type>(reinterpret_cast<const char*>(&front_) - links::offsetof_next_link());
     }
 
 public:
@@ -189,7 +189,7 @@ public:
             return result;
         }
 
-        // it's a container of pointers so dereferencing the iterator gives a pointer
+        // list is a container of pointers so dereferencing the iterator gives a pointer
         node_ptr_type operator*() const { return links::load_next(p_); }
         const node_ptr_type* operator->() const { return &links::load_next(p_); }
 
@@ -199,7 +199,7 @@ public:
 
     class const_iterator{
         friend list_type;
-        const node_type *p_;
+        const_node_ptr_type p_;
     public:
 #ifdef QW_VALIDATE_NODE_LINKS
         const_iterator() : p_( 0 ) {}
@@ -207,7 +207,7 @@ public:
         const_iterator() {}
 #endif
 
-        explicit const_iterator( const node_type *p ) : p_( p ) {} // an iterator pointing to p->next
+        explicit const_iterator( const_node_ptr_type p ) : p_( p ) {} // an iterator pointing to p->next
         explicit const_iterator( const iterator& i ) : p_( i.p_ ) {} // an iterator pointing to p->next
 
         const_iterator& operator++ ()     // prefix ++
@@ -236,9 +236,9 @@ public:
             return result;
         }
 
-        // it's a container of pointers so dereferencing the iterator gives a pointer
-        const node_type* operator*() const { return links::load_next(p_); }
-        const node_type** operator->() const { return &links::load_next(p_); }
+        // list is a container of pointers so dereferencing the iterator gives a pointer
+        const_node_ptr_type operator*() const { return links::load_next(p_); }
+        const const_node_ptr_type* operator->() const { return &links::load_next(p_); }
 
         bool operator!=(const const_iterator& rhs) const { return rhs.p_ != p_; }
         bool operator==(const const_iterator& rhs) const { return rhs.p_ == p_; }
