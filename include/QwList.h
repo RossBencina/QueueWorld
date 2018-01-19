@@ -90,7 +90,7 @@ public:
 
 private:
 
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
     void CHECK_NODE_IS_LINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG
@@ -152,7 +152,7 @@ public:
         friend list_type;
         node_ptr_type p_;
     public:
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
         iterator() : p_( 0 ) {}
 #else
         iterator() {}
@@ -201,7 +201,7 @@ public:
         friend list_type;
         const_node_ptr_type p_;
     public:
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
         const_iterator() : p_( 0 ) {}
 #else
         const_iterator() {}
@@ -247,7 +247,7 @@ public:
     QwList() : front_( before_front_() ), back_( before_front_() ) {}
 
     void clear() {
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
         while( !empty() ) pop_front();
 #else
         // this doesn't mark nodes as unlinked

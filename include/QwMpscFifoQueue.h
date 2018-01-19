@@ -54,7 +54,7 @@ private:
     QwMpmcPopAllLifoStack<NodePtrT, NEXT_LINK_INDEX> mpscLifo_;
     QwSTailList<NodePtrT, NEXT_LINK_INDEX> consumerLocalReversingQueue_;
 
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
     {
         nextlink::clear(n);

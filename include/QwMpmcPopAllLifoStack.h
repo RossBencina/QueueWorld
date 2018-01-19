@@ -60,7 +60,7 @@ public:
 private:
     mint_atomicPtr_t top_;
 
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG

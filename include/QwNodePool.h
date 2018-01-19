@@ -99,7 +99,7 @@ class QwRawNodePool {
 
     mint_atomic64_t top_; // must be large enough to store abapointer_type
 
-#ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
+#if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
     mint_atomic32_t allocCount_;
 #endif
 
@@ -205,7 +205,7 @@ public:
     {
         void *result = stack_pop();
 
-#ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
+#if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
         if (result)
             mint_fetch_add_32_relaxed(&allocCount_,1);
 #endif
@@ -214,7 +214,7 @@ public:
 
     void deallocate( void *node )
     {
-#ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
+#if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
         mint_fetch_add_32_relaxed(&allocCount_,-1);
 #endif
         stack_push(node);

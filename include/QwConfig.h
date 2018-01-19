@@ -39,19 +39,66 @@
 //  - Node links are zeroed after use.
 //  - Node links are verified as zero before collections insert them.
 //
-//  The client should ensure that node links are correctly zeroed
-//  before trying to add nodes to queues.
+// The client should ensure that node links are correctly zeroed
+// before trying to add nodes to queues.
 //
+// To explicitly enable/disable define QW_VALIDATE_NODE_LINKS to 0 or 1
+// with a compiler -D flag, otherwise a default value will be used.
 
-#define QW_VALIDATE_NODE_LINKS
+#ifndef QW_VALIDATE_NODE_LINKS
 
+    // If QW_VALIDATE_NODE_LINKS is not defined, use a computed default value
+    #ifdef NDEBUG
+        #define QW_VALIDATE_NODE_LINKS_DEFAULT 0
+    #else
+        #define QW_VALIDATE_NODE_LINKS_DEFAULT 1
+    #endif
+
+    #define QW_VALIDATE_NODE_LINKS QW_VALIDATE_NODE_LINKS_DEFAULT
+
+#elif (QW_VALIDATE_NODE_LINKS != 0) && (QW_VALIDATE_NODE_LINKS != 1)
+
+    #if defined(__GNUC__) || defined(__clang__)
+        #warning "QW_VALIDATE_NODE_LINKS was defined but not 0 or 1. defaulting to 1."
+    #else
+        #pragma message "warning: QW_VALIDATE_NODE_LINKS was defined but not 0 or 1. defaulting to 1."
+    #endif
+
+    // If QW_VALIDATE_NODE_LINKS is defined, but is neither 0 nor 1, set it to 1
+    #define QW_VALIDATE_NODE_LINKS 1
+
+#endif
 
 // QW_DEBUG_COUNT_NODE_ALLOCATIONS causes QwNodePool to track the number
 // of node allocations and deallocations. When enabled, QwNodePool's
 // dtor will assert that all nodes have been deallocated.
+//
+// To explicitly enable/disable define QW_VALIDATE_NODE_LINKS to 0 or 1
+// with a compiler -D flag, otherwise a default value will be used.
 
-#define QW_DEBUG_COUNT_NODE_ALLOCATIONS
+#ifndef QW_DEBUG_COUNT_NODE_ALLOCATIONS
 
+    // If QW_DEBUG_COUNT_NODE_ALLOCATIONS is not defined, use a computed default value
+    #ifdef NDEBUG
+        #define QW_DEBUG_COUNT_NODE_ALLOCATIONS_DEFAULT 0
+    #else
+        #define QW_DEBUG_COUNT_NODE_ALLOCATIONS_DEFAULT 1
+    #endif
+
+    #define QW_DEBUG_COUNT_NODE_ALLOCATIONS QW_DEBUG_COUNT_NODE_ALLOCATIONS_DEFAULT
+
+#elif (QW_DEBUG_COUNT_NODE_ALLOCATIONS != 0) && (QW_DEBUG_COUNT_NODE_ALLOCATIONS != 1)
+
+    #if defined(__GNUC__) || defined(__clang__)
+        #warning "QW_DEBUG_COUNT_NODE_ALLOCATIONS was defined but not 0 or 1. defaulting to 1."
+    #else
+        #pragma message "warning: QW_DEBUG_COUNT_NODE_ALLOCATIONS was defined but not 0 or 1. defaulting to 1."
+    #endif
+
+    // If QW_DEBUG_COUNT_NODE_ALLOCATIONS is defined, but is neither 0 nor 1, set it to 1
+    #define QW_DEBUG_COUNT_NODE_ALLOCATIONS 1
+
+#endif
 
 #endif /* INCLUDED_QWCONFIG_H */
 

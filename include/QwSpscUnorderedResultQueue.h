@@ -62,7 +62,7 @@ private:
     node_ptr_type consumerLocalHead_; // LIFO order reader queue. only referenced by the consumer
     size_t expectedResultCount_; // consumer increments this when making a request, pop() decrements it
 
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG

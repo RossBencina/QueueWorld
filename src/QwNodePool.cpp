@@ -78,7 +78,7 @@ static void qw_aligned_free( void *memblock )
 
 QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
 {
-#ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
+#if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
     allocCount_._nonatomic = 0;
 #endif
 
@@ -132,7 +132,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
 
 QwRawNodePool::~QwRawNodePool()
 {
-#ifdef QW_DEBUG_COUNT_NODE_ALLOCATIONS
+#if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
     assert( allocCount_._nonatomic == 0 );
 #endif
 

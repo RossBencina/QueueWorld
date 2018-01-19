@@ -98,7 +98,7 @@ private:
 
     node_ptr_type front_; // aka head. first link in list
 
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG
@@ -125,7 +125,7 @@ public:
     class iterator{
         node_ptr_type p_;
     public:
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
         iterator() : p_( 0 ) {}
 #else
         iterator() {}
@@ -163,7 +163,7 @@ public:
         : front_( front ) {}
 
     void clear() {
-#ifdef QW_VALIDATE_NODE_LINKS
+#if (QW_VALIDATE_NODE_LINKS == 1)
         while( !empty() ) pop_front();
 #else
         // this doesn't mark nodes as unlinked
