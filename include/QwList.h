@@ -24,6 +24,9 @@
 
 #include <algorithm>
 #include <cassert>
+#ifdef NDEBUG
+#include <cstdlib> // abort
+#endif
 
 #include "qw_remove_pointer.h"
 
@@ -90,15 +93,25 @@ private:
 #ifdef QW_VALIDATE_NODE_LINKS
     void CHECK_NODE_IS_LINKED( const_node_ptr_type n ) const
     {
+#ifndef NDEBUG
         assert( links::is_linked(n) == true );
+#else
+        if(!( links::is_linked(n) == true )) { std::abort(); }
+#endif
     }
 
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
-        assert(links::is_unlinked(n) == true);
+#ifndef NDEBUG
+        assert( links::is_unlinked(n) == true );
         assert( n != front_ );
         assert( n != back_ );
         // Note: we can't check that the node is not referenced by some other list
+#else
+        if(!( links::is_unlinked(n) == true )) { std::abort(); }
+        if(!( n != front_ )) { std::abort(); }
+        if(!( n != back_ )) { std::abort(); }
+#endif
     }
 
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const

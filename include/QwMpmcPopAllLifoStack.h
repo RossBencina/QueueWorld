@@ -23,6 +23,9 @@
 #define INCLUDED_QWMPMCPOPALLLIFOSTACK_H
 
 #include <cassert>
+#ifdef NDEBUG
+#include <cstdlib> // abort
+#endif
 
 #include "mintomic/mintomic.h"
 #include "qw_atomic.h"
@@ -60,9 +63,14 @@ private:
 #ifdef QW_VALIDATE_NODE_LINKS
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
+#ifndef NDEBUG
         assert( nextlink::is_unlinked(n) == true );
         assert( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_)) );
         // Note: we can't check that the node is not referenced by some other list
+#else
+        if(!( nextlink::is_unlinked(n) == true )) { std::abort(); }
+        if(!( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_)) )) { std::abort(); }
+#endif
     }
 
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const

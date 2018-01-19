@@ -25,9 +25,6 @@
 #include "qw_remove_pointer.h"
 
 #include "QwConfig.h"
-#ifdef QW_VALIDATE_NODE_LINKS
-#include <cassert>
-#endif
 
 #include <cstddef> // std::size_t
 

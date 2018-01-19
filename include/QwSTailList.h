@@ -24,6 +24,9 @@
 
 #include <algorithm>
 #include <cassert>
+#ifdef NDEBUG
+#include <cstdlib> // abort
+#endif
 
 #include "QwConfig.h"
 #include "QwSingleLinkNodeInfo.h"
@@ -79,10 +82,16 @@ private:
 #ifdef QW_VALIDATE_NODE_LINKS
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
-        assert(nextlink::is_unlinked(n) == true);
+#ifndef NDEBUG
+        assert( nextlink::is_unlinked(n) == true );
         assert( n != front_ );
         assert( n != back_ );
         // Note: we can't check that the node is not referenced by some other list
+#else
+        if(!( nextlink::is_unlinked(n) == true )) { std::abort(); }
+        if(!( n != front_ )) { std::abort(); }
+        if(!( n != back_ )) { std::abort(); }
+#endif
     }
 
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
