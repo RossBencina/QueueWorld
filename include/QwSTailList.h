@@ -56,7 +56,7 @@
         // ... other fields
     }
 
-    typedef IoSList<ExampleNodeType*, ExampleNodeType::EXAMPLE_LINK_INDEX_1> list_1_t;
+    typedef QwSTailList<ExampleNodeType*, ExampleNodeType::EXAMPLE_LINK_INDEX_1> ExampleListType;
 
     see forward_list for an interface reference:
     http://en.cppreference.com/w/cpp/container/forward_list
@@ -64,17 +64,35 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSTailList{
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nodeinfo;
+    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
 public:
-    typedef typename nodeinfo::node_type node_type;
-    typedef typename nodeinfo::node_ptr_type node_ptr_type;
-    typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
+    typedef typename nextlink::node_type node_type;
+    typedef typename nextlink::node_ptr_type node_ptr_type;
+    typedef typename nextlink::const_node_ptr_type const_node_ptr_type;
 
 private:
 
     node_ptr_type front_; // aka head. first link in list
     node_ptr_type back_; // last link in list
+
+#ifdef QW_VALIDATE_NODE_LINKS
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
+    {
+        assert(nextlink::is_unlinked(n) == true);
+        assert( n != front_ );
+        assert( n != back_ );
+        // Note: we can't check that the node is not referenced by some other list
+    }
+
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    {
+        nextlink::clear(n);
+    }
+#else
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
+#endif
 
 public:
 
@@ -91,7 +109,7 @@ public:
 
         iterator& operator++ ()     // prefix ++
         {
-            p_ = nodeinfo::next_ptr(p_);
+            p_ = nextlink::load(p_);
             return *this;
         }
 
@@ -130,7 +148,7 @@ public:
         std::swap( front_, other.front_ );
         std::swap( back_, other.back_ );
     }
-    //see also void swap( IoSTailList& a, IoSTailList &b );
+    //see also void swap( QwSTailList& a, QwSTailList &b );
 
     bool empty() const
     {
@@ -156,9 +174,9 @@ public:
 
     void push_front( node_ptr_type n )
     {
-        nodeinfo::check_node_is_unlinked( n );
+        CHECK_NODE_IS_UNLINKED( n );
 
-        nodeinfo::next_ptr(n) = front_; // this works even if front_ is 0 when the list is empty.
+        nextlink::store(n, front_); // this works even if front_ is 0 when the list is empty.
 
         if( !front_ )
             back_ = n;
@@ -172,25 +190,25 @@ public:
 							// caller should check is_empty() first.
 
         node_ptr_type result = front_;
-        front_ = nodeinfo::next_ptr(front_);
+        front_ = nextlink::load(front_);
 
         if( !front_ )
             back_ = 0;
 
-        nodeinfo::clear_node_link_for_validation( result );
+        CLEAR_NODE_LINKS_FOR_VALIDATION( result );
         return result;
     }
 
     void push_back( node_ptr_type n )
     {
-        nodeinfo::check_node_is_unlinked( n );
+        CHECK_NODE_IS_UNLINKED( n );
 
-        nodeinfo::next_ptr(n) = 0;
+        nextlink::store(n, 0);
 
 		if( empty() ){
             front_ = n;
         }else{
-            nodeinfo::next_ptr(back_) = n;
+            nextlink::store(back_, n);
         }
 
 		back_ = n;
@@ -200,12 +218,12 @@ public:
     {
         assert( before != 0 );
         assert( n != 0 );
-        nodeinfo::check_node_is_unlinked( n );
+        CHECK_NODE_IS_UNLINKED( n );
 
-        node_ptr_type after = nodeinfo::next_ptr(before);
+        node_ptr_type after = nextlink::load(before);
 
-        nodeinfo::next_ptr(n) = after;
-        nodeinfo::next_ptr(before) = n;
+        nextlink::store(n, after);
+        nextlink::store(before, n);
 
         if( !after )
             back_ = n;
@@ -219,20 +237,20 @@ public:
 
     node_ptr_type remove_after( node_ptr_type before ) // returns the removed node
     {
-        assert( nodeinfo::next_ptr(before) != 0 ); // can't remove an item after the last item
+        assert( nextlink::load(before) != 0 ); // can't remove an item after the last item
 
-        node_ptr_type result = nodeinfo::next_ptr(before);
-        node_ptr_type next = nodeinfo::next_ptr(result);
-        nodeinfo::next_ptr(before) = next;
+        node_ptr_type result = nextlink::load(before);
+        node_ptr_type next = nextlink::load(result);
+        nextlink::store(before, next);
 
         if( !next ){
-            if( front_ == 0 ) // (nodeinfo::next_ptr(before) aliases front when using before_begin())
+            if( front_ == 0 ) // (nextlink::load(before) aliases front when using before_begin())
                 back_ = 0;
             else
                 back_ = before;
         }
 
-        nodeinfo::clear_node_link_for_validation( result );
+        CLEAR_NODE_LINKS_FOR_VALIDATION( result );
         return result;
     }
 
@@ -249,19 +267,19 @@ public:
 
         node_ptr_type before_node_ptr = *before;
 
-        node_ptr_type erased_node_ptr = nodeinfo::next_ptr(before_node_ptr);
-		node_ptr_type next_node_ptr = nodeinfo::next_ptr(erased_node_ptr);
-        nodeinfo::next_ptr(before_node_ptr) = next_node_ptr;
+        node_ptr_type erased_node_ptr = nextlink::load(before_node_ptr);
+        node_ptr_type next_node_ptr = nextlink::load(erased_node_ptr);
+        nextlink::store(before_node_ptr, next_node_ptr);
 
         if( !next_node_ptr ){
-            if( front_ == 0 ) // (nodeinfo::next_ptr(before_node_ptr) aliases front when using before_begin())
+            if( front_ == 0 ) // (nextlink::load(before_node_ptr) aliases front when using before_begin())
                 back_ = 0;
             else
                 back_ = before_node_ptr;
         }
 
-        nodeinfo::clear_node_link_for_validation( erased_node_ptr );
-        return iterator( nodeinfo::next_ptr(before_node_ptr) );
+        CLEAR_NODE_LINKS_FOR_VALIDATION( erased_node_ptr );
+        return iterator( nextlink::load(before_node_ptr) );
     }
 
     // forward_list provides remove() and remove_if()
@@ -271,7 +289,7 @@ public:
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.
-        return iterator( reinterpret_cast<node_ptr_type>(reinterpret_cast<char*>(&front_) - nodeinfo::offsetof_next_ptr()) );
+        return iterator( reinterpret_cast<node_ptr_type>(reinterpret_cast<char*>(&front_) - nextlink::offsetof_link()) );
     }
 
     iterator begin() const { return iterator(front_); }
@@ -280,7 +298,7 @@ public:
 
     // forward_list also provides const iterator and const iterator accessors
 
-    static node_ptr_type next( node_ptr_type n ) { return nodeinfo::next_ptr(n); }
+    static node_ptr_type next( node_ptr_type n ) { return nextlink::load(n); }
 
 /*
     bool is_front( const node_ptr_type node ) const
@@ -290,7 +308,7 @@ public:
 
     bool is_back( const node_ptr_type node ) const
     {
-        return nodeinfo::next_ptr(node) == 0;
+        return nextlink::load(node) == 0;
     }
 
     // identify terminator pointer (it's just a NULL ptr)

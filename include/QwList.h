@@ -28,7 +28,44 @@
 #include "qw_remove_pointer.h"
 
 #include "QwConfig.h"
+#include "QwSingleLinkNodeInfo.h"
 
+
+template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>
+struct QwDoubleLinkNodeInfo {
+    using size_t = std::size_t;
+
+    typedef typename qw_remove_pointer<NodePtrT>::type node_type;
+    typedef NodePtrT node_ptr_type;
+    typedef const node_type* const_node_ptr_type;
+
+    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwSingleLinkNodeInfo<NodePtrT,PREVIOUS_LINK_INDEX> prevlink;
+
+    static node_ptr_type load_next( const_node_ptr_type n ) { return nextlink::load(n); }
+    static void store_next( node_ptr_type n, node_ptr_type x ) { nextlink::store(n, x); }
+    static size_t offsetof_next_link() { return nextlink::offsetof_link(); }
+
+    static node_ptr_type load_prev( const_node_ptr_type n ) { return prevlink::load(n); }
+    static void store_prev( node_ptr_type n, node_ptr_type x ) { prevlink::store(n, x); }
+    static size_t offsetof_prev_link() { return prevlink::offsetof_link(); }
+
+    static bool is_linked( const_node_ptr_type n )
+    {
+        return (nextlink::is_linked(n) || prevlink::is_linked(n)); // only one needs to be linked: allow for node being at start or end
+    }
+
+    static bool is_unlinked( const_node_ptr_type n )
+    {
+        return (nextlink::is_unlinked(n) && prevlink::is_unlinked(n));
+    }
+
+    static void clear( node_ptr_type n )
+    {
+        nextlink::clear(n);
+        prevlink::clear(n);
+    }
+};
 
 /*
     QwList is a single-threaded doubly linked list.
@@ -41,77 +78,37 @@ template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>
 class QwList{
     typedef QwList<NodePtrT, NEXT_LINK_INDEX, PREVIOUS_LINK_INDEX> list_type;
 
-public:
-    typedef typename qw_remove_pointer<NodePtrT>::type node_type;
+    typedef QwDoubleLinkNodeInfo<NodePtrT, NEXT_LINK_INDEX, PREVIOUS_LINK_INDEX> links;
 
-    typedef NodePtrT node_ptr_type;
-    typedef const node_type* const_node_ptr_type;
+public:
+    typedef typename links::node_type node_type;
+    typedef typename links::node_ptr_type node_ptr_type;
+    typedef typename links::const_node_ptr_type const_node_ptr_type;
 
 private:
-    static const node_ptr_type& NEXT_PTR( const node_ptr_type& n )
-    {
-        return n->links_[ NEXT_LINK_INDEX ];
-    }
-
-    static node_ptr_type& NEXT_PTR( node_ptr_type& n )
-    {
-        return n->links_[ NEXT_LINK_INDEX ];
-    }
-
-    static const_node_ptr_type NEXT_PTR( const_node_ptr_type& n )
-    {
-        return n->links_[ NEXT_LINK_INDEX ];
-    }
-
-    static size_t OFFSETOF_NEXT_PTR()
-    {
-        return reinterpret_cast<size_t>(&(static_cast<node_ptr_type>(0)->links_[ NEXT_LINK_INDEX ]));
-    }
-
-    static const node_ptr_type& PREVIOUS_PTR( const node_ptr_type& n )
-    {
-        return n->links_[ PREVIOUS_LINK_INDEX ];
-    }
-
-    static node_ptr_type& PREVIOUS_PTR( node_ptr_type& n )
-    {
-        return n->links_[ PREVIOUS_LINK_INDEX ];
-    }
-
-    static const_node_ptr_type PREVIOUS_PTR( const_node_ptr_type& n )
-    {
-        return n->links_[ PREVIOUS_LINK_INDEX ];
-    }
-
-    static size_t OFFSETOF_PREVIOUS_PTR()
-    {
-        return reinterpret_cast<size_t>(&(static_cast<node_ptr_type>(0)->links_[ PREVIOUS_LINK_INDEX ]));
-    }
-
-    bool NODE_IS_LINKED( const_node_ptr_type n )
-    {
-        return( NEXT_PTR(n) != 0 || PREVIOUS_PTR(n) != 0 ); // allow for node being at start or end
-    }
 
 #ifdef QW_VALIDATE_NODE_LINKS
-    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n )
+    void CHECK_NODE_IS_LINKED( const_node_ptr_type n ) const
     {
-        assert( NEXT_PTR(n) == 0 );
-        assert( PREVIOUS_PTR(n) == 0 );
-
-        // if the list has only one element n->next will be 0 but could
-        // still be in our list (or another list, but we can only check our list)
-        assert( n != front_ );
+        assert( links::is_linked(n) == true );
     }
 
-    void CLEAR_NODE_LINKS( node_ptr_type n )
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
-        NEXT_PTR(n) = 0;
-        PREVIOUS_PTR(n) = 0;
+        assert(links::is_unlinked(n) == true);
+        assert( n != front_ );
+        assert( n != back_ );
+        // Note: we can't check that the node is not referenced by some other list
+    }
+
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    {
+        links::clear(n);
     }
 #else
-#define CHECK_NODE_IS_UNLINKED(n)
-#define CLEAR_NODE_LINKS(n)
+    void CHECK_NODE_IS_LINKED( const_node_ptr_type ) const {}
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
 #endif
 
     node_ptr_type front_; // aka head. first link in list
@@ -125,7 +122,7 @@ public: /// ONLY PUBLIC FOR TESTING
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.
-        return reinterpret_cast<node_ptr_type>(reinterpret_cast<char*>(&front_) - OFFSETOF_NEXT_PTR());
+        return reinterpret_cast<node_ptr_type>(reinterpret_cast<char*>(&front_) - links::offsetof_next_link());
     }
 
     const node_type* before_front_() const
@@ -133,9 +130,7 @@ public: /// ONLY PUBLIC FOR TESTING
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.
-        //return reinterpret_cast<const_node_ptr_type>(reinterpret_cast<const char*>(&front_) - OFFSETOF_NEXT_PTR());
-
-        return reinterpret_cast<const node_type*>(reinterpret_cast<const char*>(&front_) - OFFSETOF_NEXT_PTR());
+        return reinterpret_cast<const node_type*>(reinterpret_cast<const char*>(&front_) - links::offsetof_next_link());
     }
 
 public:
@@ -157,7 +152,7 @@ public:
 
         iterator& operator++ ()     // prefix ++
         {
-            p_ = NEXT_PTR(p_);
+            p_ = links::load_next(p_);
             return *this;
         }
 
@@ -170,7 +165,7 @@ public:
 
         iterator& operator-- ()     // prefix --
         {
-            p_ = PREVIOUS_PTR(p_);
+            p_ = links::load_prev(p_);
             return *this;
         }
 
@@ -182,8 +177,8 @@ public:
         }
 
         // it's a container of pointers so dereferencing the iterator gives a pointer
-        node_ptr_type operator*() const { return NEXT_PTR(p_); }
-        const node_ptr_type* operator->() const { return &NEXT_PTR(p_); }
+        node_ptr_type operator*() const { return links::load_next(p_); }
+        const node_ptr_type* operator->() const { return &links::load_next(p_); }
 
         bool operator!=(const iterator& rhs) const { return rhs.p_ != p_; }
         bool operator==(const iterator& rhs) const { return rhs.p_ == p_; }
@@ -204,7 +199,7 @@ public:
 
         const_iterator& operator++ ()     // prefix ++
         {
-            p_ = NEXT_PTR(p_);
+            p_ = links::load_next(p_);
             return *this;
         }
 
@@ -217,7 +212,7 @@ public:
 
         const_iterator& operator-- ()     // prefix --
         {
-            p_ = PREVIOUS_PTR(p_);
+            p_ = links::load_prev(p_);
             return *this;
         }
 
@@ -229,8 +224,8 @@ public:
         }
 
         // it's a container of pointers so dereferencing the iterator gives a pointer
-        const node_type* operator*() const { return NEXT_PTR(p_); }
-        const node_type** operator->() const { return &NEXT_PTR(p_); }
+        const node_type* operator*() const { return links::load_next(p_); }
+        const node_type** operator->() const { return &links::load_next(p_); }
 
         bool operator!=(const const_iterator& rhs) const { return rhs.p_ != p_; }
         bool operator==(const const_iterator& rhs) const { return rhs.p_ == p_; }
@@ -254,13 +249,13 @@ public:
         if( front_ == other.before_front_() ){ // empty
             front_ = back_ = before_front_();
         }else{
-            PREVIOUS_PTR(front_) = before_front_();
+            links::store_prev(front_, before_front_());
         }
 
         if( other.front_ == before_front_() ){ // empty
             other.front_ = other.back_ = other.before_front_();
         }else{
-            PREVIOUS_PTR(other.front_) = other.before_front_();
+            links::store_prev(other.front_, other.before_front_());
         }
     }
     //see also void swap( QwList& a, QwList &b );
@@ -291,14 +286,14 @@ public:
         CHECK_NODE_IS_UNLINKED( n );
 
         if( empty() ){
-            NEXT_PTR(n) = 0;
+            links::store_next(n, 0);
             back_ = n;
         }else{
-            NEXT_PTR(n) = front_;
-            PREVIOUS_PTR(front_) = n;
+            links::store_next(n, front_);
+            links::store_prev(front_, n);
         }
 
-        PREVIOUS_PTR(n) = before_front_();
+        links::store_prev(n, before_front_());
         front_ = n;
     }
 
@@ -309,14 +304,14 @@ public:
 
         node_ptr_type result = front_;
 
-        front_ = NEXT_PTR(front_);
+        front_ = links::load_next(front_);
         if( front_ ){
-            PREVIOUS_PTR(front_) = before_front_();
+            links::store_prev(front_, before_front_());
         }else{
             front_ = back_ = before_front_();
         }
 
-        CLEAR_NODE_LINKS( result );
+        CLEAR_NODE_LINKS_FOR_VALIDATION( result );
         return result;
     }
 
@@ -324,14 +319,14 @@ public:
     {
         CHECK_NODE_IS_UNLINKED( n );
 
-        NEXT_PTR(n) = 0;
+        links::store_next(n, 0);
 
 		if( empty() ){
-            PREVIOUS_PTR(n) = before_front_();
+            links::store_prev(n, before_front_());
             front_ = n;
         }else{
-            PREVIOUS_PTR(n) = back_;
-            NEXT_PTR(back_) = n;
+            links::store_prev(n, back_);
+            links::store_next(back_, n);
         }
 
         back_ = n;
@@ -346,44 +341,44 @@ public:
         if( empty() ){
             assert( before == before_front_() );
 
-            PREVIOUS_PTR(n) = before_front_();
-            NEXT_PTR(n) = 0;
+            links::store_prev(n, before_front_());
+            links::store_next(n, 0);
             back_ = front_ = n;
         }else{
-            node_ptr_type after = NEXT_PTR(before);
+            node_ptr_type after = links::load_next(before);
 
-            NEXT_PTR(n) = after;
+            links::store_next(n, after);
             if( after )
-                PREVIOUS_PTR(after) = n;
+                links::store_prev(after, n);
             else
                 back_ = n;
 
             // if before is before_front_() then this will update front_:
-            NEXT_PTR(before) = n;
-            PREVIOUS_PTR(n) = before;
+            links::store_next(before, n);
+            links::store_prev(n, before);
         }
     }
 
     node_ptr_type remove_after( node_ptr_type before ) // returns the removed node
     {
-        assert( NEXT_PTR(before) != 0 ); // can't remove an item after the last item
+        assert( links::load_next(before) != 0 ); // can't remove an item after the last item
 
-        node_ptr_type result = NEXT_PTR(before);
-        node_ptr_type after = NEXT_PTR(result);
+        node_ptr_type result = links::load_next(before);
+        node_ptr_type after = links::load_next(result);
 
-        NEXT_PTR(before) = after; // (NEXT_PTR(before) aliases front when using before_front_())
+        links::store_next(before, after); // (links::load_next(before) aliases front when using before_front_())
         // so this will correctly zero front_ if list is empty
 
         if( after ){
-            PREVIOUS_PTR(after) = before;
+            links::store_prev(after, before);
         }else{
-            if( front_ == 0 ) // zeroed above in assignment to NEXT_PTR(before)
+            if( front_ == 0 ) // zeroed above in assignment to links::load_next(before)
                 front_ = back_ = before_front_();
             else
                 back_ = before;
         }
 
-        CLEAR_NODE_LINKS( result );
+        CLEAR_NODE_LINKS_FOR_VALIDATION( result );
         return result;
     }
 
@@ -394,14 +389,14 @@ public:
 
         node_ptr_type result = back_;
 
-        back_ = PREVIOUS_PTR(back_);
+        back_ = links::load_prev(back_);
         if( back_ == before_front_() ){
             front_ = before_front_();
         }else{
-            NEXT_PTR(back_) = 0;
+            links::store_next(back_, 0);
         }
 
-        CLEAR_NODE_LINKS( result );
+        CLEAR_NODE_LINKS_FOR_VALIDATION( result );
         return result;
     }
 
@@ -411,13 +406,13 @@ public:
         assert( at != before_front_() );
         CHECK_NODE_IS_UNLINKED( n );
 
-        NEXT_PTR(n) = at;
-        PREVIOUS_PTR(n) = PREVIOUS_PTR(at);
+        links::store_next(n, at);
+        links::store_prev(n, links::load_prev(at));
 
-        PREVIOUS_PTR(at) = n;
+        links::store_prev(at, n);
 
         // this will correctly update front_ if at is at the front
-        NEXT_PTR( PREVIOUS_PTR(n) ) = n;
+        links::store_next( links::load_prev(n), n);
     }
 
     void insert( iterator at, node_ptr_type n ) // insert n before node at
@@ -429,26 +424,26 @@ public:
 
     void remove( node_ptr_type at ) // remove node at
     {
-        assert( NODE_IS_LINKED( at ) );
+        CHECK_NODE_IS_LINKED( at );
 
-        node_ptr_type before = PREVIOUS_PTR(at);
-        node_ptr_type after = NEXT_PTR(at);
+        node_ptr_type before = links::load_prev(at);
+        node_ptr_type after = links::load_next(at);
 
         // this also covers the case where at == front_, where it updates front_
-        NEXT_PTR(before) = after;
+        links::store_next(before, after);
 
         if( after ){
             // at wasn't the last (or only) element
-            PREVIOUS_PTR(after) = before;
+            links::store_prev(after, before);
         }else{
             // at was back
-            if( front_ == 0 ) // updated in assignment from NEXT_PTR(before) = after
+            if( front_ == 0 ) // updated in assignment links::store_next(before, after)
                 front_ = back_ = before_front_();
             else
                 back_ = before;
         }
 
-        CLEAR_NODE_LINKS( at );
+        CLEAR_NODE_LINKS_FOR_VALIDATION( at );
     }
 
     void erase( iterator at ) // remove node at at
@@ -464,8 +459,8 @@ public:
 
     // forward_list also provides const iterator and const iterator accessors
 
-    static node_ptr_type next( node_ptr_type n ) { return NEXT_PTR(n); }
-    static node_ptr_type previous( node_ptr_type n ) { return PREVIOUS_PTR(n); }
+    static node_ptr_type next( node_ptr_type n ) { return links::load_next(n); }
+    static node_ptr_type previous( node_ptr_type n ) { return links::load_prev(n); }
 };
 
 template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>

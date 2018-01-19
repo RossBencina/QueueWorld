@@ -47,15 +47,34 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwMpmcPopAllLifoStack{
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nodeinfo;
-
-    mint_atomicPtr_t top_;
+    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
 public:
-    typedef typename nodeinfo::node_type node_type;
-    typedef typename nodeinfo::node_ptr_type node_ptr_type;
-    typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
+    typedef typename nextlink::node_type node_type;
+    typedef typename nextlink::node_ptr_type node_ptr_type;
+    typedef typename nextlink::const_node_ptr_type const_node_ptr_type;
 
+private:
+    mint_atomicPtr_t top_;
+
+#ifdef QW_VALIDATE_NODE_LINKS
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
+    {
+        assert( nextlink::is_unlinked(n) == true );
+        assert( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_)) );
+        // Note: we can't check that the node is not referenced by some other list
+    }
+
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    {
+        nextlink::clear(n);
+    }
+#else
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
+#endif
+
+public:
     QwMpmcPopAllLifoStack()
     {
         top_._nonatomic = 0;
@@ -68,12 +87,12 @@ public:
 
     void push( node_ptr_type node )
     {
-        nodeinfo::check_node_is_unlinked( node );
+        CHECK_NODE_IS_UNLINKED( node );
 
         node_ptr_type top;
         do{
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
-            nodeinfo::next_ptr(node) = top;
+            nextlink::store(node, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to client
             //   2. ensure that node->next <-- top is written before top <-- node
@@ -83,12 +102,12 @@ public:
 
     void push( node_ptr_type node, bool& wasEmpty )
     {
-        nodeinfo::check_node_is_unlinked( node );
+        CHECK_NODE_IS_UNLINKED( node );
 
         node_ptr_type top;
         do{
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
-            nodeinfo::next_ptr(node) = top;
+            nextlink::store(node, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to client
             //   2. ensure that node->next <-- top is written before top <-- node
@@ -101,12 +120,12 @@ public:
     // push linked list link from front through to back
     void push_multiple( node_ptr_type front, node_ptr_type back )
     {
-        nodeinfo::check_node_is_unlinked( back );
+        CHECK_NODE_IS_UNLINKED( back );
 
         node_ptr_type top;
         do{
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
-            nodeinfo::next_ptr(back) = top;
+            nextlink::store(back, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to client
             //   2. ensure that node->next <-- top is written before top <-- node
@@ -116,12 +135,12 @@ public:
 
     void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
     {
-        nodeinfo::check_node_is_unlinked( back );
+        CHECK_NODE_IS_UNLINKED( back );
 
         node_ptr_type top;
         do{
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
-            nodeinfo::next_ptr(back) = top;
+            nextlink::store(back, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to client
             //   2. ensure that node->next <-- top is written before top <-- node

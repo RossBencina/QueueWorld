@@ -43,17 +43,27 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwMpscFifoQueue {
+    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nodeinfo;
+public:
+    typedef typename nextlink::node_type node_type;
+    typedef typename nextlink::node_ptr_type node_ptr_type;
+    typedef typename nextlink::const_node_ptr_type const_node_ptr_type;
 
+private:
     QwMpmcPopAllLifoStack<NodePtrT, NEXT_LINK_INDEX> mpscLifo_;
     QwSTailList<NodePtrT, NEXT_LINK_INDEX> consumerLocalReversingQueue_;
 
-public:
-    typedef typename nodeinfo::node_type node_type;
-    typedef typename nodeinfo::node_ptr_type node_ptr_type;
-    typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
+#ifdef QW_VALIDATE_NODE_LINKS
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    {
+        nextlink::clear(n);
+    }
+#else
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
+#endif
 
+public:
     void push( node_ptr_type n )
     {
         return mpscLifo_.push(n);
@@ -88,12 +98,12 @@ public:
                 if (n) {
                     // push all but the last node popped from the lifo into consumerLocalReversingQueue_
                     // this reverses their order, putting them into fifo order.
-                    node_ptr_type next = nodeinfo::next_ptr(n);
+                    node_ptr_type next = nextlink::load(n);
                     while (next != 0) {
-                        nodeinfo::clear_node_link_for_validation(n);
+                        CLEAR_NODE_LINKS_FOR_VALIDATION(n);
                         consumerLocalReversingQueue_.push_front(n);
                         n = next;
-                        next = nodeinfo::next_ptr(n);
+                        next = nextlink::load(n);
                     }
                     // return the last request, which is the next in fifo order
                     return n; // n->next is always zero here.

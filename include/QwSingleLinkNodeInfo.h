@@ -53,43 +53,38 @@ struct QwSingleLinkNodeInfo {
     using size_t = std::size_t;
 
     typedef typename qw_remove_pointer<NodePtrT>::type node_type;
-
     typedef NodePtrT node_ptr_type;
     typedef const node_type* const_node_ptr_type;
 
-    static node_ptr_type& next_ptr( node_ptr_type& n )
+    static node_ptr_type load( const_node_ptr_type n )
     {
-        return n->links_[ NEXT_LINK_INDEX ];
+        return static_cast<node_ptr_type>(n->links_[ NEXT_LINK_INDEX ]); // downcast to node_ptr_type in case links_[n] is a ptr to base class type
     }
 
-    static const node_ptr_type& next_ptr( const node_ptr_type& n )
+    static void store( node_ptr_type n, node_ptr_type x ) // n->link = x
     {
-        return n->links_[ NEXT_LINK_INDEX ];
+        n->links_[ NEXT_LINK_INDEX ] = x;
     }
 
-    static size_t offsetof_next_ptr()
+    static size_t offsetof_link()
     {
-        return reinterpret_cast<size_t>(&next_ptr(static_cast<node_ptr_type>(0)));
+        return reinterpret_cast<size_t>(&(static_cast<node_ptr_type>(0)->links_[ NEXT_LINK_INDEX ]));
     }
 
-#ifdef QW_VALIDATE_NODE_LINKS
-    static void check_node_is_unlinked( const node_ptr_type n )
+    static bool is_linked( const_node_ptr_type n )
     {
-        assert( next_ptr(n) == 0 );
-
-        // if the list has only one element n->next will be 0 but could
-        // still be in our list (or another list, but we can only check our list)
-        //assert( n != COUNTPTR_PTR(top_) );
+        return (QwSingleLinkNodeInfo::load(n) != 0);
     }
 
-    static void clear_node_link_for_validation( node_ptr_type n )
+    static bool is_unlinked( const_node_ptr_type n )
     {
-        next_ptr(n) = 0;
+        return (QwSingleLinkNodeInfo::load(n) == 0);
     }
-#else
-    static void check_node_is_unlinked( const node_ptr_type n ) {}
-    static void clear_node_link_for_validation( node_ptr_type n ) {}
-#endif
+
+    static void clear( node_ptr_type n )
+    {
+        store(n , 0);
+    }
 };
 
 #endif /* INCLUDED_SINGLELINKNODEINFO_H */

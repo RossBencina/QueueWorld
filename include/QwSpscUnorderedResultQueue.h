@@ -47,17 +47,35 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSpscUnorderedResultQueue{
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nodeinfo;
+    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
 public:
-    typedef typename nodeinfo::node_type node_type;
-    typedef typename nodeinfo::node_ptr_type node_ptr_type;
-    typedef typename nodeinfo::const_node_ptr_type const_node_ptr_type;
+    typedef typename nextlink::node_type node_type;
+    typedef typename nextlink::node_ptr_type node_ptr_type;
+    typedef typename nextlink::const_node_ptr_type const_node_ptr_type;
 
 private:
     mint_atomicPtr_t atomicLifoTop_; // LIFO. same algorithm as QwMpmcPopAllLifoStack. shared by producer and consumer
     node_ptr_type consumerLocalHead_; // LIFO order reader queue. only referenced by the consumer
     size_t expectedResultCount_; // consumer increments this when making a request, pop() decrements it
+
+#ifdef QW_VALIDATE_NODE_LINKS
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
+    {
+        assert( nextlink::is_unlinked(n) == true );
+        assert( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)) );
+        assert( n != static_cast<node_ptr_type>(consumerLocalHead_) );
+        // Note: we can't check that the node is not referenced by some other list
+    }
+
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    {
+        nextlink::clear(n);
+    }
+#else
+    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
+    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
+#endif
 
 public:
     void init()
@@ -69,10 +87,12 @@ public:
 
     void push( node_ptr_type node ) // called by producer
     {
+        CHECK_NODE_IS_UNLINKED(node);
+
         // Single producer, push one item onto the atomic LIFO.
 
         // link node to point to current atomicLifoTop_
-        nodeinfo::next_ptr(node) = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_));
+        nextlink::store(node, static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)));
 
         mint_thread_fence_release(); // fence for next ptr and item data of node
         mint_store_ptr_relaxed(&atomicLifoTop_, node); // push node onto head of atomic LIFO
@@ -93,9 +113,9 @@ public:
                 mint_thread_fence_acquire(); // fence for all captured node data
 
                 // retain all but the first item for future pops
-                consumerLocalHead_ = nodeinfo::next_ptr(result);
+                consumerLocalHead_ = nextlink::load(result);
 
-                nodeinfo::clear_node_link_for_validation(result);
+                CLEAR_NODE_LINKS_FOR_VALIDATION(result);
                 assert( expectedResultCount_ > 0 );
                 --expectedResultCount_;
                 return result;
@@ -107,9 +127,9 @@ public:
         } else {
             // consumer-local reader queue is non-empty. pop one item from consumerLocalHead_
             node_ptr_type result = consumerLocalHead_;
-            consumerLocalHead_ = nodeinfo::next_ptr(result);
+            consumerLocalHead_ = nextlink::load(result);
 
-            nodeinfo::clear_node_link_for_validation(result);
+            CLEAR_NODE_LINKS_FOR_VALIDATION(result);
             assert( expectedResultCount_ > 0 );
             --expectedResultCount_;
             return result;

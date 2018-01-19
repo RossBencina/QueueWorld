@@ -117,7 +117,7 @@ TEST_CASE( "qw/staillist/two", "QwSTailList list operations with 2 nodes/element
 
 TEST_CASE( "qw/staillist/back-and-push_back", "QwSTailList test back() and push_back()" ) {
 
-    // back() and push_back() are the only two members that IoSList doesn't have that QwSTailList does.
+    // back() and push_back() are the only two members that QwSList doesn't have that QwSTailList does.
 
     TestNode node1;
     node1.value = 0;
