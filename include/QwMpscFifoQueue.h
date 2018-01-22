@@ -127,5 +127,4 @@ Last reviewed by: Ross B.
 Status: OK
 Comments:
 - push( n, wasEmpty ) has a knownbug: wasEmpty is not accurate
-- should provide push_multiple()
 -------------------------------------------------------------------------- */
