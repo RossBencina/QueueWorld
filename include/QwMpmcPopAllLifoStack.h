@@ -136,7 +136,7 @@ public:
             nextlink::store(back, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to client
-            //   2. ensure that node->next <-- top is written before top <-- node
+            //   2. ensure that back->next <-- top is written before top <-- front
             mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
     }
@@ -151,7 +151,7 @@ public:
             nextlink::store(back, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to client
-            //   2. ensure that node->next <-- top is written before top <-- node
+            //   2. ensure that back->next <-- top is written before top <-- front
             mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
 
