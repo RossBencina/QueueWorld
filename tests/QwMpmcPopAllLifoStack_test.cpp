@@ -44,7 +44,7 @@ namespace {
 
 } // end anonymous namespace
 
-TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMpmcPopAllLifoStack single threaded test" ) {
+TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack single threaded test" ) {
 
     TestNode nodes[10];
     TestNode *a = &nodes[0];
@@ -148,3 +148,85 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack", "QwMpmcPopAllLifoStack single threaded 
         d->links_[TestNode::LINK_INDEX_1] = 0;
     }
 }
+
+#if __cplusplus >= 201103L // C++11. concurrency test using C++11 threads.
+
+#include <cstddef> // size_t
+#include <cstdlib> // rand and srand
+#include <ctime> // time()
+#include <thread>
+
+namespace {
+
+    static const std::size_t TEST_THREAD_COUNT=15;
+    static const std::size_t TEST_STACK_COUNT=5;
+    static const std::size_t TEST_PER_STACK_NODE_COUNT=200;
+    static const std::size_t THREAD_ITERATIONS=100000;
+    //static const std::size_t THREAD_ITERATIONS=10000000;
+
+    static TestMpmcPopAllLifoStack *testStacks_[ TEST_THREAD_COUNT ];
+
+    static unsigned testThreadProc()
+    {
+        std::srand(static_cast<unsigned int>(std::time(0)));
+
+        for( std::size_t i=0; i < THREAD_ITERATIONS; ++i ){
+
+            // randomly pop all from one stack and push on to others
+            TestNode *all = testStacks_[ static_cast<std::size_t>(rand()) % TEST_STACK_COUNT ]->pop_all();
+            while( all ){
+                TestNode *n = all;
+                all = all->links_[TestNode::LINK_INDEX_1];
+#if (QW_VALIDATE_NODE_LINKS == 1)
+                n->links_[TestNode::LINK_INDEX_1] = 0; // validation code in push expects link to be cleared on entry
+#endif
+                testStacks_[ static_cast<std::size_t>(rand()) % TEST_STACK_COUNT ]->push(n);
+            }
+        }
+
+        return 0;
+    }
+}
+
+
+TEST_CASE( "qw/mpmc_pop_all_lifo_stack/multi-threaded", "[slow][vslow][fuzz] QwMpmcPopAllLifoStack multi-threaded randomised sanity test" ) {
+
+    int allocatedNodeCount = 0;
+    for( std::size_t i=0; i < TEST_STACK_COUNT; ++i ){
+        testStacks_[i] = new TestMpmcPopAllLifoStack;
+
+        for( std::size_t j=0; j < TEST_PER_STACK_NODE_COUNT; ++j ){
+            testStacks_[i]->push( new TestNode );
+            ++allocatedNodeCount;
+        }
+    }
+
+    std::thread* threads[TEST_THREAD_COUNT];
+
+    for( std::size_t i=0; i < TEST_THREAD_COUNT; ++i ){
+        threads[i] = new std::thread(testThreadProc);
+    }
+
+    for( std::size_t i=0; i < TEST_THREAD_COUNT; ++i ){
+        threads[i]->join();
+        delete threads[i];
+    }
+
+    int freedNodeCount = 0;
+    for( std::size_t i=0; i < TEST_STACK_COUNT; ++i ){
+
+        TestNode *all = testStacks_[i]->pop_all();
+        while( all ){
+            TestNode *n = all;
+            all = all->links_[TestNode::LINK_INDEX_1];
+            delete n;
+            ++freedNodeCount;
+        }
+
+        delete testStacks_[i];
+    }
+
+    REQUIRE( freedNodeCount == allocatedNodeCount );
+}
+
+#endif // end __cplusplus >= 201103L
