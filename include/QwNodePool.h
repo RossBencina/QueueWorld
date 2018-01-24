@@ -55,11 +55,14 @@
 
 class QwRawNodePool {
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-private-field"
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-private-field"
+#endif
     int8_t padding1_[CACHE_LINE_SIZE]; // avoid false sharing. TODO FIXME: give this more thought
-#pragma GCC diagnostic pop
-
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
     int8_t *nodeStorage_;       // The raw memory buffer that is allocated and freed
 
     enum { NULL_NODE_INDEX=0 };
@@ -103,11 +106,14 @@ class QwRawNodePool {
     mint_atomic32_t allocCount_;
 #endif
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-private-field"
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-private-field"
+#endif
     int8_t padding2_[CACHE_LINE_SIZE]; // avoid false sharing
-#pragma GCC diagnostic pop
-
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
     // Node representation. Since this is a freelist, there is no node content.
     // When stored on the stack, each node contains a next index at the start:
     //
