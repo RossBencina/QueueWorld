@@ -176,7 +176,7 @@ static void requireEmptyInvariants( TestSList& a )
 
     // front()
 
-    REQUIRE( a.front() == 0 );
+    REQUIRE( a.front() == (TestNode*)NULL );
 
     // iterator sequence invariants
 
@@ -205,13 +205,13 @@ static void requireSingleNodeInvariants( TestSList& a, TestNode *node )
 
     // front() invariants
 
-    REQUIRE( a.front() != 0 );
+    REQUIRE( a.front() != (TestNode*)NULL );
     REQUIRE( a.front() == node );
 
     REQUIRE( *a.begin() == node );
 
 	// next() of front() is 0 in a one item list
-    REQUIRE( a.next(a.front()) == 0 );
+    REQUIRE( a.next(a.front()) == (TestNode*)NULL );
 
     // iterator sequence invariants
 
@@ -254,7 +254,7 @@ static void requireMoreThanOneNodeInvariants( TestSList& a, TestNode *nodes, int
 
     // front() invariants
 
-    REQUIRE( a.front() != 0 );
+    REQUIRE( a.front() != (TestNode*)NULL );
     REQUIRE( a.front() == &nodes[0] );
 
     REQUIRE( *a.begin() == &nodes[0] );
@@ -297,7 +297,7 @@ static void requireMoreThanOneNodeInvariants( TestSList& a, TestNode *nodes, int
         i_post++;
     }
 
-    REQUIRE( n == 0 );
+    REQUIRE( n == (TestNode*)NULL );
     REQUIRE( i_pre == a.end() );
     REQUIRE( i_post == a.end() );
 }

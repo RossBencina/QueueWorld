@@ -56,14 +56,14 @@ TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single
     q.init();
 
     REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == 0 );
+    REQUIRE( q.pop() == (TestNode*)NULL );
 
     q.incrementExpectedResultCount();
     q.push( a );
     REQUIRE( q.expectedResultCount() == 1 );
     REQUIRE( q.pop() == a );
     REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == 0 );
+    REQUIRE( q.pop() == (TestNode*)NULL );
 
     q.incrementExpectedResultCount(3);
     q.push( a );
@@ -87,5 +87,5 @@ TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single
         REQUIRE( (x==a || x==b || x==c) );
     }
     REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == 0 );
+    REQUIRE( q.pop() == (TestNode*)NULL );
 }

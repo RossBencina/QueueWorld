@@ -58,7 +58,7 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
     TestMpscFifoQueue q;
 
     REQUIRE( q.consumer_empty() == true );
-    REQUIRE( q.pop() == 0 );
+    REQUIRE( q.pop() == (TestNode*)NULL );
 
     // void push( node_ptr_type n )
     // bool consumer_empty() const
