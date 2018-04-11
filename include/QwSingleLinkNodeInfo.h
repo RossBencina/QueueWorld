@@ -27,7 +27,7 @@
 #include "QwConfig.h"
 
 #include <cstddef> // std::size_t
-
+#include <memory> // std::memory
 
 /*
     QwSingleLinkNodeInfo is an adapter that queue and list classes
@@ -65,7 +65,22 @@ struct QwSingleLinkNodeInfo {
 
     static size_t offsetof_link()
     {
-        return reinterpret_cast<size_t>(&(static_cast<node_ptr_type>(0)->links_[ NEXT_LINK_INDEX ]));
+        // The following is well defined according to discussion and links here:
+        // https://stackoverflow.com/questions/49775980/is-it-well-defined-to-use-stdaddressof-on-non-active-union-members
+        // I prefer this to offsetof() because offsetof() gives warnings in C++11 for non-standard-layout types
+        // Arguably should use offsetof() in C++17 and later where it is conditionally supported for other types.
+        union U {
+            char c;
+            node_type n;
+            constexpr U() : c(0) {}
+        };
+        static const U u;
+        return static_cast<size_t>(
+                reinterpret_cast<const char*>(std::addressof(u.n.links_[NEXT_LINK_INDEX])) -
+                reinterpret_cast<const char*>(&u));
+        // notes:
+        // - the union layout rules guarantee that &u == &u.n (use &u because we know operator& isn't defined)
+        // - use std::addressof to avoid problems with pointer-like objects that define operator&
     }
 
     static bool is_linked( const_node_ptr_type n )
