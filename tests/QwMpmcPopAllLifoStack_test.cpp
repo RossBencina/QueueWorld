@@ -55,7 +55,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
     TestMpmcPopAllLifoStack stack;
 
     REQUIRE( stack.empty() );
-    REQUIRE( stack.pop_all() == 0 );
+    REQUIRE( stack.pop_all() == (TestNode*)NULL );
 
     // void push( node_ptr_type node )
 
@@ -63,7 +63,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
     REQUIRE( !stack.empty() );
     REQUIRE( stack.pop_all() == a );
     REQUIRE( stack.empty() );
-    REQUIRE( stack.pop_all() == 0 );
+    REQUIRE( stack.pop_all() == (TestNode*)NULL );
 
     for (int i=0; i < 10; ++i)
         stack.push(&nodes[i]);
@@ -81,7 +81,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
             xs->links_[TestNode::LINK_INDEX_1] = 0;
             xs = next;
         }
-        REQUIRE( xs == 0 );
+        REQUIRE( xs == (TestNode*)NULL );
     }
 
     // void push( node_ptr_type node, bool& wasEmpty )

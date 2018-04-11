@@ -59,7 +59,7 @@ inline void singleItemSListTest( ListT& a, ListT& b, typename ListT::node_ptr_ty
     REQUIRE( a.size_is_greater_than_1() == false );
 
     REQUIRE( a.front() == nodePtr );
-    REQUIRE( ListT::next(nodePtr) == 0 );
+    REQUIRE( ListT::next(nodePtr) == (typename ListT::node_ptr_type)NULL );
 
     REQUIRE( a.begin() != a.end() );
     REQUIRE( *(a.begin()) == nodePtr );
@@ -124,7 +124,7 @@ inline void singleItemListTest( ListT& a, ListT& b, typename ListT::node_ptr_typ
     REQUIRE( a.size_is_greater_than_1() == false );
 
     REQUIRE( a.front() == nodePtr );
-    REQUIRE( ListT::next(nodePtr) == 0 );
+    REQUIRE( ListT::next(nodePtr) == (typename ListT::node_ptr_type)NULL );
 
     REQUIRE( a.begin() != a.end() );
     REQUIRE( *(a.begin()) == nodePtr );
@@ -197,7 +197,7 @@ inline void twoItemSListTest( ListT& a, ListT& b,
 
     REQUIRE( a.front() == node1Ptr );
     REQUIRE( ListT::next(node1Ptr) == node2Ptr );
-    REQUIRE( ListT::next(node2Ptr) == 0 );
+    REQUIRE( ListT::next(node2Ptr) == (typename ListT::node_ptr_type)NULL );
 
     REQUIRE( a.begin() != a.end() );
     REQUIRE( *(a.begin()) == node1Ptr );
@@ -234,7 +234,7 @@ inline void twoItemSListTest( ListT& a, ListT& b,
     REQUIRE( a.empty() == true );
 
     // push front / pop front
-    REQUIRE( a.front() == 0 );
+    REQUIRE( a.front() == (typename ListT::node_ptr_type)NULL );
     a.push_front( node2Ptr );
     a.push_front( node1Ptr );
     REQUIRE( a.size_is_1() == false );
@@ -308,7 +308,7 @@ inline void twoItemListTest( ListT& a, ListT& b,
 
     REQUIRE( a.front() == node1Ptr );
     REQUIRE( ListT::next(node1Ptr) == node2Ptr );
-    REQUIRE( ListT::next(node2Ptr) == 0 );
+    REQUIRE( ListT::next(node2Ptr) == (typename ListT::node_ptr_type)NULL );
 
     REQUIRE( a.begin() != a.end() );
     REQUIRE( *(a.begin()) == node1Ptr );
@@ -434,7 +434,7 @@ inline void backAndPushBackListTest( ListT& a, ListT& b,
     // back or front, one, two or three elements
     // test that back and front are correct after swapping
 
-    //REQUIRE( a.back() == 0 );
+    //REQUIRE( a.back() == (typename ListT::node_ptr_type)NULL );
 
     a.push_back( node1Ptr );
     REQUIRE( a.back() == node1Ptr );
@@ -458,8 +458,8 @@ inline void backAndPushBackListTest( ListT& a, ListT& b,
 
     a.pop_front();
     REQUIRE( a.empty() );
-    //REQUIRE( a.back() == 0 );
-    //REQUIRE( a.front() == 0 );
+    //REQUIRE( a.back() == (typename ListT::node_ptr_type)NULL );
+    //REQUIRE( a.front() == (typename ListT::node_ptr_type)NULL );
 
     a.push_front( node1Ptr );
     REQUIRE( a.back() == node1Ptr );

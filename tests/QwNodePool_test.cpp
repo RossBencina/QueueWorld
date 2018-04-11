@@ -55,11 +55,11 @@ TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
 
     for (size_t i=0; i < maxNodes; ++i) {
         TestNode *n = pool.allocate();
-        REQUIRE( n != 0 );
+        REQUIRE( n != (TestNode*)NULL );
         allocatedNodes.push_front(n);
     }
 
-    REQUIRE( pool.allocate() == 0 );
+    REQUIRE( pool.allocate() == (TestNode*)NULL );
 
     while (!allocatedNodes.empty())
         pool.deallocate(allocatedNodes.pop_front());
