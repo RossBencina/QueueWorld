@@ -171,6 +171,20 @@ public:
 #endif
     }
 
+    // release() and reset() naming is modeled after unique_ptr
+
+    node_ptr_type release() // return the front node, with links intact
+    {
+        node_ptr_type result = front_;
+        front_ = 0;
+        return result;
+    }
+
+    void reset(node_ptr_type front) // replace front with a different raw head ptr. does not clear existing links
+    {
+        front_ = front;
+    }
+
     void swap( QwSList& other ) { std::swap( front_, other.front_ ); }
     // see also void swap( QwSList& a, QwSList &b );
 
