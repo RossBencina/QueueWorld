@@ -43,7 +43,7 @@ static size_t roundUpToNextPowerOfTwo(size_t x)
     return x;
 }
 
-#ifdef WIN32
+#ifdef _WIN32
 
 static void *qw_aligned_malloc( size_t size, size_t alignment )
 {
