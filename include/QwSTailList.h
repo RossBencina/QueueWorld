@@ -29,7 +29,7 @@
 #endif
 
 #include "QwConfig.h"
-#include "QwSingleLinkNodeInfo.h"
+#include "QwLinkTraits.h"
 
 /*
     QwSTailList is a single-threaded singly linked list with support
@@ -67,7 +67,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSTailList{
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
 public:
     typedef typename nextlink::node_type node_type;

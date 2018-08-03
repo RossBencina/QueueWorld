@@ -30,7 +30,7 @@
 #include "mintomic/mintomic.h"
 #include "qw_atomic.h"
 
-#include "QwSingleLinkNodeInfo.h"
+#include "QwLinkTraits.h"
 
 
 /*
@@ -50,7 +50,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSpscUnorderedResultQueue{
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
 public:
     typedef typename nextlink::node_type node_type;

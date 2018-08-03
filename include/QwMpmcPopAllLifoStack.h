@@ -31,7 +31,7 @@
 #include "qw_atomic.h"
 
 #include "QwConfig.h"
-#include "QwSingleLinkNodeInfo.h"
+#include "QwLinkTraits.h"
 
 /*
     QwMpmcPopAllLifoStack is a lock-free concurrent LIFO stack that
@@ -50,7 +50,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwMpmcPopAllLifoStack{
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
 public:
     typedef typename nextlink::node_type node_type;

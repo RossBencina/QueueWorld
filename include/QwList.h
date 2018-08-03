@@ -31,7 +31,7 @@
 #include "qw_remove_pointer.h"
 
 #include "QwConfig.h"
-#include "QwSingleLinkNodeInfo.h"
+#include "QwLinkTraits.h"
 
 
 template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>
@@ -42,8 +42,8 @@ struct QwDoubleLinkNodeInfo {
     typedef NodePtrT node_ptr_type;
     typedef const node_type* const_node_ptr_type;
 
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
-    typedef QwSingleLinkNodeInfo<NodePtrT,PREVIOUS_LINK_INDEX> prevlink;
+    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT,PREVIOUS_LINK_INDEX> prevlink;
 
     static node_ptr_type load_next( const_node_ptr_type n ) { return nextlink::load(n); }
     static void store_next( node_ptr_type n, node_ptr_type x ) { nextlink::store(n, x); }

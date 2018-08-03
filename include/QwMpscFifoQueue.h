@@ -22,7 +22,7 @@
 #ifndef INCLUDED_QWMPSCFIFOQUEUE_H
 #define INCLUDED_QWMPSCFIFOQUEUE_H
 
-#include "QwSingleLinkNodeInfo.h"
+#include "QwLinkTraits.h"
 #include "QwMpmcPopAllLifoStack.h"
 #include "QwSTailList.h"
 
@@ -43,7 +43,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwMpscFifoQueue {
-    typedef QwSingleLinkNodeInfo<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
 
 public:
     typedef typename nextlink::node_type node_type;

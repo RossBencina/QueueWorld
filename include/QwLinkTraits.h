@@ -30,7 +30,7 @@
 #include <memory> // std::memory
 
 /*
-    QwSingleLinkNodeInfo is an adapter that queue and list classes
+    QwLinkTraits is an adapter that queue and list classes
     use to access the "next link" stored in each node. It requires that
     the Node type has a links_[] array, and uses the NEXT_LINK_INDEX
     template parameter to determine which link to use.
@@ -46,7 +46,7 @@
     node info implementations for discontiguous link layouts.
 */
 template<typename NodePtrT, int NEXT_LINK_INDEX>
-struct QwSingleLinkNodeInfo {
+struct QwLinkTraits {
     using size_t = std::size_t;
 
     typedef typename qw_remove_pointer<NodePtrT>::type node_type;
@@ -85,12 +85,12 @@ struct QwSingleLinkNodeInfo {
 
     static bool is_linked( const_node_ptr_type n )
     {
-        return (QwSingleLinkNodeInfo::load(n) != 0);
+        return (QwLinkTraits::load(n) != 0);
     }
 
     static bool is_unlinked( const_node_ptr_type n )
     {
-        return (QwSingleLinkNodeInfo::load(n) == 0);
+        return (QwLinkTraits::load(n) == 0);
     }
 
     static void clear( node_ptr_type n )
