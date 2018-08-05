@@ -36,7 +36,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>
 struct QwDoubleLinkNodeInfo {
-    using size_t = std::size_t;
+    typedef std::size_t size_t;
 
     typedef typename qw_remove_pointer<NodePtrT>::type node_type;
     typedef NodePtrT node_ptr_type;
