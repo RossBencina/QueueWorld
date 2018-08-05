@@ -51,6 +51,10 @@
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwMpmcPopAllLifoStack{
     typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    // Note: there is no requirement for nextlink to be atomic, since
+    // it is never accessed from multiple threads simultaneously, and
+    // transmission between threads is always mediated by an atomic
+    // compare exchange with appropriate memory barrier.
 
 public:
     typedef typename nextlink::node_type node_type;
@@ -65,6 +69,7 @@ private:
     {
 #ifndef NDEBUG
         assert( nextlink::is_unlinked(n) == true );
+        // Node could be unlinked (NULL next ptr) but still at top of stack; check that:
         assert( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_)) );
         // Note: we can't check that the node is not referenced by some other list
 #else
@@ -135,7 +140,7 @@ public:
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nextlink::store(back, top);
             // A fence is needed here for two reasons:
-            //   1. so that node's payload gets written before node becomes visible to client
+            //   1. so that node's payload gets written before node becomes visible to consumer
             //   2. ensure that back->next <-- top is written before top <-- front
             mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
@@ -150,7 +155,7 @@ public:
             top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nextlink::store(back, top);
             // A fence is needed here for two reasons:
-            //   1. so that node's payload gets written before node becomes visible to client
+            //   1. so that node's payload gets written before node becomes visible to consumer
             //   2. ensure that back->next <-- top is written before top <-- front
             mint_thread_fence_release();
         } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);

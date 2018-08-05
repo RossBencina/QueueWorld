@@ -51,6 +51,10 @@
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSpscUnorderedResultQueue{
     typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    // Note: there is no requirement for nextlink to be atomic, since
+    // it is never accessed from multiple threads simultaneously, and
+    // transmission between threads is always mediated by an atomic
+    // compare exchange with appropriate memory barrier.
 
 public:
     typedef typename nextlink::node_type node_type;
