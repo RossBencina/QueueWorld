@@ -70,12 +70,12 @@ private:
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG
-        assert( nextlink::is_unlinked(n) == true );
+        assert( nextlink::load(n) == 0 ); // (require unlinked)
         assert( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)) );
         assert( n != static_cast<node_ptr_type>(consumerLocalHead_) );
         // Note: we can't check that the node is not referenced by some other list
 #else
-        if(!( nextlink::is_unlinked(n) == true )) { std::abort(); }
+        if(!( nextlink::load(n) == 0 )) { std::abort(); } // (require unlinked)
         if(!( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)) )) { std::abort(); }
         if(!( n != static_cast<node_ptr_type>(consumerLocalHead_) )) { std::abort(); }
 #endif
@@ -83,7 +83,7 @@ private:
 
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
     {
-        nextlink::clear(n);
+        nextlink::store(n, 0);
     }
 #else
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}

@@ -82,21 +82,6 @@ struct QwLinkTraits {
         // - the union layout rules guarantee that &u == &u.n (use &u because we know operator& isn't defined)
         // - use std::addressof to avoid problems with pointer-like objects that define operator&
     }
-
-    static bool is_linked( const_node_ptr_type n )
-    {
-        return (QwLinkTraits::load(n) != 0);
-    }
-
-    static bool is_unlinked( const_node_ptr_type n )
-    {
-        return (QwLinkTraits::load(n) == 0);
-    }
-
-    static void clear( node_ptr_type n )
-    {
-        store(n , 0);
-    }
 };
 
 #endif /* INCLUDED_SINGLELINKNODEINFO_H */

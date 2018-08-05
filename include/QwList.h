@@ -55,18 +55,19 @@ struct QwDoubleLinkNodeInfo {
 
     static bool is_linked( const_node_ptr_type n )
     {
-        return (nextlink::is_linked(n) || prevlink::is_linked(n)); // only one needs to be linked: allow for node being at start or end
+        // allow for node being at start or end: only one of {next, prev} needs to be linked.
+        return ((nextlink::load(n) != 0) || (prevlink::load(n) != 0));
     }
 
     static bool is_unlinked( const_node_ptr_type n )
     {
-        return (nextlink::is_unlinked(n) && prevlink::is_unlinked(n));
+        return ((nextlink::load(n) == 0) && (prevlink::load(n) == 0));
     }
 
     static void clear( node_ptr_type n )
     {
-        nextlink::clear(n);
-        prevlink::clear(n);
+        nextlink::store(n, 0);
+        prevlink::store(n, 0);
     }
 };
 
