@@ -45,9 +45,9 @@
     queue classes by the node info structure to allow alternate
     node info implementations for discontiguous link layouts.
 */
-template<typename NodePtrT, int NEXT_LINK_INDEX>
+template<typename NodePtrT, int LINK_INDEX>
 struct QwLinkTraits {
-    using size_t = std::size_t;
+    typedef std::size_t size_t;
 
     typedef typename qw_remove_pointer<NodePtrT>::type node_type;
     typedef NodePtrT node_ptr_type;
@@ -55,12 +55,12 @@ struct QwLinkTraits {
 
     static node_ptr_type load( const_node_ptr_type n )
     {
-        return static_cast<node_ptr_type>(n->links_[ NEXT_LINK_INDEX ]); // downcast to node_ptr_type in case links_[n] is a ptr to base class type
+        return static_cast<node_ptr_type>(n->links_[ LINK_INDEX ]); // downcast to node_ptr_type in case links_[n] is a ptr to base class type
     }
 
     static void store( node_ptr_type n, node_ptr_type x ) // n->link = x
     {
-        n->links_[ NEXT_LINK_INDEX ] = x;
+        n->links_[ LINK_INDEX ] = x;
     }
 
     static size_t offsetof_link()
@@ -76,7 +76,7 @@ struct QwLinkTraits {
         };
         static const U u;
         return static_cast<size_t>(
-                reinterpret_cast<const char*>(std::addressof(u.n.links_[NEXT_LINK_INDEX])) -
+                reinterpret_cast<const char*>(std::addressof(u.n.links_[LINK_INDEX])) -
                 reinterpret_cast<const char*>(&u));
         // notes:
         // - the union layout rules guarantee that &u == &u.n (use &u because we know operator& isn't defined)
