@@ -32,18 +32,36 @@
 /*
     QwLinkTraits is an adapter that queue and list classes
     use to access the "next link" stored in each node. It requires that
-    the Node type has a links_[] array, and uses the NEXT_LINK_INDEX
+    the Node type has a links_[] array, and uses the LINK_INDEX
     template parameter to determine which link to use.
+
+    The intent is that clients will declare an enum indicating the role(s)
+    of each link. e.g.:
+
+        struct Node {
+
+            enum LinkIndices {
+                ACTOR_MESSAGE_QUEUE_LINK = 0,
+                CLIENT_WHEN_NOT_SENT_LINK_INDEX = 0,
+                SERVER_INTERNAL_QUEUEING_LINK_INDEX = 0,
+                REQUEST_CHAINING_LINK_WHEN_SENT = 1,
+                CLIENT_EXCLUSIVE_LINK_INDEX = 2,
+                LINK_COUNT = 3
+            };
+
+            Node *links_[LINK_COUNT];
+
+            ...
+        };
 
     Although it is not perfect for all uses, we chose this
     link array representation because it makes it easy to declare
-    Nodes that use multiple links. It allows the same link to be
-    "overloaded" for multiple uses, and when this is done, it is
-    clear from the enum values that the index is being overloaded.
+    Nodes that use multiple links. Perhaps more importantly: it allows
+    the same link to be "overloaded" for multiple uses, and when this is done,
+    it is clear from the enum values that the index is being overloaded
+    (see link index 0 in the above example).
 
-    In the future we'll probably switch to parameterising the
-    queue classes by the node info structure to allow alternate
-    node info implementations for discontiguous link layouts.
+    Clients can specialize QwLinkTraits to support alternative link representations.
 */
 template<typename NodePtrT, int LINK_INDEX>
 struct QwLinkTraits {

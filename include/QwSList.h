@@ -51,9 +51,11 @@
 
         - O(1) swap contents of two lists
 
-    Nodes must contain a links_ field that is an array of pointers to nodes.
+    In the simplest usage, Nodes must contain a links_ member that is an array
+    of pointers to nodes. Alternatively, the client can specialize QwLinkTraits
+    for a particular Node type.
     NEXT_LINK_INDEX specifies the element of this array that is used for the
-	next ptr.
+    next ptr.
 
     struct ExampleNodeType{
         ExampleNodeType *links_[2]; // links isn't required to be the first field
