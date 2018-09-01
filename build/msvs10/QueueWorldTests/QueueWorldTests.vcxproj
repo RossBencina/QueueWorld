@@ -144,7 +144,7 @@
     <ClInclude Include="..\..\..\include\QwMpmcPopAllLifoStack.h" />
     <ClInclude Include="..\..\..\include\QwMpscFifoQueue.h" />
     <ClInclude Include="..\..\..\include\QwNodePool.h" />
-    <ClInclude Include="..\..\..\include\QwSingleLinkNodeInfo.h" />
+    <ClInclude Include="..\..\..\include\QwLinkTraits.h" />
     <ClInclude Include="..\..\..\include\QwSList.h" />
     <ClInclude Include="..\..\..\include\QwSpscUnorderedResultQueue.h" />
     <ClInclude Include="..\..\..\include\QwSTailList.h" />

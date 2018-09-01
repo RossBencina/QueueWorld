@@ -27,7 +27,7 @@
     <ClInclude Include="..\..\..\include\qw_remove_pointer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\QwSingleLinkNodeInfo.h">
+    <ClInclude Include="..\..\..\include\QwLinkTraits.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\tests\Qw_Lists_adhocTestsShared.h">

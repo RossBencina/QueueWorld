@@ -39,7 +39,7 @@
 		739ECBB71917C3C700ED19DE /* QwMpmcPopAllLifoStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwMpmcPopAllLifoStack.h; path = ../../../include/QwMpmcPopAllLifoStack.h; sourceTree = "<group>"; };
 		739ECBB81917C3C700ED19DE /* QwMpscFifoQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwMpscFifoQueue.h; path = ../../../include/QwMpscFifoQueue.h; sourceTree = "<group>"; };
 		739ECBB91917C3C700ED19DE /* QwNodePool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwNodePool.h; path = ../../../include/QwNodePool.h; sourceTree = "<group>"; };
-		739ECBBA1917C3C700ED19DE /* QwSingleLinkNodeInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSingleLinkNodeInfo.h; path = ../../../include/QwSingleLinkNodeInfo.h; sourceTree = "<group>"; };
+		739ECBBA1917C3C700ED19DE /* QwLinkTraits.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwLinkTraits.h; path = ../../../include/QwLinkTraits.h; sourceTree = "<group>"; };
 		739ECBBB1917C3C700ED19DE /* QwSList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSList.h; path = ../../../include/QwSList.h; sourceTree = "<group>"; };
 		739ECBBC1917C3C700ED19DE /* QwSpscUnorderedResultQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSpscUnorderedResultQueue.h; path = ../../../include/QwSpscUnorderedResultQueue.h; sourceTree = "<group>"; };
 		739ECBBD1917C3C700ED19DE /* QwSTailList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwSTailList.h; path = ../../../include/QwSTailList.h; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 				739ECBB71917C3C700ED19DE /* QwMpmcPopAllLifoStack.h */,
 				739ECBB81917C3C700ED19DE /* QwMpscFifoQueue.h */,
 				739ECBB91917C3C700ED19DE /* QwNodePool.h */,
-				739ECBBA1917C3C700ED19DE /* QwSingleLinkNodeInfo.h */,
+				739ECBBA1917C3C700ED19DE /* QwLinkTraits.h */,
 				739ECBBB1917C3C700ED19DE /* QwSList.h */,
 				739ECBBC1917C3C700ED19DE /* QwSpscUnorderedResultQueue.h */,
 				739ECBBD1917C3C700ED19DE /* QwSTailList.h */,
