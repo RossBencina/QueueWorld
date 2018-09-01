@@ -6787,7 +6787,7 @@ namespace Catch {
         uint64_t getCurrentTicks() {
             timeval t;
             gettimeofday(&t,NULL);
-            return (uint64_t)t.tv_sec * 1000000ull + (uint64_t)t.tv_usec;
+            return (uint64_t)t.tv_sec * ((uint64_t)1000000) + (uint64_t)t.tv_usec;
         }
 #endif
     }
