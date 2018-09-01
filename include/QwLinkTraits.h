@@ -83,9 +83,10 @@ struct QwLinkTraits {
 
     static size_t offsetof_link()
     {
+#if __cplusplus >= 201103L // C++11 version.
         // The following is well defined according to discussion and links here:
         // https://stackoverflow.com/questions/49775980/is-it-well-defined-to-use-stdaddressof-on-non-active-union-members
-        // I prefer this to offsetof() because offsetof() gives warnings in C++11 for non-standard-layout types
+        // I prefer this to offsetof() because offsetof() gives warnings in C++11 for non-standard-layout types.
         // Arguably should use offsetof() in C++17 and later where it is conditionally supported for other types.
         union U {
             char c;
@@ -99,6 +100,9 @@ struct QwLinkTraits {
         // notes:
         // - the union layout rules guarantee that &u == &u.n (use &u because we know operator& isn't defined)
         // - use std::addressof to avoid problems with pointer-like objects that define operator&
+#else
+        return offsetof(node_type, links_[LINK_INDEX]);
+#endif
     }
 };
 
