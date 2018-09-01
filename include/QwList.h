@@ -150,7 +150,7 @@ public: /// ONLY PUBLIC FOR TESTING
 public:
 
     class iterator{
-        friend list_type;
+        friend class QwList;
         node_ptr_type p_;
     public:
 #if (QW_VALIDATE_NODE_LINKS == 1)
@@ -199,7 +199,7 @@ public:
     };
 
     class const_iterator{
-        friend list_type;
+        friend class QwList;
         const_node_ptr_type p_;
     public:
 #if (QW_VALIDATE_NODE_LINKS == 1)
