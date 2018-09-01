@@ -22,6 +22,30 @@
 #ifndef INCLUDED_QW_ATOMIC_H
 #define INCLUDED_QW_ATOMIC_H
 
+#define NOMINMAX // suppress windows.h min/max
+
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+// Workaround for a bug in some older Windows SDKs where the following errors were triggered
+// when winnt.h or intrin.h was included:
+//   error C2733: second C linkage of overloaded function '_interlockedbittestandset' not allowed
+//   error C2733: second C linkage of overloaded function '_interlockedbittestandreset' not allowed
+// Note: Make sure the workaround is used prior to including intrin.h or windows.h elsewhere (e.g. before including mintomic.h)
+// See: https://stackoverflow.com/questions/18253129/error-c2733-second-c-linkage-of-overloaded-function
+#   pragma push_macro("_interlockedbittestandset")
+#   pragma push_macro("_interlockedbittestandreset")
+#   pragma push_macro("_interlockedbittestandset64")
+#   pragma push_macro("_interlockedbittestandreset64")
+#   define _interlockedbittestandset _local_interlockedbittestandset
+#   define _interlockedbittestandreset _local_interlockedbittestandreset
+#   define _interlockedbittestandset64 _local_interlockedbittestandset64
+#   define _interlockedbittestandreset64 _local_interlockedbittestandreset64
+#   include <intrin.h> // to force the header not to be included elsewhere
+#   pragma pop_macro("_interlockedbittestandreset64")
+#   pragma pop_macro("_interlockedbittestandset64")
+#   pragma pop_macro("_interlockedbittestandreset")
+#   pragma pop_macro("_interlockedbittestandset")
+#endif
+
 #include "mintomic/mintomic.h"
 
 /*
@@ -38,9 +62,6 @@
 */
 
 #if MINT_COMPILER_MSVC
-
-#define NOMINMAX // suppress windows.h min/max
-#include <intrin.h>
 
 MINT_C_INLINE uint32_t qw_mint_exchange_32_relaxed(mint_atomic32_t *object, uint32_t operand)
 {

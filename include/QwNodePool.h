@@ -24,7 +24,7 @@
 
 #include <cassert>
 
-#include "mintomic/mintomic.h"
+#include "qw_atomic.h" // includes "mintomic/mintomic.h"
 
 #include "QwConfig.h"
 

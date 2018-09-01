@@ -27,8 +27,7 @@
 #include <cstdlib> // abort
 #endif
 
-#include "mintomic/mintomic.h"
-#include "qw_atomic.h"
+#include "qw_atomic.h" // includes "mintomic/mintomic.h"
 
 #include "QwLinkTraits.h"
 
