@@ -116,7 +116,7 @@ TEST_CASE( "qw/slist/remove", "QwSList remove free function" ) {
     a.push_front(&node1);
     a.push_front(&node0);
 
-    SECTION("remove first node") {
+    SECTION("first-node", "remove first node") {
         remove(a, &node0);
         REQUIRE(a.front() == &node1);
         a.pop_front();
@@ -125,7 +125,7 @@ TEST_CASE( "qw/slist/remove", "QwSList remove free function" ) {
         REQUIRE(a.empty());
     }
 
-    SECTION("remove middle node") {
+    SECTION("middle-node", "remove middle node") {
         remove(a, &node1);
         REQUIRE(a.front() == &node0);
         a.pop_front();
@@ -134,7 +134,7 @@ TEST_CASE( "qw/slist/remove", "QwSList remove free function" ) {
         REQUIRE(a.empty());
     }
 
-    SECTION("remove last node") {
+    SECTION("last-node", "remove last node") {
         remove(a, &node2);
         REQUIRE(a.front() == &node0);
         a.pop_front();
