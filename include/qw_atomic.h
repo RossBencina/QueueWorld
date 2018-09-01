@@ -100,7 +100,16 @@ MINT_C_INLINE uint64_t qw_mint_exchange_64_relaxed(mint_atomic64_t *object, uint
 
 MINT_C_INLINE void* qw_mint_exchange_ptr_relaxed(mint_atomicPtr_t *object, void *operand)
 {
+#if defined(_MSC_VER)
+// suppress MSVC 2005 erroneous warnings
+#pragma warning(push)
+#pragma warning(disable: 4311) //warning C4311: 'type cast' : pointer truncation from 'void *' to 'uint32_t'
+#pragma warning(disable: 4312) //warning C4312: 'type cast' : conversion from 'uint32_t' to 'void *' of greater size
+#endif
     return (void*) qw_mint_exchange_32_relaxed((mint_atomic32_t *) object, (uint32_t)operand);
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 }
 
 #elif MINT_PTR_SIZE == 8
