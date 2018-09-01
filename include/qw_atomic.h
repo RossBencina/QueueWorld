@@ -73,6 +73,21 @@ MINT_C_INLINE uint64_t qw_mint_exchange_64_relaxed(mint_atomic64_t *object, uint
 
 #else
 
+// ARM has atomic SWAP:
+// http://gcc.gnu.org/ml/gcc-help/2007-09/msg00111.html
+// in all architectures: http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0489c/Chdbbbai.html
+// but it is deprecated since ARM 7 and can be disable by the OS:
+//      http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dht0008a/CJHBGBBJ.html
+// should probably use LDREXD and STREXD
+// http://infocenter.arm.com/help/topic/com.arm.doc.dht0008a/DHT0008A_arm_synchronization_primitives.pdf
+// See e.g. NoBarrier_AtomicExchange here:
+// https://chromium.googlesource.com/chromium/src/base/+/master/atomicops_internals_arm_gcc.h
+// https://gitorious.org/0xdroid/system_core/commit/275a98353e1263b8cb32c2d6ebf61a6e45ff43d6
+// https://groups.google.com/forum/#!topic/golang-dev/s0mj3RoAO9A
+// https://codereview.appspot.com/12670045/
+// see bionic swap:
+// https://android.googlesource.com/platform/bionic/+/android-4.4_r1.1/libc/private/bionic_atomic_arm.h
+
 #error /* no support */
 
 #endif
