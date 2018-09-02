@@ -45,14 +45,16 @@ For simplicity of implementation, the lock-free data structures are currently bu
 
 In the future we plan to experiment with other algorithms and to evaluate performance. In particular, an MS-queue is desirable for use as an MPMC FIFO.
 
-Queue World uses Mintomic (https://github.com/mintomic) for atomic operations and memory barriers. Queue world does not require the availability of C++11 atomics.
-
 All Queue World classes are provided with unit tests written using Catch (https://github.com/philsquared/Catch).
+
+As of September 2018, Queue World will migrate to using C++11 and C++11 atomics. 
+
+The original C++03 version of Queue World used Mintomic (https://github.com/mintomic) for atomic operations and memory barriers (C++11 atomics not required). The original C++03 version of Queue World is available in the _C++03-legacy_ branch.
 
 
 Licence
 -------
 
-Queue World is copyright (c) 2014 Ross Bencina.
+Queue World is copyright (c) 2014-2018 Ross Bencina.
 
 Queue World is licensed under The MIT Licence: http://opensource.org/licenses/MIT
