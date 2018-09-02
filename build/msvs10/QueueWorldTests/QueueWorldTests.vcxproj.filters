@@ -24,9 +24,6 @@
     <ClInclude Include="..\..\..\include\QwSTailList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\include\qw_remove_pointer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\include\QwLinkTraits.h">
       <Filter>Header Files</Filter>
     </ClInclude>

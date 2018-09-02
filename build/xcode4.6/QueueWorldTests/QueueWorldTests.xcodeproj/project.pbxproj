@@ -33,7 +33,6 @@
 /* Begin PBXFileReference section */
 		739ECBA61917C3A200ED19DE /* QueueWorldTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = QueueWorldTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		739ECBB31917C3C700ED19DE /* qw_atomic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qw_atomic.h; path = ../../../include/qw_atomic.h; sourceTree = "<group>"; };
-		739ECBB41917C3C700ED19DE /* qw_remove_pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qw_remove_pointer.h; path = ../../../include/qw_remove_pointer.h; sourceTree = "<group>"; };
 		739ECBB51917C3C700ED19DE /* QwConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwConfig.h; path = ../../../include/QwConfig.h; sourceTree = "<group>"; };
 		739ECBB61917C3C700ED19DE /* QwList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwList.h; path = ../../../include/QwList.h; sourceTree = "<group>"; };
 		739ECBB71917C3C700ED19DE /* QwMpmcPopAllLifoStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QwMpmcPopAllLifoStack.h; path = ../../../include/QwMpmcPopAllLifoStack.h; sourceTree = "<group>"; };
@@ -102,7 +101,6 @@
 				739ECBCB1917C3E100ED19DE /* QwTestMain.cpp */,
 				739ECBBE1917C3D200ED19DE /* QwNodePool.cpp */,
 				739ECBB31917C3C700ED19DE /* qw_atomic.h */,
-				739ECBB41917C3C700ED19DE /* qw_remove_pointer.h */,
 				739ECBB51917C3C700ED19DE /* QwConfig.h */,
 				739ECBB61917C3C700ED19DE /* QwList.h */,
 				739ECBB71917C3C700ED19DE /* QwMpmcPopAllLifoStack.h */,
