@@ -19,8 +19,8 @@
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 */
-#ifndef INCLUDED_QWSINGLELINKNODEINFO_H
-#define INCLUDED_QWSINGLELINKNODEINFO_H
+#ifndef INCLUDED_QWLINKTRAITS_H
+#define INCLUDED_QWLINKTRAITS_H
 
 #include "QwConfig.h"
 
@@ -105,7 +105,7 @@ struct QwLinkTraits {
     }
 };
 
-#endif /* INCLUDED_SINGLELINKNODEINFO_H */
+#endif /* INCLUDED_QWLINKTRAITS_H */
 
 /* -----------------------------------------------------------------------
 Last reviewed: April 22, 2014
