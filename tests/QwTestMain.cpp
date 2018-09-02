@@ -22,13 +22,3 @@
 
 #define CATCH_CONFIG_MAIN // cause this file to define Catch's main() function.
 #include "catch.hpp"
-
-// Visual Studio 2005 (possibly 2008 also?)
-// workaround for debug-mode error LNK2019: unresolved external symbol __ReadWriteBarrier
-// making the memory-barrier a no-op in debug mode is safe because debug mode
-// disables the optimizations that would cause compiler memory access reordering.
-#if defined(_MSC_VER) && (_MSC_VER <= 1400) && defined(_DEBUG)
-extern "C" void _ReadWriteBarrier(void)
-{
-}
-#endif
