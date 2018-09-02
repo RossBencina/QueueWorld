@@ -27,8 +27,7 @@
 #ifdef NDEBUG
 #include <cstdlib> // abort
 #endif
-
-#include "qw_remove_pointer.h"
+#include <type_traits> // std::remove_ptr
 
 #include "QwConfig.h"
 #include "QwLinkTraits.h"
@@ -38,7 +37,7 @@ template<typename NodePtrT, int NEXT_LINK_INDEX, int PREVIOUS_LINK_INDEX>
 struct QwDoubleLinkNodeInfo {
     typedef std::size_t size_t;
 
-    typedef typename qw_remove_pointer<NodePtrT>::type node_type;
+    typedef typename std::remove_pointer<NodePtrT>::type node_type;
     typedef NodePtrT node_ptr_type;
     typedef const node_type* const_node_ptr_type;
 

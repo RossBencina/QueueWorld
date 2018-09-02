@@ -22,12 +22,11 @@
 #ifndef INCLUDED_QWSINGLELINKNODEINFO_H
 #define INCLUDED_QWSINGLELINKNODEINFO_H
 
-#include "qw_remove_pointer.h"
-
 #include "QwConfig.h"
 
 #include <cstddef> // std::size_t
 #include <memory> // std::memory
+#include <type_traits> // std::remove_ptr
 
 /*
     QwLinkTraits is an adapter that queue and list classes
@@ -67,7 +66,7 @@ template<typename NodePtrT, int LINK_INDEX>
 struct QwLinkTraits {
     typedef std::size_t size_t;
 
-    typedef typename qw_remove_pointer<NodePtrT>::type node_type;
+    typedef typename std::remove_pointer<NodePtrT>::type node_type;
     typedef NodePtrT node_ptr_type;
     typedef const node_type* const_node_ptr_type;
 
