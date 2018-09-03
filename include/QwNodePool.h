@@ -199,7 +199,14 @@ class QwRawNodePool {
             // Try to swing top to the next node:
             node = node_at_index(nodeIndex);
         } while (mint_compare_exchange_strong_64_relaxed(&top_, top, make_abapointer(node_next(node),ap_count(top)+countIncrement_))!=top);
-
+        // NOTE: since node->next is non-atomic there is a benign data race in the above code:
+        // it can happen that node_next(node) reads some invalid data if another thread has already
+        // popped the node and stored to node->next. This does not affect the correctness of the pop
+        // operation because the CAS will fail in that case, however under the C++11 memory model
+        // this would be a data race and trigger U.B.
+        // Assume that we are executing in a pre-C++11 environment and that this race is benign.
+        // The C++11 version of QueueWorld fixes this by requiring node->next to be atomic.
+        // See also: https://stackoverflow.com/questions/46415027/c-treiber-stack-and-atomic-next-pointers
         return node;
     }
 
