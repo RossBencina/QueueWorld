@@ -22,9 +22,10 @@
 #ifndef INCLUDED_QWNODEPOOL_H
 #define INCLUDED_QWNODEPOOL_H
 
+#include <atomic>
 #include <cassert>
-
-#include "qw_atomic.h" // includes "mintomic/mintomic.h"
+#include <cstddef> // size_t
+#include <cstdint>
 
 #include "QwConfig.h"
 
@@ -54,6 +55,9 @@
 */
 
 class QwRawNodePool {
+    using size_t = std::size_t;
+    using int8_t = std::int8_t;
+    using ptrdiff_t = std::ptrdiff_t;
 
 #ifdef __clang__
 #pragma clang diagnostic push
@@ -100,10 +104,10 @@ class QwRawNodePool {
     // end packed pointer representation.
     //////////////////////////////////////////////////////////////////////
 
-    mint_atomic64_t top_; // must be large enough to store abapointer_type
+    std::atomic<std::uint64_t> top_; // must be large enough to store abapointer_type
 
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
-    mint_atomic32_t allocCount_;
+    std::atomic<std::int32_t> allocCount_;
 #endif
 
 #ifdef __clang__
@@ -160,7 +164,7 @@ class QwRawNodePool {
 
     void stack_init()
     {
-        top_._nonatomic = make_abapointer(NULL_NODE_INDEX, 0);
+        top_.store(make_abapointer(NULL_NODE_INDEX, 0), std::memory_order_relaxed);
     }
 
     // thread unsafe non-atomic version for construction time
@@ -168,8 +172,8 @@ class QwRawNodePool {
     {
         assert( node != 0 );
         nodeindex_type nodeIndex = index_of_node(node);
-        node_next_lvalue(node) = ap_index(top_._nonatomic); // Link new node to head of list (node.next <- top.ptr)
-        top_._nonatomic = make_abapointer(nodeIndex,0); // Set top to new node. no need for ABA counter during thread-unsafe code
+        node_next_lvalue(node) = ap_index(top_.load(std::memory_order_relaxed)); // Link new node to head of list (node.next <- top.ptr)
+        top_.store(make_abapointer(nodeIndex,0), std::memory_order_relaxed); // Set top to new node. no need for ABA counter during thread-unsafe code
     }
 
     void stack_push( void *node )
@@ -177,29 +181,39 @@ class QwRawNodePool {
         assert( node != 0 );
         nodeindex_type nodeIndex = index_of_node(node);
 
-        abapointer_type top;
-        do {                                        // Keep trying until push is done
-            top = mint_load_64_relaxed(&top_);      // Read top.ptr and top.count together
-            node_next_lvalue(node) = ap_index(top); // Link new node to head of list (node.next <- top.ptr)
-            mint_thread_fence_release();            // (Ensure node.next is visible to consumers)
+        abapointer_type top = top_.load(std::memory_order_relaxed); // Read top.ptr and top.count together (also done by compare_exchange_strong upon failure)
+        do {                                            // Keep trying until push is done
+            node_next_lvalue(node) = ap_index(top);     // Link new node to head of list (node.next <- top.ptr)
             // Try to swing top to the new node:
-        } while (mint_compare_exchange_strong_64_relaxed(&top_, top, make_abapointer(nodeIndex,ap_count(top)+countIncrement_))!=top);
+        } while (top_.compare_exchange_strong(top, make_abapointer(nodeIndex, ap_count(top)+countIncrement_),
+                /*success:*/ std::memory_order_release, // (Ensure node.next is visible to consumers)
+                /*failure:*/ std::memory_order_relaxed) == false);
     }
 
     void *stack_pop()
     {
-        abapointer_type top;
+        abapointer_type top = top_.load(); // Read top (explicitly fenced below)
         void *node;
-        do {                                        // Keep trying until pop is done
-            top = mint_load_64_relaxed(&top_);      // Read top
-            mint_thread_fence_acquire();            // (Acquire top.next)
+        do {                                            // Keep trying until pop is done
+            std::atomic_thread_fence(std::memory_order_acquire); // Acquire top.next, accessed by node_next(node) below.
             nodeindex_type nodeIndex = ap_index(top);
-            if (nodeIndex==NULL_NODE_INDEX)         // Is the stack empty?
-                return 0;                           // The stack was empty, couldn't pop
+            if (nodeIndex==NULL_NODE_INDEX)             // Is the stack empty?
+                return 0;                               // The stack was empty, couldn't pop
             // Try to swing top to the next node:
             node = node_at_index(nodeIndex);
-        } while (mint_compare_exchange_strong_64_relaxed(&top_, top, make_abapointer(node_next(node),ap_count(top)+countIncrement_))!=top);
-
+        } while (top_.compare_exchange_strong(top, make_abapointer(node_next(node), ap_count(top)+countIncrement_),
+                /*success:*/ std::memory_order_relaxed,
+                /*failure:*/ std::memory_order_relaxed) == false); // it would be nice to use std::memory_order_acquire here, but C++11 says we can't.
+        // BUG: in C++11, node->next should be an atomic field, but it is not.
+        // Under the C++11 memory model, unless node.next is atomic, the read performed by node_next(node) may be a data race (triggers UB)
+        // [Consider the following case:
+        //      Thread A loads top pointer (top_.load() through to assignment of node in the code above)
+        //                                  Thread B loads top pointer (top_.load() through to assignment of node in the code above)
+        //      Thread A pops node pointed to by top (stack_pop() pops and returns the node)
+        //      Thread A sets node->next
+        //                                  Thread B reads node->next (node_next(node) in the code above)
+        // The final operations of thread A and B combine to form a data race.]
+        // This is discussed further here: https://stackoverflow.com/questions/46415027/c-treiber-stack-and-atomic-next-pointers
         return node;
     }
 
@@ -213,7 +227,7 @@ public:
 
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
         if (result)
-            mint_fetch_add_32_relaxed(&allocCount_,1);
+            allocCount_.fetch_add(1, std::memory_order_relaxed);
 #endif
         return result;
     }
@@ -221,7 +235,7 @@ public:
     void deallocate( void *node )
     {
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
-        mint_fetch_add_32_relaxed(&allocCount_,-1);
+        allocCount_.fetch_add(-1, std::memory_order_relaxed);
 #endif
         stack_push(node);
     }
@@ -244,6 +258,10 @@ public:
         void *p = rawPool_.allocate();
         if (!p)
             return 0;
+        // BUG: don't placement new to re-allocate the node -- in C++11, node objects
+        // should be type-stable in order to avoid a strict aliasing violation
+        // when QwRawNodePool::stack_pop() reads the next ptr of a node that
+        // has already been popped by another thread.
         return new (p) node_type();
     }
 

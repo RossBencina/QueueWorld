@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <cassert>
 
+using std::size_t;
 
 // need x to be unsigned.
 // "C Standard Section 4.1.5 defines size_t as an unsigned integral type of the result of the sizeof operator"
@@ -77,11 +78,10 @@ static void qw_aligned_free( void *memblock )
 
 
 QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
-{
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
-    allocCount_._nonatomic = 0;
+    : allocCount_(0)
 #endif
-
+{
     assert( sizeof(top_) >= sizeof(abapointer_type) );
 
     // Align nodes on cache line boundaries to avoid false sharing
@@ -133,7 +133,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
 QwRawNodePool::~QwRawNodePool()
 {
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
-    assert( allocCount_._nonatomic == 0 );
+    assert( allocCount_.load(std::memory_order_relaxed) == 0 );
 #endif
 
     qw_aligned_free(nodeStorage_);

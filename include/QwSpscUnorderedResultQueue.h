@@ -22,12 +22,11 @@
 #ifndef INCLUDED_QWSPSCUNORDEREDRESULTQUEUE_H
 #define INCLUDED_QWSPSCUNORDEREDRESULTQUEUE_H
 
+#include <atomic>
 #include <cassert>
 #ifdef NDEBUG
 #include <cstdlib> // abort
 #endif
-
-#include "qw_atomic.h" // includes "mintomic/mintomic.h"
 
 #include "QwLinkTraits.h"
 
@@ -61,7 +60,7 @@ public:
     typedef typename nextlink::const_node_ptr_type const_node_ptr_type;
 
 private:
-    mint_atomicPtr_t atomicLifoTop_; // LIFO. same algorithm as QwMpmcPopAllLifoStack. shared by producer and consumer
+    std::atomic<node_ptr_type> atomicLifoTop_; // LIFO. same algorithm as QwMpmcPopAllLifoStack. shared by producer and consumer
     node_ptr_type consumerLocalHead_; // LIFO order reader queue. only referenced by the consumer
     size_t expectedResultCount_; // consumer increments this when making a request, pop() decrements it
 
@@ -70,12 +69,12 @@ private:
     {
 #ifndef NDEBUG
         assert( nextlink::load(n) == 0 ); // (require unlinked)
-        assert( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)) );
+        assert( n != atomicLifoTop_.load(std::memory_order_relaxed) );
         assert( n != static_cast<node_ptr_type>(consumerLocalHead_) );
         // Note: we can't check that the node is not referenced by some other list
 #else
         if(!( nextlink::load(n) == 0 )) { std::abort(); } // (require unlinked)
-        if(!( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)) )) { std::abort(); }
+        if(!( n != atomicLifoTop_.load(std::memory_order_relaxed) )) { std::abort(); }
         if(!( n != static_cast<node_ptr_type>(consumerLocalHead_) )) { std::abort(); }
 #endif
     }
@@ -92,7 +91,7 @@ private:
 public:
     void init()
     {
-        atomicLifoTop_._nonatomic = 0;
+        std::atomic_init(&atomicLifoTop_, static_cast<node_ptr_type>(0)); // NOTE: only valid because atomicLifoTop_ was default constructed.
         consumerLocalHead_ = 0;
         expectedResultCount_ = 0;
     }
@@ -104,10 +103,10 @@ public:
         // Single producer, push one item onto the atomic LIFO.
 
         // link node to point to current atomicLifoTop_
-        nextlink::store(node, static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)));
+        nextlink::store(node, atomicLifoTop_.load(std::memory_order_relaxed));
 
-        mint_thread_fence_release(); // fence for next ptr and item data of node
-        mint_store_ptr_relaxed(&atomicLifoTop_, node); // push node onto head of atomic LIFO
+        // fence for next ptr and item data of node
+        atomicLifoTop_.store(node, std::memory_order_release); // push node onto head of atomic LIFO
     }
 
     node_ptr_type pop() // called by consumer
@@ -117,12 +116,12 @@ public:
 
         if (consumerLocalHead_ == 0) {
             // consumer-local reader queue is empty, try to refresh it from the atomic LIFO
-            if( mint_load_ptr_relaxed(&atomicLifoTop_) != 0 ){ // poll passively first to avoid unnecessarily locking the bus
+            if (atomicLifoTop_.load(std::memory_order_relaxed) != 0) { // poll passively first to avoid unnecessarily locking the bus
                 // there are new items in the atomic LIFO
 
                 // capture all nodes from the atomic LIFO
-                node_ptr_type result = static_cast<node_ptr_type>(qw_mint_exchange_ptr_relaxed( &atomicLifoTop_, 0 )); // we'll return the first item
-                mint_thread_fence_acquire(); // fence for all captured node data
+                // fence for all captured node data
+                node_ptr_type result = atomicLifoTop_.exchange(0, std::memory_order_acquire); // we'll return the first item
 
                 // retain all but the first item for future pops
                 consumerLocalHead_ = nextlink::load(result);

@@ -22,12 +22,11 @@
 #ifndef INCLUDED_QWMPMCPOPALLLIFOSTACK_H
 #define INCLUDED_QWMPMCPOPALLLIFOSTACK_H
 
+#include <atomic>
 #include <cassert>
 #ifdef NDEBUG
 #include <cstdlib> // abort
 #endif
-
-#include "qw_atomic.h" // includes "mintomic/mintomic.h"
 
 #include "QwConfig.h"
 #include "QwLinkTraits.h"
@@ -61,7 +60,7 @@ public:
     typedef typename nextlink::const_node_ptr_type const_node_ptr_type;
 
 private:
-    mint_atomicPtr_t top_;
+    std::atomic<node_ptr_type> top_;
 
 #if (QW_VALIDATE_NODE_LINKS == 1)
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
@@ -69,11 +68,11 @@ private:
 #ifndef NDEBUG
         assert( nextlink::load(n) == 0 ); // (require unlinked)
         // Node could be unlinked (NULL next ptr) but still at top of stack; check that:
-        assert( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_)) );
+        assert( n != top_.load(std::memory_order_relaxed) );
         // Note: we can't check that the node is not referenced by some other list
 #else
         if(!( nextlink::load(n) == 0 )) { std::abort(); } // (require unlinked)
-        if(!( n != static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_)) )) { std::abort(); }
+        if(!( n != top_.load(std::memory_order_relaxed) )) { std::abort(); }
 #endif
     }
 
@@ -88,9 +87,8 @@ private:
 
 public:
     QwMpmcPopAllLifoStack()
-    {
-        top_._nonatomic = 0;
-    }
+        : top_(0)
+    {}
 
     // The following four push variants use the same algorithm. Theh differ
     // only in whether one or multiple items are pushed, and whether they
@@ -101,30 +99,30 @@ public:
     {
         CHECK_NODE_IS_UNLINKED( node );
 
-        node_ptr_type top;
+        node_ptr_type top = top_.load(std::memory_order_relaxed);
         do{
-            top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nextlink::store(node, top);
             // A fence is needed here for two reasons:
-            //   1. so that node's payload gets written before node becomes visible to client
+            //   1. so that node's payload gets written before node becomes visible to consumer
             //   2. ensure that node->next <-- top is written before top <-- node
-            mint_thread_fence_release();
-        } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, node)!=top);
+        } while (top_.compare_exchange_strong(top, node,
+                /*success:*/ std::memory_order_release,
+                /*failure:*/ std::memory_order_relaxed) == false);
     }
 
     void push( node_ptr_type node, bool& wasEmpty )
     {
         CHECK_NODE_IS_UNLINKED( node );
 
-        node_ptr_type top;
+        node_ptr_type top = top_.load(std::memory_order_relaxed);
         do{
-            top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nextlink::store(node, top);
             // A fence is needed here for two reasons:
-            //   1. so that node's payload gets written before node becomes visible to client
+            //   1. so that node's payload gets written before node becomes visible to consumer
             //   2. ensure that node->next <-- top is written before top <-- node
-            mint_thread_fence_release();
-        } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, node)!=top);
+        } while (top_.compare_exchange_strong(top, node,
+                /*success:*/ std::memory_order_release,
+                /*failure:*/ std::memory_order_relaxed) == false);
 
         wasEmpty = (top==0);
     }
@@ -134,44 +132,43 @@ public:
     {
         CHECK_NODE_IS_UNLINKED( back );
 
-        node_ptr_type top;
+        node_ptr_type top = top_.load(std::memory_order_relaxed);
         do{
-            top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nextlink::store(back, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to consumer
             //   2. ensure that back->next <-- top is written before top <-- front
-            mint_thread_fence_release();
-        } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
+        } while (top_.compare_exchange_strong(top, front,
+                /*success:*/ std::memory_order_release,
+                /*failure:*/ std::memory_order_relaxed) == false);
     }
 
     void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
     {
         CHECK_NODE_IS_UNLINKED( back );
 
-        node_ptr_type top;
+        node_ptr_type top = top_.load(std::memory_order_relaxed);
         do{
-            top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&top_));
             nextlink::store(back, top);
             // A fence is needed here for two reasons:
             //   1. so that node's payload gets written before node becomes visible to consumer
             //   2. ensure that back->next <-- top is written before top <-- front
-            mint_thread_fence_release();
-        } while (mint_compare_exchange_strong_ptr_relaxed(&top_, top, front)!=top);
+        } while (top_.compare_exchange_strong(top, front,
+                /*success:*/ std::memory_order_release,
+                /*failure:*/ std::memory_order_relaxed) == false);
 
         wasEmpty = (top==0);
     }
 
     bool empty() const
     {
-        return (mint_load_ptr_relaxed(const_cast<mint_atomicPtr_t*>(&top_)) == 0);
+        return (top_.load(std::memory_order_relaxed) == 0);
     }
 
     node_ptr_type pop_all()
     {
-        node_ptr_type result = static_cast<node_ptr_type>(qw_mint_exchange_ptr_relaxed( &top_, 0 )); // we'll return the first item
-        mint_thread_fence_acquire(); // fence for all captured node data
-        return result;
+        // acquire fence for all captured node data
+        return top_.exchange(0, std::memory_order_acquire); // we'll return the first item
     }
 };
 
