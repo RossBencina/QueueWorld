@@ -148,7 +148,6 @@
     <ClInclude Include="..\..\..\include\QwSList.h" />
     <ClInclude Include="..\..\..\include\QwSpscUnorderedResultQueue.h" />
     <ClInclude Include="..\..\..\include\QwSTailList.h" />
-    <ClInclude Include="..\..\..\include\qw_atomic.h" />
     <ClInclude Include="..\..\..\tests\Qw_Lists_adhocTestsShared.h" />
     <ClInclude Include="..\..\..\tests\Qw_Lists_axiomaticTestsShared.h" />
     <ClInclude Include="..\..\..\tests\Qw_Lists_randomisedTestShared.h" />
