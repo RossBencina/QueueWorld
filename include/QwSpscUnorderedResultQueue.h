@@ -103,10 +103,20 @@ public:
         // Single producer, push one item onto the atomic LIFO.
 
         // link node to point to current atomicLifoTop_
-        nextlink::store(node, atomicLifoTop_.load(std::memory_order_relaxed));
+        node_ptr_type top = atomicLifoTop_.load(std::memory_order_relaxed);
+        nextlink::store(node, top);
 
-        // fence for next ptr and item data of node
-        atomicLifoTop_.store(node, std::memory_order_release); // push node onto head of atomic LIFO
+        // push node onto head of atomic LIFO
+        if (atomicLifoTop_.compare_exchange_strong(top, node,
+                /*success:*/ std::memory_order_release,             // fence for next ptr and item data of node
+                /*failure:*/ std::memory_order_release) == false) { // ditto
+            // compare_exchange_strong failed. Since this is a SPSC queue, failure can only
+            // happen if pop() exchanged 0 onto atomicLifoTop_.
+            assert(top == 0);
+
+            nextlink::store(node, 0); // top is 0
+            atomicLifoTop_.store(node, std::memory_order_relaxed); // push node onto head of atomic LIFO (fenced by compare_exchange_strong)
+        }
     }
 
     node_ptr_type pop() // called by consumer
