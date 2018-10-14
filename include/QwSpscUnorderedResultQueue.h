@@ -104,7 +104,7 @@ public:
         // Single producer, push one item onto the atomic LIFO.
 
         // link node to point to current atomicLifoTop_
-        node_ptr_type top = mint_load_ptr_relaxed(&atomicLifoTop_);
+        node_ptr_type top = static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_));
         nextlink::store(node, top);
 
         // push node onto head of atomic LIFO
