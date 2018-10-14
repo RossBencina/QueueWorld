@@ -104,10 +104,24 @@ public:
         // Single producer, push one item onto the atomic LIFO.
 
         // link node to point to current atomicLifoTop_
-        nextlink::store(node, static_cast<node_ptr_type>(mint_load_ptr_relaxed(&atomicLifoTop_)));
+        node_ptr_type top = mint_load_ptr_relaxed(&atomicLifoTop_);
+        nextlink::store(node, top);
 
-        mint_thread_fence_release(); // fence for next ptr and item data of node
-        mint_store_ptr_relaxed(&atomicLifoTop_, node); // push node onto head of atomic LIFO
+        // push node onto head of atomic LIFO
+
+        // A fence is needed here for two reasons:
+        //   1. so that node's payload gets written before node becomes visible to client
+        //   2. ensure that node->next <-- top is written before atomicLifoTop_ <-- node
+        mint_thread_fence_release();
+        if (mint_compare_exchange_strong_ptr_relaxed(&atomicLifoTop_, top, node) != top) {
+            // compare_exchange_strong failed. Since this is a SPSC queue, failure can only
+            // happen if pop() exchanged 0 onto atomicLifoTop_.
+
+            nextlink::store(node, 0); // top is now 0
+
+            mint_thread_fence_release(); // fence for next ptr and item data of node
+            mint_store_ptr_relaxed(&atomicLifoTop_, node); // push node onto head of atomic LIFO
+        }
     }
 
     node_ptr_type pop() // called by consumer
