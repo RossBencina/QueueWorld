@@ -109,13 +109,16 @@ public:
         // push node onto head of atomic LIFO
         if (atomicLifoTop_.compare_exchange_strong(top, node,
                 /*success:*/ std::memory_order_release,             // fence for next ptr and item data of node
-                /*failure:*/ std::memory_order_release) == false) { // ditto
+                /*failure:*/ std::memory_order_relaxed) == false) {
             // compare_exchange_strong failed. Since this is a SPSC queue, failure can only
             // happen if pop() exchanged 0 onto atomicLifoTop_.
             assert(top == 0);
 
             nextlink::store(node, 0); // top is 0
-            atomicLifoTop_.store(node, std::memory_order_relaxed); // push node onto head of atomic LIFO (fenced by compare_exchange_strong)
+            // push node onto head of atomic LIFO
+            // fence for next ptr and item data of node
+            // (NOTE: we just updated node->next = 0, so we can't use the failure branch fence in compare_exchange_strong)
+            atomicLifoTop_.store(node, std::memory_order_release);
         }
     }
 
