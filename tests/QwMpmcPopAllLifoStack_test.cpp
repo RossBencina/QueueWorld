@@ -23,6 +23,11 @@
 
 #include "catch.hpp"
 
+#include <cstddef> // size_t
+#include <cstdlib> // rand and srand
+#include <ctime> // time()
+#include <thread>
+
 
 namespace {
 
@@ -149,12 +154,6 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
     }
 }
 
-#if __cplusplus >= 201103L // C++11. concurrency test using C++11 threads.
-
-#include <cstddef> // size_t
-#include <cstdlib> // rand and srand
-#include <ctime> // time()
-#include <thread>
 
 namespace {
 
@@ -228,5 +227,3 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/multi-threaded", "[slow][vslow][fuzz] QwM
 
     REQUIRE( freedNodeCount == allocatedNodeCount );
 }
-
-#endif // end __cplusplus >= 201103L
