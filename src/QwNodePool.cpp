@@ -1,5 +1,5 @@
 /*
-    Queue World is copyright (c) 2014 Ross Bencina
+    Queue World is copyright (c) 2014-2018 Ross Bencina
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
