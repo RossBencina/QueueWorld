@@ -41,7 +41,7 @@ namespace {
             : value( 0 )
         {
             for( int i=0; i < LINK_COUNT; ++i )
-                links_[i] = 0;
+                links_[i] = nullptr;
         }
     };
 
@@ -60,7 +60,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
     TestMpmcPopAllLifoStack stack;
 
     REQUIRE( stack.empty() );
-    REQUIRE( stack.pop_all() == (TestNode*)NULL );
+    REQUIRE( stack.pop_all() == (TestNode*)nullptr );
 
     // void push( node_ptr_type node )
 
@@ -68,7 +68,7 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
     REQUIRE( !stack.empty() );
     REQUIRE( stack.pop_all() == a );
     REQUIRE( stack.empty() );
-    REQUIRE( stack.pop_all() == (TestNode*)NULL );
+    REQUIRE( stack.pop_all() == (TestNode*)nullptr );
 
     for (int i=0; i < 10; ++i)
         stack.push(&nodes[i]);
@@ -82,11 +82,11 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
         for (int i=9; i >=0; --i) {
             REQUIRE( xs == &nodes[i] );
             TestNode *next = xs->links_[TestNode::LINK_INDEX_1];
-            // zero links as we go. in test mode the data structure requires all links to be zeroed
-            xs->links_[TestNode::LINK_INDEX_1] = 0;
+            // zero links as we go. in test mode the data structure requires all links to be set to nullptr
+            xs->links_[TestNode::LINK_INDEX_1] = nullptr;
             xs = next;
         }
-        REQUIRE( xs == (TestNode*)NULL );
+        REQUIRE( xs == (TestNode*)nullptr );
     }
 
     // void push( node_ptr_type node, bool& wasEmpty )
@@ -100,14 +100,14 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
 
     REQUIRE( stack.pop_all() == b );
     REQUIRE( stack.empty() );
-    a->links_[TestNode::LINK_INDEX_1] = 0;
-    b->links_[TestNode::LINK_INDEX_1] = 0;
+    a->links_[TestNode::LINK_INDEX_1] = nullptr;
+    b->links_[TestNode::LINK_INDEX_1] = nullptr;
 
     // void push_multiple( node_ptr_type front, node_ptr_type back )
 
     a->links_[TestNode::LINK_INDEX_1] = b;
     b->links_[TestNode::LINK_INDEX_1] = c;
-    c->links_[TestNode::LINK_INDEX_1] = 0;
+    c->links_[TestNode::LINK_INDEX_1] = nullptr;
 
     stack.push_multiple(a, c);
     REQUIRE( !stack.empty() );
@@ -120,17 +120,17 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
         REQUIRE( xs->links_[TestNode::LINK_INDEX_1] == b );
         REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == c );
 
-        a->links_[TestNode::LINK_INDEX_1] = 0;
-        b->links_[TestNode::LINK_INDEX_1] = 0;
-        c->links_[TestNode::LINK_INDEX_1] = 0;
+        a->links_[TestNode::LINK_INDEX_1] = nullptr;
+        b->links_[TestNode::LINK_INDEX_1] = nullptr;
+        c->links_[TestNode::LINK_INDEX_1] = nullptr;
     }
 
     // test push_multiple(...,wasEmpty)
 
     a->links_[TestNode::LINK_INDEX_1] = b;
     b->links_[TestNode::LINK_INDEX_1] = c;
-    c->links_[TestNode::LINK_INDEX_1] = 0;
-    d->links_[TestNode::LINK_INDEX_1] = 0;
+    c->links_[TestNode::LINK_INDEX_1] = nullptr;
+    d->links_[TestNode::LINK_INDEX_1] = nullptr;
     REQUIRE( stack.empty() );
     wasEmpty = false;
     stack.push_multiple(a, c, wasEmpty);
@@ -147,10 +147,10 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
         REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == b );
         REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == c );
 
-        a->links_[TestNode::LINK_INDEX_1] = 0;
-        b->links_[TestNode::LINK_INDEX_1] = 0;
-        c->links_[TestNode::LINK_INDEX_1] = 0;
-        d->links_[TestNode::LINK_INDEX_1] = 0;
+        a->links_[TestNode::LINK_INDEX_1] = nullptr;
+        b->links_[TestNode::LINK_INDEX_1] = nullptr;
+        c->links_[TestNode::LINK_INDEX_1] = nullptr;
+        d->links_[TestNode::LINK_INDEX_1] = nullptr;
     }
 }
 
@@ -167,7 +167,7 @@ namespace {
 
     static unsigned testThreadProc()
     {
-        std::srand(static_cast<unsigned int>(std::time(0)));
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
         for( std::size_t i=0; i < THREAD_ITERATIONS; ++i ){
 
@@ -177,7 +177,7 @@ namespace {
                 TestNode *n = all;
                 all = all->links_[TestNode::LINK_INDEX_1];
 #if (QW_VALIDATE_NODE_LINKS == 1)
-                n->links_[TestNode::LINK_INDEX_1] = 0; // validation code in push expects link to be cleared on entry
+                n->links_[TestNode::LINK_INDEX_1] = nullptr; // validation code in push expects link to be cleared on entry
 #endif
                 testStacks_[ static_cast<std::size_t>(rand()) % TEST_STACK_COUNT ]->push(n);
             }

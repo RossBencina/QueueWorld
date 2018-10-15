@@ -36,10 +36,10 @@
 
 
 // QW_VALIDATE_NODE_LINKS switches on the following behavior:
-//  - Node links are zeroed after use.
+//  - Node links are set to nullptr after use.
 //  - Node links are verified as zero before collections insert them.
 //
-// The client should ensure that node links are correctly zeroed
+// The client should ensure that node links are correctly set to nullptr
 // before trying to add nodes to queues.
 //
 // To explicitly enable/disable define QW_VALIDATE_NODE_LINKS to 0 or 1

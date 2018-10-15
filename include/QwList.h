@@ -55,18 +55,18 @@ struct QwDoubleLinkNodeInfo {
     static bool is_linked( const_node_ptr_type n )
     {
         // allow for node being at start or end: only one of {next, prev} needs to be linked.
-        return ((nextlink::load(n) != 0) || (prevlink::load(n) != 0));
+        return ((nextlink::load(n) != nullptr) || (prevlink::load(n) != nullptr));
     }
 
     static bool is_unlinked( const_node_ptr_type n )
     {
-        return ((nextlink::load(n) == 0) && (prevlink::load(n) == 0));
+        return ((nextlink::load(n) == nullptr) && (prevlink::load(n) == nullptr));
     }
 
     static void clear( node_ptr_type n )
     {
-        nextlink::store(n, 0);
-        prevlink::store(n, 0);
+        nextlink::store(n, nullptr);
+        prevlink::store(n, nullptr);
     }
 };
 
@@ -153,7 +153,7 @@ public:
         node_ptr_type p_;
     public:
 #if (QW_VALIDATE_NODE_LINKS == 1)
-        iterator() : p_( 0 ) {}
+        iterator() : p_( nullptr ) {}
 #else
         iterator() {}
 #endif
@@ -202,7 +202,7 @@ public:
         const_node_ptr_type p_;
     public:
 #if (QW_VALIDATE_NODE_LINKS == 1)
-        const_iterator() : p_( 0 ) {}
+        const_iterator() : p_( nullptr ) {}
 #else
         const_iterator() {}
 #endif
@@ -299,7 +299,7 @@ public:
         CHECK_NODE_IS_UNLINKED( n );
 
         if( empty() ){
-            links::store_next(n, 0);
+            links::store_next(n, nullptr);
             back_ = n;
         }else{
             links::store_next(n, front_);
@@ -332,7 +332,7 @@ public:
     {
         CHECK_NODE_IS_UNLINKED( n );
 
-        links::store_next(n, 0);
+        links::store_next(n, nullptr);
 
 		if( empty() ){
             links::store_prev(n, before_front_());
@@ -347,15 +347,15 @@ public:
 
     void insert_after( node_ptr_type before, node_ptr_type n ) // insert n after node before
     {
-        assert( before != 0 );
-        assert( n != 0 );
+        assert( before != nullptr );
+        assert( n != nullptr );
         CHECK_NODE_IS_UNLINKED( n );
 
         if( empty() ){
             assert( before == before_front_() );
 
             links::store_prev(n, before_front_());
-            links::store_next(n, 0);
+            links::store_next(n, nullptr);
             back_ = front_ = n;
         }else{
             node_ptr_type after = links::load_next(before);
@@ -374,7 +374,7 @@ public:
 
     node_ptr_type remove_after( node_ptr_type before ) // returns the removed node
     {
-        assert( links::load_next(before) != 0 ); // can't remove an item after the last item
+        assert( links::load_next(before) != nullptr ); // can't remove an item after the last item
 
         node_ptr_type result = links::load_next(before);
         node_ptr_type after = links::load_next(result);
@@ -385,7 +385,7 @@ public:
         if( after ){
             links::store_prev(after, before);
         }else{
-            if( front_ == 0 ) // zeroed above in assignment to links::load_next(before)
+            if( front_ == nullptr ) // set to nullptr above in assignment to links::load_next(before)
                 front_ = back_ = before_front_();
             else
                 back_ = before;
@@ -406,7 +406,7 @@ public:
         if( back_ == before_front_() ){
             front_ = before_front_();
         }else{
-            links::store_next(back_, 0);
+            links::store_next(back_, nullptr);
         }
 
         CLEAR_NODE_LINKS_FOR_VALIDATION( result );
@@ -415,7 +415,7 @@ public:
 
     void insert( node_ptr_type at, node_ptr_type n ) // insert n before node at
     {
-        assert( at != 0 );
+        assert( at != nullptr );
         assert( at != before_front_() );
         CHECK_NODE_IS_UNLINKED( n );
 
@@ -450,7 +450,7 @@ public:
             links::store_prev(after, before);
         }else{
             // at was back
-            if( front_ == 0 ) // updated in assignment links::store_next(before, after)
+            if( front_ == nullptr ) // updated in assignment links::store_next(before, after)
                 front_ = back_ = before_front_();
             else
                 back_ = before;

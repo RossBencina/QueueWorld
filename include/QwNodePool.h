@@ -170,7 +170,7 @@ class QwRawNodePool {
     // thread unsafe non-atomic version for construction time
     void stack_push_nonatomic( void *node )
     {
-        assert( node != 0 );
+        assert( node != nullptr );
         nodeindex_type nodeIndex = index_of_node(node);
         node_next_lvalue(node) = ap_index(top_.load(std::memory_order_relaxed)); // Link new node to head of list (node.next <- top.ptr)
         top_.store(make_abapointer(nodeIndex,0), std::memory_order_relaxed); // Set top to new node. no need for ABA counter during thread-unsafe code
@@ -178,7 +178,7 @@ class QwRawNodePool {
 
     void stack_push( void *node )
     {
-        assert( node != 0 );
+        assert( node != nullptr );
         nodeindex_type nodeIndex = index_of_node(node);
 
         abapointer_type top = top_.load(std::memory_order_relaxed); // Read top.ptr and top.count together (also done by compare_exchange_strong upon failure)
@@ -198,7 +198,7 @@ class QwRawNodePool {
             std::atomic_thread_fence(std::memory_order_acquire); // Acquire top.next, accessed by node_next(node) below.
             nodeindex_type nodeIndex = ap_index(top);
             if (nodeIndex==NULL_NODE_INDEX)             // Is the stack empty?
-                return 0;                               // The stack was empty, couldn't pop
+                return nullptr;                         // The stack was empty, couldn't pop
             // Try to swing top to the next node:
             node = node_at_index(nodeIndex);
         } while (top_.compare_exchange_strong(top, make_abapointer(node_next(node), ap_count(top)+countIncrement_),
@@ -257,7 +257,7 @@ public:
     {
         void *p = rawPool_.allocate();
         if (!p)
-            return 0;
+            return nullptr;
         // BUG: don't placement new to re-allocate the node -- in C++11, node objects
         // should be type-stable in order to avoid a strict aliasing violation
         // when QwRawNodePool::stack_pop() reads the next ptr of a node that

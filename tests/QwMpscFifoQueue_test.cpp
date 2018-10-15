@@ -36,7 +36,7 @@ namespace {
             : value( 0 )
         {
             for( int i=0; i < LINK_COUNT; ++i )
-                links_[i] = 0;
+                links_[i] = nullptr;
         }
     };
 
@@ -58,7 +58,7 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
     TestMpscFifoQueue q;
 
     REQUIRE( q.consumer_empty() == true );
-    REQUIRE( q.pop() == (TestNode*)NULL );
+    REQUIRE( q.pop() == (TestNode*)nullptr );
 
     // void push( node_ptr_type n )
     // bool consumer_empty() const
@@ -104,11 +104,11 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
     // the last item in the list (a) is the first to be popped from the FIFO.
     next_(c) = b;
     next_(b) = a;
-    next_(a) = 0;
+    next_(a) = nullptr;
     wasEmpty=false;
     q.push_multiple( c, a, wasEmpty );
     REQUIRE( wasEmpty == true );
-    next_(d) = 0;
+    next_(d) = nullptr;
     q.push_multiple( d, d, wasEmpty );
     REQUIRE( wasEmpty == false );
 

@@ -60,10 +60,10 @@ static void qw_aligned_free( void *memblock )
 
 static void *qw_aligned_malloc( size_t size, size_t alignment )
 {
-    void *result = 0;
+    void *result = nullptr;
 
     if (posix_memalign(&result, alignment, size)!=0)
-        result = 0;
+        result = nullptr;
 
     return result;
 }
@@ -95,7 +95,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
     // and http://stackoverflow.com/questions/17378444/stdalign-and-stdaligned-storage-for-aligned-allocation-of-memory-blocks
 
     nodeStorage_ = (int8_t*)qw_aligned_malloc(nodeSize_*maxNodes,CACHE_LINE_SIZE);
-    assert( nodeStorage_ != 0 );
+    assert( nodeStorage_ != nullptr );
 
     nodeArrayBase_ = nodeStorage_ - nodeSize_; // node index 0 is the null index, so we want nodeArrayBase_[1] --> nodeStorage_[0]
 

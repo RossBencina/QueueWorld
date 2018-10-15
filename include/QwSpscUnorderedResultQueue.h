@@ -68,12 +68,12 @@ private:
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG
-        assert( nextlink::load(n) == 0 ); // (require unlinked)
+        assert( nextlink::load(n) == nullptr ); // (require unlinked)
         assert( n != atomicLifoTop_.load(std::memory_order_relaxed) );
         assert( n != static_cast<node_ptr_type>(consumerLocalHead_) );
         // Note: we can't check that the node is not referenced by some other list
 #else
-        if(!( nextlink::load(n) == 0 )) { std::abort(); } // (require unlinked)
+        if(!( nextlink::load(n) == nullptr )) { std::abort(); } // (require unlinked)
         if(!( n != atomicLifoTop_.load(std::memory_order_relaxed) )) { std::abort(); }
         if(!( n != static_cast<node_ptr_type>(consumerLocalHead_) )) { std::abort(); }
 #endif
@@ -81,7 +81,7 @@ private:
 
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
     {
-        nextlink::store(n, 0);
+        nextlink::store(n, nullptr);
     }
 #else
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
@@ -91,8 +91,8 @@ private:
 public:
     void init()
     {
-        std::atomic_init(&atomicLifoTop_, static_cast<node_ptr_type>(0)); // NOTE: only valid because atomicLifoTop_ was default constructed.
-        consumerLocalHead_ = 0;
+        std::atomic_init(&atomicLifoTop_, static_cast<node_ptr_type>(nullptr)); // NOTE: only valid because atomicLifoTop_ was default constructed.
+        consumerLocalHead_ = nullptr;
         expectedResultCount_ = 0;
     }
 
@@ -111,13 +111,13 @@ public:
                 /*success:*/ std::memory_order_release,             // fence for next ptr and item data of node
                 /*failure:*/ std::memory_order_relaxed) == false) {
             // compare_exchange_strong failed. Since this is a SPSC queue, failure can only
-            // happen if pop() exchanged 0 onto atomicLifoTop_.
-            assert(top == 0);
+            // happen if pop() exchanged nullptr onto atomicLifoTop_.
+            assert(top == nullptr);
 
-            nextlink::store(node, 0); // top is 0
+            nextlink::store(node, nullptr); // top is nullptr
             // push node onto head of atomic LIFO
             // fence for next ptr and item data of node
-            // (NOTE: we just updated node->next = 0, so we can't use the failure branch fence in compare_exchange_strong)
+            // (NOTE: we just updated node->next = nullptr, so we can't use the failure branch fence in compare_exchange_strong)
             atomicLifoTop_.store(node, std::memory_order_release);
         }
     }
@@ -127,14 +127,14 @@ public:
         // Single consumer, pop one item: either from the consumer-local queue,
         // or by capturing a new segment from the atomic LIFO.
 
-        if (consumerLocalHead_ == 0) {
+        if (consumerLocalHead_ == nullptr) {
             // consumer-local reader queue is empty, try to refresh it from the atomic LIFO
-            if (atomicLifoTop_.load(std::memory_order_relaxed) != 0) { // poll passively first to avoid unnecessarily locking the bus
+            if (atomicLifoTop_.load(std::memory_order_relaxed) != nullptr) { // poll passively first to avoid unnecessarily locking the bus
                 // there are new items in the atomic LIFO
 
                 // capture all nodes from the atomic LIFO
                 // fence for all captured node data
-                node_ptr_type result = atomicLifoTop_.exchange(0, std::memory_order_acquire); // we'll return the first item
+                node_ptr_type result = atomicLifoTop_.exchange(nullptr, std::memory_order_acquire); // we'll return the first item
 
                 // retain all but the first item for future pops
                 consumerLocalHead_ = nextlink::load(result);
@@ -146,7 +146,7 @@ public:
             }
             else
             {
-                return 0; // no items available
+                return nullptr; // no items available
             }
         } else {
             // consumer-local reader queue is non-empty. pop one item from consumerLocalHead_

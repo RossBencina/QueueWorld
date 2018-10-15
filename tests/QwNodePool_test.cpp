@@ -37,7 +37,7 @@ namespace {
             : value( 0 )
         {
             for( int i=0; i < LINK_COUNT; ++i )
-                links_[i] = 0;
+                links_[i] = nullptr;
         }
     };
 
@@ -55,11 +55,11 @@ TEST_CASE( "qw/node_pool", "QwNodePool single threaded test" ) {
 
     for (size_t i=0; i < maxNodes; ++i) {
         TestNode *n = pool.allocate();
-        REQUIRE( n != (TestNode*)NULL );
+        REQUIRE( n != (TestNode*)nullptr );
         allocatedNodes.push_front(n);
     }
 
-    REQUIRE( pool.allocate() == (TestNode*)NULL );
+    REQUIRE( pool.allocate() == (TestNode*)nullptr );
 
     while (!allocatedNodes.empty())
         pool.deallocate(allocatedNodes.pop_front());

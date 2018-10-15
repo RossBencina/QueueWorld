@@ -73,7 +73,7 @@ void verifyForwards( list_type& list, int expectedCount )
         REQUIRE( list.empty() );
     }else{
         typename list_type::node_ptr_type n = list.front();
-        typename list_type::node_ptr_type past_back = 0;
+        typename list_type::node_ptr_type past_back = nullptr;
 
         typename list_type::iterator i = list.begin();
         typename list_type::iterator end = list.end();
@@ -126,7 +126,7 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
     randomisedRemoveT& randomisedRemove,
     verifyT& verify )
 {
-    std::srand(static_cast<unsigned int>(std::time(0)));
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
     list_type a;
     typedef typename list_type::node_type node_type;

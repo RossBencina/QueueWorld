@@ -36,7 +36,7 @@
 
     Can be used as a LIFO stack (push and pop to front).
 
-    The list is internally terminated with a 0 (NULL) next ptr.
+    The list is internally terminated with a nullptr next ptr.
 
     Constraints:
         - Don't call pop_front() on an empty list.
@@ -104,18 +104,18 @@ private:
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG
-        assert( nextlink::load(n) == 0 ); // (require unlinked)
+        assert( nextlink::load(n) == nullptr ); // (require unlinked)
         assert( n != front_ );
         // Note: we can't check that the node is not referenced by some other list
 #else
-        if(!( nextlink::load(n) == 0 )) { std::abort(); } // (require unlinked)
+        if(!( nextlink::load(n) == nullptr )) { std::abort(); } // (require unlinked)
         if(!( n != front_ )) { std::abort(); }
 #endif
     }
 
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
     {
-        nextlink::store(n, 0);
+        nextlink::store(n, nullptr);
     }
 #else
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
@@ -128,7 +128,7 @@ public:
         node_ptr_type p_;
     public:
 #if (QW_VALIDATE_NODE_LINKS == 1)
-        iterator() : p_( 0 ) {}
+        iterator() : p_( nullptr ) {}
 #else
         iterator() {}
 #endif
@@ -160,7 +160,7 @@ public:
 
     // TODO also provides const_iterator?
 
-    QwSList() : front_( 0 ) {}
+    QwSList() : front_( nullptr ) {}
     explicit QwSList( node_ptr_type front ) // construct from raw head pointer
         : front_( front ) {}
 
@@ -169,7 +169,7 @@ public:
         while( !empty() ) pop_front();
 #else
         // this doesn't mark nodes as unlinked
-        front_ = 0;
+        front_ = nullptr;
 #endif
     }
 
@@ -178,7 +178,7 @@ public:
     node_ptr_type release() // return the front node, with links intact
     {
         node_ptr_type result = front_;
-        front_ = 0;
+        front_ = nullptr;
         return result;
     }
 
@@ -192,20 +192,20 @@ public:
 
     bool empty() const
     {
-        return (front_ == 0);
+        return (front_ == nullptr);
     }
 
     bool size_is_1() const
     {
-        return (front_ != 0 && nextlink::load(front_) == 0);
+        return (front_ != nullptr && nextlink::load(front_) == nullptr);
     }
 
     bool size_is_greater_than_1() const
     {
-        return (front_ != 0 && nextlink::load(front_) != 0);
+        return (front_ != nullptr && nextlink::load(front_) != nullptr);
     }
 
-    // front returns 0 (NULL) when list is empty
+    // front returns nullptr when list is empty
 	node_ptr_type front() { return front_; }
     const_node_ptr_type front() const { return front_; }
 
@@ -213,7 +213,7 @@ public:
     {
         CHECK_NODE_IS_UNLINKED( n );
 
-        nextlink::store(n, front_); // this works even if front_ is 0 when the list is empty.
+        nextlink::store(n, front_); // this works even if front_ is nullptr when the list is empty.
         front_ = n;
     }
 
@@ -231,8 +231,8 @@ public:
 
     void insert_after( node_ptr_type before, node_ptr_type n ) // insert n after node before
     {
-        assert( before != 0 );
-        assert( n != 0 );
+        assert( before != nullptr );
+        assert( n != nullptr );
         CHECK_NODE_IS_UNLINKED( n );
 
         nextlink::store(n, nextlink::load(before));
@@ -247,7 +247,7 @@ public:
 
     node_ptr_type remove_after( node_ptr_type before ) // returns the removed node
     {
-        assert( nextlink::load(before) != 0 ); // can't remove an item after the last item
+        assert( nextlink::load(before) != nullptr ); // can't remove an item after the last item
 
         node_ptr_type result = nextlink::load(before);
         nextlink::store(before, nextlink::load(result));
@@ -288,7 +288,7 @@ public:
 
     iterator begin() const { return iterator(front_); }
 
-    const iterator end() const { return iterator(0); }
+    const iterator end() const { return iterator(nullptr); }
 
     // forward_list also provides const iterator and const iterator accessors
 
@@ -302,14 +302,14 @@ public:
 
     bool is_back( const node_ptr_type node ) const
     {
-        return nextlink::load(node) == 0;
+        return nextlink::load(node) == nullptr;
     }
 
-    // identify terminator pointer (it's just a NULL ptr)
+    // identify terminator pointer (it's just a null ptr)
 
     bool is_end( const node_ptr_type node ) const // node points to the element past back
     {
-        return (node == 0);
+        return (node == nullptr);
     }
 */
 };

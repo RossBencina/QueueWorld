@@ -69,7 +69,7 @@ namespace {
             : value( 0 )
         {
             for( int i=0; i < LINK_COUNT; ++i )
-                links_[i] = 0;
+                links_[i] = nullptr;
         }
     };
 
@@ -83,7 +83,7 @@ TEST_CASE( "qw/staillist/empty", "QwSTailList operations on empty lists" ) {
     TestSTailList a, b;
     emptyListTest( a, b );
 
-    REQUIRE( a.back() == (TestNode*)NULL );
+    REQUIRE( a.back() == (TestNode*)nullptr );
 }
 
 TEST_CASE( "qw/staillist/one", "QwSTailList list operations with 1 node/element" ) {
@@ -199,8 +199,8 @@ static void requireEmptyInvariants( TestSTailList& a )
 
     // front(), back()
 
-    REQUIRE( a.front() == (TestNode*)NULL );
-    REQUIRE( a.back() == (TestNode*)NULL );
+    REQUIRE( a.front() == (TestNode*)nullptr );
+    REQUIRE( a.back() == (TestNode*)nullptr );
 
     // iterator sequence invariants
 
@@ -229,22 +229,22 @@ static void requireSingleNodeInvariants( TestSTailList& a, TestNode *node )
 
     // front(), back() invariants
 
-    REQUIRE( a.front() != (TestNode*)NULL );
+    REQUIRE( a.front() != (TestNode*)nullptr );
     REQUIRE( a.front() == node );
 
-    REQUIRE( a.back() != (TestNode*)NULL );
+    REQUIRE( a.back() != (TestNode*)nullptr );
     REQUIRE( a.back() == node );
 
     REQUIRE( *a.begin() == node );
 
-    // next() of front() is 0 in a one item list
+    // next() of front() is nullptr in a one item list
 
-    REQUIRE( a.next(a.front()) == (TestNode*)NULL );
+    REQUIRE( a.next(a.front()) == (TestNode*)nullptr );
 
-    REQUIRE( a.next( a.back() ) == (TestNode*)NULL );
+    REQUIRE( a.next( a.back() ) == (TestNode*)nullptr );
 
-	// next() of front() is 0 in a one item list
-    REQUIRE( a.next(a.front()) == (TestNode*)NULL );
+	// next() of front() is nullptr in a one item list
+    REQUIRE( a.next(a.front()) == (TestNode*)nullptr );
 
     // iterator sequence invariants
 
@@ -287,17 +287,17 @@ static void requireMoreThanOneNodeInvariants( TestSTailList& a, TestNode *nodes,
 
     // front(), back() invariants
 
-    REQUIRE( a.front() != (TestNode*)NULL );
+    REQUIRE( a.front() != (TestNode*)nullptr );
     REQUIRE( a.front() == &nodes[0] );
 
-    REQUIRE( a.back() != (TestNode*)NULL );
+    REQUIRE( a.back() != (TestNode*)nullptr );
     REQUIRE( a.back() == &nodes[nodeCount-1] );
 
     REQUIRE( *a.begin() == &nodes[0] );
 
-    REQUIRE( a.next(a.front()) != (TestNode*)NULL );
+    REQUIRE( a.next(a.front()) != (TestNode*)nullptr );
 
-    REQUIRE( a.next( a.back() ) == (TestNode*)NULL );
+    REQUIRE( a.next( a.back() ) == (TestNode*)nullptr );
 
     // iterator sequence invariants
 
@@ -337,7 +337,7 @@ static void requireMoreThanOneNodeInvariants( TestSTailList& a, TestNode *nodes,
         i_post++;
     }
 
-    REQUIRE( n == (TestNode*)NULL );
+    REQUIRE( n == (TestNode*)nullptr );
     REQUIRE( i_pre == a.end() );
     REQUIRE( i_post == a.end() );
 }

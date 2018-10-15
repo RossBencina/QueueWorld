@@ -36,7 +36,7 @@ namespace {
             : value( 0 )
         {
             for( int i=0; i < LINK_COUNT; ++i )
-                links_[i] = 0;
+                links_[i] = nullptr;
         }
     };
 
@@ -56,14 +56,14 @@ TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single
     q.init();
 
     REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == (TestNode*)NULL );
+    REQUIRE( q.pop() == (TestNode*)nullptr );
 
     q.incrementExpectedResultCount();
     q.push( a );
     REQUIRE( q.expectedResultCount() == 1 );
     REQUIRE( q.pop() == a );
     REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == (TestNode*)NULL );
+    REQUIRE( q.pop() == (TestNode*)nullptr );
 
     q.incrementExpectedResultCount(3);
     q.push( a );
@@ -87,5 +87,5 @@ TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single
         REQUIRE( (x==a || x==b || x==c) );
     }
     REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == (TestNode*)NULL );
+    REQUIRE( q.pop() == (TestNode*)nullptr );
 }

@@ -41,8 +41,8 @@
     Implemented using the "IBM Freelist" LIFO algorithm.
 
     The algorithm doesn't need ABA protection because it does not provide a pop() operation.
-    pop_all() is not subject to the ABA problem because it swaps in a 0 value and never
-    requires comparison to a non-0 value.
+    pop_all() is not subject to the ABA problem because it swaps in a nullptr value and never
+    requires comparison to a non-nullptr value.
     See ALGORITHMS.txt
 */
 
@@ -66,19 +66,19 @@ private:
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
     {
 #ifndef NDEBUG
-        assert( nextlink::load(n) == 0 ); // (require unlinked)
-        // Node could be unlinked (NULL next ptr) but still at top of stack; check that:
+        assert( nextlink::load(n) == nullptr ); // (require unlinked)
+        // Node could be unlinked (nullptr next ptr) but still at top of stack; check that:
         assert( n != top_.load(std::memory_order_relaxed) );
         // Note: we can't check that the node is not referenced by some other list
 #else
-        if(!( nextlink::load(n) == 0 )) { std::abort(); } // (require unlinked)
+        if(!( nextlink::load(n) == nullptr )) { std::abort(); } // (require unlinked)
         if(!( n != top_.load(std::memory_order_relaxed) )) { std::abort(); }
 #endif
     }
 
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
     {
-        nextlink::store(n, 0);
+        nextlink::store(n, nullptr);
     }
 #else
     void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
@@ -87,7 +87,7 @@ private:
 
 public:
     QwMpmcPopAllLifoStack()
-        : top_(0)
+        : top_(nullptr)
     {}
 
     // The following four push variants use the same algorithm. Theh differ
@@ -124,7 +124,7 @@ public:
                 /*success:*/ std::memory_order_release,
                 /*failure:*/ std::memory_order_relaxed) == false);
 
-        wasEmpty = (top==0);
+        wasEmpty = (top==nullptr);
     }
 
     // push linked list link from front through to back
@@ -157,18 +157,18 @@ public:
                 /*success:*/ std::memory_order_release,
                 /*failure:*/ std::memory_order_relaxed) == false);
 
-        wasEmpty = (top==0);
+        wasEmpty = (top==nullptr);
     }
 
     bool empty() const
     {
-        return (top_.load(std::memory_order_relaxed) == 0);
+        return (top_.load(std::memory_order_relaxed) == nullptr);
     }
 
     node_ptr_type pop_all()
     {
         // acquire fence for all captured node data
-        return top_.exchange(0, std::memory_order_acquire); // we'll return the first item
+        return top_.exchange(nullptr, std::memory_order_acquire); // we'll return the first item
     }
 };
 

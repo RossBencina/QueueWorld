@@ -57,7 +57,7 @@ private:
 #if (QW_VALIDATE_NODE_LINKS == 1)
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
     {
-        nextlink::store(n, 0);
+        nextlink::store(n, nullptr);
     }
 #else
     void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
@@ -92,14 +92,14 @@ public:
     {
         if (consumerLocalReversingQueue_.empty()) {
             if (mpscLifo_.empty()) {
-                return 0;
+                return nullptr;
             } else {
                 node_ptr_type n = mpscLifo_.pop_all();
                 if (n) {
                     // push all but the last node popped from the lifo into consumerLocalReversingQueue_
                     // this reverses their order, putting them into fifo order.
                     node_ptr_type next = nextlink::load(n);
-                    while (next != 0) {
+                    while (next != nullptr) {
                         CLEAR_NODE_LINKS_FOR_VALIDATION(n);
                         consumerLocalReversingQueue_.push_front(n);
                         n = next;
@@ -108,7 +108,7 @@ public:
                     // return the last request, which is the next in fifo order
                     return n; // n->next is always zero here.
                 } else {
-                    return 0;
+                    return nullptr;
                 }
             }
 
