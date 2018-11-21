@@ -8,7 +8,7 @@
     Publication Number SA22-7085-0, File Number 5370-01. First Edition, March 1983.
     (See Appendix A, pp. A-44 to A-45, "Free-pool Manipulation.")
 
-    R.K.Treiber. "Systems Programming: Coping with Parallelism". 
+    R.K.Treiber. "Systems Programming: Coping with Parallelism".
     RJ 5118, IBM Almaden Research Center, April 1986
 
     Maged M. Michael, Michael L. Scott
@@ -21,12 +21,12 @@
     NOTE: there is a 2003 revision of this paper.
     **The FIFO in this paper is suspect, the paper is mentioned here only for the LIFO.**
 
-	See also:
+    See also:
 
-	Maged M. Michael
-	"The Balancing Act of Choosing Nonblocking Features"
-	ACM Queue vol. 11, no. 7
-	http://queue.acm.org/detail.cfm?id=2513575
+    Maged M. Michael
+    "The Balancing Act of Choosing Nonblocking Features"
+    ACM Queue vol. 11, no. 7
+    http://queue.acm.org/detail.cfm?id=2513575
 */
 
 /*
@@ -63,6 +63,46 @@
         return TRUE                     # The stack was not empty, pop succeeded
 
     In general we use links embedded in the client node structures rather than allocating separate nodes.
+*/
+
+/*
+    Version of IBM Freelist LIFO storing nodes rather than values.
+
+    Modified version of Figure 1 pseudocode from Michael and Scott 1997 (see above).
+
+
+    structure pointer_t { ptr: pointer to node_t, count: unsigned integer}
+    structure node_t { value: data type, next: pointer to node_t }
+    structure stack_t { Top: pointer_t }
+
+    INITIALIZE(S: pointer to stack_t)
+        S->Top.ptr = NULL               # Empty stack. Top points to NULL
+
+    PUSH(S: pointer to stack_t, node: pointer to node_t)
+        node->next = NULL               # Set next pointer of node to NULL
+        repeat                          # Keep trying until Push is done
+            top = S->Top                # Read Top.ptr and Top.count together
+            node->next = top.ptr        # Link new node to head of list
+        until CAS(&S->Top, top, [node, top.count+1]) # Try to swing Top to new node
+
+    POP(S: pointer to stack_t): pointer to node_t)
+        repeat                          # Keep trying until Pop is done
+            top = S->Top                # Read Top
+            if top.ptr == NULL          # Is the stack empty?
+                return NULL             # The stack was empty, couldn't pop
+            endif
+        until CAS(&S->Top, top, [top.ptr->next, top.count+1]) # Try to swing Top to the next node (*)
+        return top                      # The stack was not empty, pop succeeded
+
+    NOTE: at line (*) it is possible that the node pointed to by /top.ptr/
+    has already been popped by another thread, in which case (*top.ptr).next may
+    be written by another thread concurrently with the read of top.ptr->next at (*),
+    Therefore:
+        (1) to avoid data races node_t::next must be atomic, and
+        (2) to avoid a strict aliasing violation, the type of node_t::next must
+            be stable (e.g. no reconstructing the storage of node to a different type).
+
+    See also: https://stackoverflow.com/questions/46415027/c-treiber-stack-and-atomic-next-pointers
 */
 
 /*
