@@ -45,7 +45,7 @@
 
     This implementation may not be the most efficient. However, it is
     portable to 64-bit systems that lack 128-bit CAS. Tagged pointers
-    are packed into 64 bit words as (count,index), where index can be
+    are packed into 64 bit words as (count, index), where index can be
     converted to a node pointer into the nodeArrayBase_ array.
     More efficient alternative implementations may be provided later.
 
@@ -87,17 +87,17 @@ class QwRawNodePool {
     abapointer_type countMask_;
     abacount_type countIncrement_;
 
-    nodeindex_type ap_index( abapointer_type ptr ) const {
+    nodeindex_type ap_index(abapointer_type ptr) const {
         // index is in low bits, no shift needed
         return static_cast<nodeindex_type>(ptr & indexMask_);
     }
 
-    abacount_type ap_count( abapointer_type ptr ) const {
+    abacount_type ap_count(abapointer_type ptr) const {
         // count is in high bits, no shift needed because we always add countIncrement_, which is also shifted
         return static_cast<abacount_type>(ptr & countMask_);
     }
 
-    abapointer_type make_abapointer( nodeindex_type index, abacount_type count ) const {
+    abapointer_type make_abapointer(nodeindex_type index, abacount_type count) const {
         return static_cast<abapointer_type>(index) | (static_cast<abapointer_type>(count)&countMask_);
     }
 
@@ -168,17 +168,17 @@ class QwRawNodePool {
     }
 
     // thread unsafe non-atomic version for construction time
-    void stack_push_nonatomic( void *node )
+    void stack_push_nonatomic(void *node)
     {
-        assert( node != nullptr );
+        assert(node != nullptr);
         nodeindex_type nodeIndex = index_of_node(node);
         node_next_lvalue(node) = ap_index(top_.load(std::memory_order_relaxed)); // Link new node to head of list (node.next <- top.ptr)
-        top_.store(make_abapointer(nodeIndex,0), std::memory_order_relaxed); // Set top to new node. no need for ABA counter during thread-unsafe code
+        top_.store(make_abapointer(nodeIndex, 0), std::memory_order_relaxed); // Set top to new node. no need for ABA counter during thread-unsafe code
     }
 
-    void stack_push( void *node )
+    void stack_push(void *node)
     {
-        assert( node != nullptr );
+        assert(node != nullptr);
         nodeindex_type nodeIndex = index_of_node(node);
 
         abapointer_type top = top_.load(std::memory_order_relaxed); // Read top.ptr and top.count together (also done by compare_exchange_strong upon failure)
@@ -218,7 +218,7 @@ class QwRawNodePool {
     }
 
 public:
-    QwRawNodePool( size_t nodeSize, size_t maxNodes );
+    QwRawNodePool(size_t nodeSize, size_t maxNodes);
     ~QwRawNodePool();
 
     void *allocate()
@@ -232,7 +232,7 @@ public:
         return result;
     }
 
-    void deallocate( void *node )
+    void deallocate(void *node)
     {
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
         allocCount_.fetch_add(-1, std::memory_order_relaxed);
@@ -249,8 +249,8 @@ public:
 
     typedef NodeT node_type;
 
-    QwNodePool( size_t maxNodes )
-        : rawPool_( sizeof(NodeT), maxNodes )
+    QwNodePool(size_t maxNodes)
+        : rawPool_(sizeof(NodeT), maxNodes)
     {}
 
     node_type *allocate()
@@ -265,7 +265,7 @@ public:
         return new (p) node_type();
     }
 
-    void deallocate( node_type *p )
+    void deallocate(node_type *p)
     {
         p->~node_type();
         rawPool_.deallocate(p);

@@ -38,9 +38,9 @@ namespace {
         int value;
 
         TestNode()
-            : value( 0 )
+            : value(0)
         {
-            for( int i=0; i < LINK_COUNT; ++i )
+            for (int i=0; i < LINK_COUNT; ++i)
                 links_[i] = nullptr;
         }
     };
@@ -49,7 +49,7 @@ namespace {
 
 } // end anonymous namespace
 
-TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack single threaded test" ) {
+TEST_CASE("qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack single threaded test") {
 
     TestNode nodes[10];
     TestNode *a = &nodes[0];
@@ -59,93 +59,93 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/single-threaded", "QwMpmcPopAllLifoStack 
 
     TestMpmcPopAllLifoStack stack;
 
-    REQUIRE( stack.empty() );
-    REQUIRE( stack.pop_all() == (TestNode*)nullptr );
+    REQUIRE(stack.empty());
+    REQUIRE(stack.pop_all() == (TestNode*)nullptr);
 
-    // void push( node_ptr_type node )
+    // void push(node_ptr_type node)
 
     stack.push(a);
-    REQUIRE( !stack.empty() );
-    REQUIRE( stack.pop_all() == a );
-    REQUIRE( stack.empty() );
-    REQUIRE( stack.pop_all() == (TestNode*)nullptr );
+    REQUIRE(!stack.empty());
+    REQUIRE(stack.pop_all() == a);
+    REQUIRE(stack.empty());
+    REQUIRE(stack.pop_all() == (TestNode*)nullptr);
 
     for (int i=0; i < 10; ++i)
         stack.push(&nodes[i]);
 
-    REQUIRE( !stack.empty() );
+    REQUIRE(!stack.empty());
 
     { // verify that pop-all returns items in LIFO order:
         TestNode *xs = stack.pop_all();
-        REQUIRE( stack.empty() );
+        REQUIRE(stack.empty());
 
         for (int i=9; i >=0; --i) {
-            REQUIRE( xs == &nodes[i] );
+            REQUIRE(xs == &nodes[i]);
             TestNode *next = xs->links_[TestNode::LINK_INDEX_1];
             // zero links as we go. in test mode the data structure requires all links to be set to nullptr
             xs->links_[TestNode::LINK_INDEX_1] = nullptr;
             xs = next;
         }
-        REQUIRE( xs == (TestNode*)nullptr );
+        REQUIRE(xs == (TestNode*)nullptr);
     }
 
-    // void push( node_ptr_type node, bool& wasEmpty )
+    // void push(node_ptr_type node, bool& wasEmpty)
 
-    REQUIRE( stack.empty() );
+    REQUIRE(stack.empty());
     bool wasEmpty=false;
-    stack.push(a,wasEmpty);
-    REQUIRE( wasEmpty == true );
-    stack.push(b,wasEmpty);
-    REQUIRE( wasEmpty == false );
+    stack.push(a, wasEmpty);
+    REQUIRE(wasEmpty == true);
+    stack.push(b, wasEmpty);
+    REQUIRE(wasEmpty == false);
 
-    REQUIRE( stack.pop_all() == b );
-    REQUIRE( stack.empty() );
+    REQUIRE(stack.pop_all() == b);
+    REQUIRE(stack.empty());
     a->links_[TestNode::LINK_INDEX_1] = nullptr;
     b->links_[TestNode::LINK_INDEX_1] = nullptr;
 
-    // void push_multiple( node_ptr_type front, node_ptr_type back )
+    // void push_multiple(node_ptr_type front, node_ptr_type back)
 
     a->links_[TestNode::LINK_INDEX_1] = b;
     b->links_[TestNode::LINK_INDEX_1] = c;
     c->links_[TestNode::LINK_INDEX_1] = nullptr;
 
     stack.push_multiple(a, c);
-    REQUIRE( !stack.empty() );
+    REQUIRE(!stack.empty());
 
     { // verify that pop-all returns items in LIFO order:
         TestNode *xs = stack.pop_all();
-        REQUIRE( stack.empty() );
+        REQUIRE(stack.empty());
 
-        REQUIRE( xs == a );
-        REQUIRE( xs->links_[TestNode::LINK_INDEX_1] == b );
-        REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == c );
+        REQUIRE(xs == a);
+        REQUIRE(xs->links_[TestNode::LINK_INDEX_1] == b);
+        REQUIRE(xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == c);
 
         a->links_[TestNode::LINK_INDEX_1] = nullptr;
         b->links_[TestNode::LINK_INDEX_1] = nullptr;
         c->links_[TestNode::LINK_INDEX_1] = nullptr;
     }
 
-    // test push_multiple(...,wasEmpty)
+    // test push_multiple(..., wasEmpty)
 
     a->links_[TestNode::LINK_INDEX_1] = b;
     b->links_[TestNode::LINK_INDEX_1] = c;
     c->links_[TestNode::LINK_INDEX_1] = nullptr;
     d->links_[TestNode::LINK_INDEX_1] = nullptr;
-    REQUIRE( stack.empty() );
+    REQUIRE(stack.empty());
     wasEmpty = false;
     stack.push_multiple(a, c, wasEmpty);
-    REQUIRE( wasEmpty == true );
+    REQUIRE(wasEmpty == true);
     stack.push_multiple(d, d, wasEmpty);
-    REQUIRE( wasEmpty == false );
+    REQUIRE(wasEmpty == false);
 
     { // verify that pop-all returns items in LIFO order:
         TestNode *xs = stack.pop_all();
-        REQUIRE( stack.empty() );
+        REQUIRE(stack.empty());
 
-        REQUIRE( xs == d );
-        REQUIRE( xs->links_[TestNode::LINK_INDEX_1] == a );
-        REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == b );
-        REQUIRE( xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == c );
+        REQUIRE(xs == d);
+        REQUIRE(xs->links_[TestNode::LINK_INDEX_1] == a);
+        REQUIRE(xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == b);
+        REQUIRE(xs->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1]->links_[TestNode::LINK_INDEX_1] == c);
 
         a->links_[TestNode::LINK_INDEX_1] = nullptr;
         b->links_[TestNode::LINK_INDEX_1] = nullptr;
@@ -169,11 +169,11 @@ namespace {
     {
         std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
-        for( std::size_t i=0; i < THREAD_ITERATIONS; ++i ){
+        for (std::size_t i=0; i < THREAD_ITERATIONS; ++i) {
 
             // randomly pop all from one stack and push on to others
             TestNode *all = testStacks_[ static_cast<std::size_t>(rand()) % TEST_STACK_COUNT ]->pop_all();
-            while( all ){
+            while (all) {
                 TestNode *n = all;
                 all = all->links_[TestNode::LINK_INDEX_1];
 #if (QW_VALIDATE_NODE_LINKS == 1)
@@ -188,34 +188,34 @@ namespace {
 }
 
 
-TEST_CASE( "qw/mpmc_pop_all_lifo_stack/multi-threaded", "[slow][vslow][fuzz] QwMpmcPopAllLifoStack multi-threaded randomised sanity test" ) {
+TEST_CASE("qw/mpmc_pop_all_lifo_stack/multi-threaded", "[slow][vslow][fuzz] QwMpmcPopAllLifoStack multi-threaded randomised sanity test") {
 
     int allocatedNodeCount = 0;
-    for( std::size_t i=0; i < TEST_STACK_COUNT; ++i ){
+    for (std::size_t i=0; i < TEST_STACK_COUNT; ++i) {
         testStacks_[i] = new TestMpmcPopAllLifoStack;
 
-        for( std::size_t j=0; j < TEST_PER_STACK_NODE_COUNT; ++j ){
-            testStacks_[i]->push( new TestNode );
+        for (std::size_t j=0; j < TEST_PER_STACK_NODE_COUNT; ++j) {
+            testStacks_[i]->push(new TestNode);
             ++allocatedNodeCount;
         }
     }
 
     std::thread* threads[TEST_THREAD_COUNT];
 
-    for( std::size_t i=0; i < TEST_THREAD_COUNT; ++i ){
+    for (std::size_t i=0; i < TEST_THREAD_COUNT; ++i) {
         threads[i] = new std::thread(testThreadProc);
     }
 
-    for( std::size_t i=0; i < TEST_THREAD_COUNT; ++i ){
+    for (std::size_t i=0; i < TEST_THREAD_COUNT; ++i) {
         threads[i]->join();
         delete threads[i];
     }
 
     int freedNodeCount = 0;
-    for( std::size_t i=0; i < TEST_STACK_COUNT; ++i ){
+    for (std::size_t i=0; i < TEST_STACK_COUNT; ++i) {
 
         TestNode *all = testStacks_[i]->pop_all();
-        while( all ){
+        while (all) {
             TestNode *n = all;
             all = all->links_[TestNode::LINK_INDEX_1];
             delete n;
@@ -225,5 +225,5 @@ TEST_CASE( "qw/mpmc_pop_all_lifo_stack/multi-threaded", "[slow][vslow][fuzz] QwM
         delete testStacks_[i];
     }
 
-    REQUIRE( freedNodeCount == allocatedNodeCount );
+    REQUIRE(freedNodeCount == allocatedNodeCount);
 }

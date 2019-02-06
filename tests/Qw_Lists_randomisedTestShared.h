@@ -67,54 +67,54 @@
 // expected count iterations. i.e. we don't reach the end early,
 // and after expectedCount iterations we are at the end.
 template<typename list_type>
-void verifyForwards( list_type& list, int expectedCount )
+void verifyForwards(list_type& list, int expectedCount)
 {
-    if( expectedCount == 0 ){
-        REQUIRE( list.empty() );
-    }else{
+    if (expectedCount == 0) {
+        REQUIRE(list.empty());
+    } else {
         typename list_type::node_ptr_type n = list.front();
         typename list_type::node_ptr_type past_back = nullptr;
 
         typename list_type::iterator i = list.begin();
         typename list_type::iterator end = list.end();
 
-        for( int j=0; j < expectedCount; ++j )
+        for (int j=0; j < expectedCount; ++j)
         {
-            REQUIRE( n != past_back );
-            REQUIRE( i != end );
+            REQUIRE(n != past_back);
+            REQUIRE(i != end);
 
             n = list.next(n);
             ++i;
         }
 
-        REQUIRE( n == past_back );
-        REQUIRE( i == end );
+        REQUIRE(n == past_back);
+        REQUIRE(i == end);
     }
 }
 
 template<typename list_type>
-void verifyBackwards( list_type& list, int expectedCount )
+void verifyBackwards(list_type& list, int expectedCount)
 {
-    if( expectedCount == 0 ){
-        REQUIRE( list.empty() );
-    }else{
+    if (expectedCount == 0) {
+        REQUIRE(list.empty());
+    } else {
         typename list_type::node_ptr_type n = list.back();
         typename list_type::node_ptr_type past_front = list.before_front_();
 
         typename list_type::iterator i = list.end();
         typename list_type::iterator begin = list.begin();
 
-        for( int j=0; j < expectedCount; ++j )
+        for (int j=0; j < expectedCount; ++j)
         {
-            REQUIRE( n != past_front );
-            REQUIRE( i != begin );
+            REQUIRE(n != past_front);
+            REQUIRE(i != begin);
 
             n = list.previous(n);
             --i;
         }
 
-        REQUIRE( n == past_front );
-        REQUIRE( i == begin );
+        REQUIRE(n == past_front);
+        REQUIRE(i == begin);
     }
 }
 
@@ -122,9 +122,9 @@ template<typename list_type,
     typename randomisedInsertT,
     typename randomisedRemoveT,
     typename verifyT >
-void fuzzTest( randomisedInsertT& randomisedInsert,
+void fuzzTest(randomisedInsertT& randomisedInsert,
     randomisedRemoveT& randomisedRemove,
-    verifyT& verify )
+    verifyT& verify)
 {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
@@ -136,7 +136,7 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
     node_type nodes[NODE_COUNT];
 
     node_type *nodeStack[NODE_COUNT];
-    for( int i=0; i < NODE_COUNT; ++i ){
+    for (int i=0; i < NODE_COUNT; ++i) {
         nodeStack[i] = &nodes[i];
         nodeStack[i]->value = 0;
     }
@@ -150,35 +150,35 @@ void fuzzTest( randomisedInsertT& randomisedInsert,
     int biasState = BIAS_INSERTING;
     int bias[2] = { static_cast<int>(RAND_MAX * 0.55), static_cast<int>(RAND_MAX * 0.45) };
 
-    for( int i=0; i < ITERATION_COUNT; ++i ){
+    for (int i=0; i < ITERATION_COUNT; ++i) {
 
-        if( (rand() < bias[biasState] || nodesInListCount == 0) && nodeStackTop != 0 ){
+        if ((rand() < bias[biasState] || nodesInListCount == 0) && nodeStackTop != 0) {
             // insert
             node_type *node = nodeStack[ --nodeStackTop ];
 
-            REQUIRE( node->value == 0 );
+            REQUIRE(node->value == 0);
             node->value = 1;
-            randomisedInsert( a, node, nodesInListCount );
+            randomisedInsert(a, node, nodesInListCount);
             ++nodesInListCount;
 
-            verify( a, nodesInListCount );
+            verify(a, nodesInListCount);
 
             // when we run out of nodes we bias towards removing until the list is empty
-            if( nodeStackTop == 0 )
+            if (nodeStackTop == 0)
                 biasState = BIAS_REMOVING;
-        }else{
+        } else {
             // remove
-            node_type *node = randomisedRemove( a, nodesInListCount );
+            node_type *node = randomisedRemove(a, nodesInListCount);
             --nodesInListCount;
 
-            REQUIRE( node->value == 1 );
+            REQUIRE(node->value == 1);
             node->value = 0;
             nodeStack[ nodeStackTop++ ] = node;
 
-            verify( a, nodesInListCount );
+            verify(a, nodesInListCount);
 
             // when list is empty we bias towards inserting until we run out of nodes
-            if( nodesInListCount == 0 )
+            if (nodesInListCount == 0)
                 biasState = BIAS_INSERTING;
         }
     }

@@ -48,7 +48,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSpscUnorderedResultQueue{
-    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT, NEXT_LINK_INDEX> nextlink;
     // Note: there is no requirement for nextlink to be atomic, since
     // it is never accessed from multiple threads simultaneously, and
     // transmission between threads is always mediated by an atomic
@@ -65,27 +65,27 @@ private:
     size_t expectedResultCount_; // consumer increments this when making a request, pop() decrements it
 
 #if (QW_VALIDATE_NODE_LINKS == 1)
-    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
+    void CHECK_NODE_IS_UNLINKED(const_node_ptr_type n) const
     {
 #ifndef NDEBUG
-        assert( nextlink::load(n) == nullptr ); // (require unlinked)
-        assert( n != atomicLifoTop_.load(std::memory_order_relaxed) );
-        assert( n != static_cast<node_ptr_type>(consumerLocalHead_) );
+        assert(nextlink::load(n) == nullptr); // (require unlinked)
+        assert(n != atomicLifoTop_.load(std::memory_order_relaxed));
+        assert(n != static_cast<node_ptr_type>(consumerLocalHead_));
         // Note: we can't check that the node is not referenced by some other list
 #else
-        if(!( nextlink::load(n) == nullptr )) { std::abort(); } // (require unlinked)
-        if(!( n != atomicLifoTop_.load(std::memory_order_relaxed) )) { std::abort(); }
-        if(!( n != static_cast<node_ptr_type>(consumerLocalHead_) )) { std::abort(); }
+        if (!(nextlink::load(n) == nullptr)) { std::abort(); } // (require unlinked)
+        if (!(n != atomicLifoTop_.load(std::memory_order_relaxed))) { std::abort(); }
+        if (!(n != static_cast<node_ptr_type>(consumerLocalHead_))) { std::abort(); }
 #endif
     }
 
-    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    void CLEAR_NODE_LINKS_FOR_VALIDATION(node_ptr_type n) const
     {
         nextlink::store(n, nullptr);
     }
 #else
-    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
-    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
+    void CHECK_NODE_IS_UNLINKED(const_node_ptr_type) const {}
+    void CLEAR_NODE_LINKS_FOR_VALIDATION(node_ptr_type) const {}
 #endif
 
 public:
@@ -96,7 +96,7 @@ public:
         expectedResultCount_ = 0;
     }
 
-    void push( node_ptr_type node ) // called by producer
+    void push(node_ptr_type node) // called by producer
     {
         CHECK_NODE_IS_UNLINKED(node);
 
@@ -140,7 +140,7 @@ public:
                 consumerLocalHead_ = nextlink::load(result);
 
                 CLEAR_NODE_LINKS_FOR_VALIDATION(result);
-                assert( expectedResultCount_ > 0 );
+                assert(expectedResultCount_ > 0);
                 --expectedResultCount_;
                 return result;
             }
@@ -154,7 +154,7 @@ public:
             consumerLocalHead_ = nextlink::load(result);
 
             CLEAR_NODE_LINKS_FOR_VALIDATION(result);
-            assert( expectedResultCount_ > 0 );
+            assert(expectedResultCount_ > 0);
             --expectedResultCount_;
             return result;
         }
@@ -165,7 +165,7 @@ public:
     size_t expectedResultCount() const { return expectedResultCount_; }
 
     void incrementExpectedResultCount() { ++expectedResultCount_; }
-    void incrementExpectedResultCount( size_t k ) { expectedResultCount_ += k; }
+    void incrementExpectedResultCount(size_t k) { expectedResultCount_ += k; }
 };
 
 #endif /* INCLUDED_QWSPSCUNORDEREDRESULTQUEUE_H */

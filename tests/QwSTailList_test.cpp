@@ -66,9 +66,9 @@ namespace {
         int value;
 
         TestNode()
-            : value( 0 )
+            : value(0)
         {
-            for( int i=0; i < LINK_COUNT; ++i )
+            for (int i=0; i < LINK_COUNT; ++i)
                 links_[i] = nullptr;
         }
     };
@@ -78,29 +78,29 @@ namespace {
 } // end anonymous namespace
 
 
-TEST_CASE( "qw/staillist/empty", "QwSTailList operations on empty lists" ) {
+TEST_CASE("qw/staillist/empty", "QwSTailList operations on empty lists") {
 
     TestSTailList a, b;
-    emptyListTest( a, b );
+    emptyListTest(a, b);
 
-    REQUIRE( a.back() == (TestNode*)nullptr );
+    REQUIRE(a.back() == (TestNode*)nullptr);
 }
 
-TEST_CASE( "qw/staillist/one", "QwSTailList list operations with 1 node/element" ) {
+TEST_CASE("qw/staillist/one", "QwSTailList list operations with 1 node/element") {
 
     TestNode node;
     node.value = 42;
 
     TestSTailList a, b;
-    a.push_back( &node );
+    a.push_back(&node);
 
-    REQUIRE( a.empty() == false );
-    REQUIRE( a.back() == a.front() );
+    REQUIRE(a.empty() == false);
+    REQUIRE(a.back() == a.front());
 
-    singleItemSListTest( a, b, &node );
+    singleItemSListTest(a, b, &node);
 }
 
-TEST_CASE( "qw/staillist/two", "QwSTailList list operations with 2 nodes/elements" ) {
+TEST_CASE("qw/staillist/two", "QwSTailList list operations with 2 nodes/elements") {
 
     TestNode node1;
     node1.value = 0;
@@ -109,13 +109,13 @@ TEST_CASE( "qw/staillist/two", "QwSTailList list operations with 2 nodes/element
     node2.value = 1;
 
     TestSTailList a;
-    a.push_back( &node2 );
+    a.push_back(&node2);
     TestSTailList b;
 
-    twoItemSListTest( a, b, &node1, &node2 );
+    twoItemSListTest(a, b, &node1, &node2);
 }
 
-TEST_CASE( "qw/staillist/back-and-push_back", "QwSTailList test back() and push_back()" ) {
+TEST_CASE("qw/staillist/back-and-push_back", "QwSTailList test back() and push_back()") {
 
     // back() and push_back() are the only two members that QwSList doesn't have that QwSTailList does.
 
@@ -131,41 +131,41 @@ TEST_CASE( "qw/staillist/back-and-push_back", "QwSTailList test back() and push_
     TestSTailList a;
     TestSTailList b;
 
-    backAndPushBackListTest( a, b, &node1, &node2, &node3 );
+    backAndPushBackListTest(a, b, &node1, &node2, &node3);
 }
 
-TEST_CASE( "qw/staillist/many", "QwSTailList list operations with many nodes/elements" ) {
+TEST_CASE("qw/staillist/many", "QwSTailList list operations with many nodes/elements") {
 
     const int NODE_COUNT = 5;
     TestNode nodes[NODE_COUNT];
 
-    manyItemsSListTest<TestSTailList,NODE_COUNT>( nodes );
+    manyItemsSListTest<TestSTailList, NODE_COUNT>(nodes);
 }
 
-TEST_CASE( "qw/staillist/front-stack", "QwSTailList front stack test" ) {
+TEST_CASE("qw/staillist/front-stack", "QwSTailList front stack test") {
 
     TestSTailList a;
 
     const int NODE_COUNT = 10;
 
     TestNode nodes[NODE_COUNT];
-    for( int i=0; i < NODE_COUNT; ++i )
+    for (int i=0; i < NODE_COUNT; ++i)
         nodes[i].value = i;
 
-    frontStackTest_withBackChecks( a, nodes, NODE_COUNT );
+    frontStackTest_withBackChecks(a, nodes, NODE_COUNT);
 }
 
-TEST_CASE( "qw/staillist/back-queue", "QwSTailList back queue test" ) {
+TEST_CASE("qw/staillist/back-queue", "QwSTailList back queue test") {
 
     TestSTailList a;
 
     const int NODE_COUNT = 10;
 
     TestNode nodes[NODE_COUNT];
-    for( int i=0; i < NODE_COUNT; ++i )
+    for (int i=0; i < NODE_COUNT; ++i)
         nodes[i].value = i;
 
-    backQueueTest( a, nodes, NODE_COUNT );
+    backQueueTest(a, nodes, NODE_COUNT);
 }
 
 /*
@@ -189,130 +189,130 @@ TEST_CASE( "qw/staillist/back-queue", "QwSTailList back queue test" ) {
 // before_begin, begin, end
 // next
 
-static void requireEmptyInvariants( TestSTailList& a )
+static void requireEmptyInvariants(TestSTailList& a)
 {
     // size related attributes
 
-    REQUIRE( a.empty() == true );
-    REQUIRE( a.size_is_1() == false );
-    REQUIRE( a.size_is_greater_than_1() == false );
+    REQUIRE(a.empty() == true);
+    REQUIRE(a.size_is_1() == false);
+    REQUIRE(a.size_is_greater_than_1() == false);
 
     // front(), back()
 
-    REQUIRE( a.front() == (TestNode*)nullptr );
-    REQUIRE( a.back() == (TestNode*)nullptr );
+    REQUIRE(a.front() == (TestNode*)nullptr);
+    REQUIRE(a.back() == (TestNode*)nullptr);
 
     // iterator sequence invariants
 
-    REQUIRE( a.begin() == a.end() );
+    REQUIRE(a.begin() == a.end());
 
     { // begin comes directly after before_begin (pre-increment)
         TestSTailList::iterator i = a.before_begin();
         ++i;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // begin comes directly after before_begin (post-increment)
         TestSTailList::iterator i = a.before_begin();
         i++;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 }
 
-static void requireSingleNodeInvariants( TestSTailList& a, TestNode *node )
+static void requireSingleNodeInvariants(TestSTailList& a, TestNode *node)
 {
     // size related attributes
 
-    REQUIRE( a.empty() == false );
-    REQUIRE( a.size_is_1() == true );
-    REQUIRE( a.size_is_greater_than_1() == false );
+    REQUIRE(a.empty() == false);
+    REQUIRE(a.size_is_1() == true);
+    REQUIRE(a.size_is_greater_than_1() == false);
 
     // front(), back() invariants
 
-    REQUIRE( a.front() != (TestNode*)nullptr );
-    REQUIRE( a.front() == node );
+    REQUIRE(a.front() != (TestNode*)nullptr);
+    REQUIRE(a.front() == node);
 
-    REQUIRE( a.back() != (TestNode*)nullptr );
-    REQUIRE( a.back() == node );
+    REQUIRE(a.back() != (TestNode*)nullptr);
+    REQUIRE(a.back() == node);
 
-    REQUIRE( *a.begin() == node );
+    REQUIRE(*a.begin() == node);
 
     // next() of front() is nullptr in a one item list
 
-    REQUIRE( a.next(a.front()) == (TestNode*)nullptr );
+    REQUIRE(a.next(a.front()) == (TestNode*)nullptr);
 
-    REQUIRE( a.next( a.back() ) == (TestNode*)nullptr );
+    REQUIRE(a.next(a.back()) == (TestNode*)nullptr);
 
-	// next() of front() is nullptr in a one item list
-    REQUIRE( a.next(a.front()) == (TestNode*)nullptr );
+    // next() of front() is nullptr in a one item list
+    REQUIRE(a.next(a.front()) == (TestNode*)nullptr);
 
     // iterator sequence invariants
 
-    REQUIRE( a.begin() != a.end() );
+    REQUIRE(a.begin() != a.end());
 
     { // begin comes directly after before_begin (pre-increment)
         TestSTailList::iterator i = a.before_begin();
         ++i;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // begin comes directly after before_begin (post-increment)
         TestSTailList::iterator i = a.before_begin();
         i++;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // end comes directly after begin in a one item list (pre-increment)
         TestSTailList::iterator i = a.begin();
-        REQUIRE( *i == node );
+        REQUIRE(*i == node);
         ++i;
-        REQUIRE( i == a.end() );
+        REQUIRE(i == a.end());
     }
 
     { // end comes directly after begin in a one item list (post-increment)
         TestSTailList::iterator i = a.begin();
-        REQUIRE( *i == node );
+        REQUIRE(*i == node);
         i++;
-        REQUIRE( i == a.end() );
+        REQUIRE(i == a.end());
     }
 }
 
-static void requireMoreThanOneNodeInvariants( TestSTailList& a, TestNode *nodes, int nodeCount )
+static void requireMoreThanOneNodeInvariants(TestSTailList& a, TestNode *nodes, int nodeCount)
 {
     // size related attributes
 
-    REQUIRE( a.empty() == false );
-    REQUIRE( a.size_is_1() == false );
-    REQUIRE( a.size_is_greater_than_1() == true );
+    REQUIRE(a.empty() == false);
+    REQUIRE(a.size_is_1() == false);
+    REQUIRE(a.size_is_greater_than_1() == true);
 
     // front(), back() invariants
 
-    REQUIRE( a.front() != (TestNode*)nullptr );
-    REQUIRE( a.front() == &nodes[0] );
+    REQUIRE(a.front() != (TestNode*)nullptr);
+    REQUIRE(a.front() == &nodes[0]);
 
-    REQUIRE( a.back() != (TestNode*)nullptr );
-    REQUIRE( a.back() == &nodes[nodeCount-1] );
+    REQUIRE(a.back() != (TestNode*)nullptr);
+    REQUIRE(a.back() == &nodes[nodeCount-1]);
 
-    REQUIRE( *a.begin() == &nodes[0] );
+    REQUIRE(*a.begin() == &nodes[0]);
 
-    REQUIRE( a.next(a.front()) != (TestNode*)nullptr );
+    REQUIRE(a.next(a.front()) != (TestNode*)nullptr);
 
-    REQUIRE( a.next( a.back() ) == (TestNode*)nullptr );
+    REQUIRE(a.next(a.back()) == (TestNode*)nullptr);
 
     // iterator sequence invariants
 
-    REQUIRE( a.begin() != a.end() );
+    REQUIRE(a.begin() != a.end());
 
     { // begin comes directly after before_begin (pre-increment)
         TestSTailList::iterator i = a.before_begin();
         ++i;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // begin comes directly after before_begin (post-increment)
         TestSTailList::iterator i = a.before_begin();
         i++;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     // nodes are in expected sequence according to iterators
@@ -325,106 +325,106 @@ static void requireMoreThanOneNodeInvariants( TestSTailList& a, TestNode *nodes,
     TestNode *n = a.front();
     TestSTailList::iterator i_pre = a.begin();
     TestSTailList::iterator i_post = a.begin();
-    for( int j = 0; j < nodeCount; ++j ){
+    for (int j=0; j < nodeCount; ++j) {
 
-        REQUIRE( n == &nodes[j] );
+        REQUIRE(n == &nodes[j]);
         n = a.next(n);
 
-        REQUIRE( *i_pre == &nodes[j] );
+        REQUIRE(*i_pre == &nodes[j]);
         ++i_pre;
 
-        REQUIRE( *i_post == &nodes[j] );
+        REQUIRE(*i_post == &nodes[j]);
         i_post++;
     }
 
-    REQUIRE( n == (TestNode*)nullptr );
-    REQUIRE( i_pre == a.end() );
-    REQUIRE( i_post == a.end() );
+    REQUIRE(n == (TestNode*)nullptr);
+    REQUIRE(i_pre == a.end());
+    REQUIRE(i_post == a.end());
 }
 
-TEST_CASE( "qw/staillist/axiomatic/baseline", "QwSTailList baseline axiomatic tests" ) {
-    axiomaticBaselineTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/baseline", "QwSTailList baseline axiomatic tests") {
+    axiomaticBaselineTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/push_back", "QwSTailList push_back" ) {
-    axiomaticPushBackTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/push_back", "QwSTailList push_back") {
+    axiomaticPushBackTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/swap", "QwSTailList axiomatic test of swap" ) {
-    axiomaticSwapTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/swap", "QwSTailList axiomatic test of swap") {
+    axiomaticSwapTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/pop_front", "QwSTailList axiomatic test of pop_front" ) {
-    axiomaticPopFrontTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/pop_front", "QwSTailList axiomatic test of pop_front") {
+    axiomaticPopFrontTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/insert_after/node_ptr/empty", "QwSTailList axiomatic test of insert_after(node_ptr,n) for empty list" ) {
+TEST_CASE("qw/staillist/axiomatic/insert_after/node_ptr/empty", "QwSTailList axiomatic test of insert_after(node_ptr, n) for empty list") {
 
-    SECTION( "empty", "initially empty list, insert after before_begin")
+    SECTION("empty", "initially empty list, insert after before_begin")
     { // empty
         TestSTailList a;
         TestNode node;
-        a.insert_after( *a.before_begin(), &node ); // strictly you shouldn't de-ref the before_begin iterator, it doesn't point to a node
-        requireSingleNodeInvariants( a, &node );
+        a.insert_after(*a.before_begin(), &node); // strictly you shouldn't de-ref the before_begin iterator, it doesn't point to a node
+        requireSingleNodeInvariants(a, &node);
     }
 }
 
-TEST_CASE( "qw/staillist/axiomatic/insert_after/node_ptr", "QwSTailList axiomatic test of insert_after(node_ptr,n)" ) {
-    axiomaticInsertAfterNodePtrTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/insert_after/node_ptr", "QwSTailList axiomatic test of insert_after(node_ptr, n)") {
+    axiomaticInsertAfterNodePtrTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/insert_after/iter", "QwSTailList axiomatic test of insert_after(iter,n)" ) {
-    axiomaticInsertAfterIterTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/insert_after/iter", "QwSTailList axiomatic test of insert_after(iter, n)") {
+    axiomaticInsertAfterIterTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/remove_after/before_begin/node_ptr", "QwSTailList axiomatic test of remove_after(*before_begin())" ) {
-    axiomaticRemoveAfterBeforeBeginTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/remove_after/before_begin/node_ptr", "QwSTailList axiomatic test of remove_after(*before_begin())") {
+    axiomaticRemoveAfterBeforeBeginTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/remove_after/2/node_ptr", "QwSTailList axiomatic test of remove_after(node_ptr) using front" ) {
-    axiomaticRemoveAfter2NodePtrTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/remove_after/2/node_ptr", "QwSTailList axiomatic test of remove_after(node_ptr) using front") {
+    axiomaticRemoveAfter2NodePtrTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/remove_after/iter", "QwSTailList axiomatic test of remove_after(iter)" ) {
-    axiomaticRemoveAfterIterTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/remove_after/iter", "QwSTailList axiomatic test of remove_after(iter)") {
+    axiomaticRemoveAfterIterTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/staillist/axiomatic/erase_after/iter", "QwSTailList axiomatic test of erase_after(iter)" ) {
-    axiomaticEraseAfterIterTest<TestSTailList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/staillist/axiomatic/erase_after/iter", "QwSTailList axiomatic test of erase_after(iter)") {
+    axiomaticEraseAfterIterTest<TestSTailList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
 /* fuzz test */
 
-static void verify( TestSTailList& list, int expectedCount )
+static void verify(TestSTailList& list, int expectedCount)
 {
-    verifyForwards( list, expectedCount );
+    verifyForwards(list, expectedCount);
 }
 
-static void randomisedInsert( TestSTailList& list, TestNode* node, int currentCount )
+static void randomisedInsert(TestSTailList& list, TestNode* node, int currentCount)
 {
-    switch( list.empty() ? rand() % 2 : rand() % 3 ){
+    switch (list.empty() ? rand() % 2 : rand() % 3) {
     case 0:
-        list.push_front( node );
+        list.push_front(node);
         break;
     case 1:
-        list.push_back( node );
+        list.push_back(node);
         break;
     case 2:
     default:
         {
             int atj = rand() % currentCount;
             TestSTailList::node_ptr_type at = list.front();
-            for( int i=0; i<atj; ++i )
+            for (int i=0; i<atj; ++i)
                 at = list.next(at);
-            list.insert_after( at, node ); // insert n after node before
+            list.insert_after(at, node); // insert n after node before
             break;
         }
     }
 }
 
-static TestNode* randomisedRemove( TestSTailList& list, int currentCount )
+static TestNode* randomisedRemove(TestSTailList& list, int currentCount)
 {
-    switch( currentCount > 1 ? rand() % 2 : 0 ){
+    switch (currentCount > 1 ? rand() % 2 : 0) {
     case 0:
         return list.pop_front();
     case 1:
@@ -433,15 +433,15 @@ static TestNode* randomisedRemove( TestSTailList& list, int currentCount )
         {
             int atj = rand() % (currentCount - 1); // -1 because we can't remove after the last item
             TestSTailList::node_ptr_type at = list.front();
-            for( int i=0; i<atj; ++i )
+            for (int i=0; i<atj; ++i)
                 at = list.next(at);
-            return list.remove_after( at ); // returns the removed node
+            return list.remove_after(at); // returns the removed node
         }
     }
 }
 
-TEST_CASE( "qw/staillist/fuzz", "[fuzz] QwSTailList fuzz test" ) {
-    fuzzTest<TestSTailList>( randomisedInsert, randomisedRemove, verify );
+TEST_CASE("qw/staillist/fuzz", "[fuzz] QwSTailList fuzz test") {
+    fuzzTest<TestSTailList>(randomisedInsert, randomisedRemove, verify);
 }
 
 /* -----------------------------------------------------------------------

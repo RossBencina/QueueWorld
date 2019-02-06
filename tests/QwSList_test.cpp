@@ -36,9 +36,9 @@ namespace{
         int value;
 
         TestNode()
-            : value( 0 )
+            : value(0)
         {
-            for( int i=0; i < LINK_COUNT; ++i )
+            for (int i=0; i < LINK_COUNT; ++i)
                 links_[i] = nullptr;
         }
     };
@@ -48,24 +48,24 @@ namespace{
 } // end anonymous namespace
 
 
-TEST_CASE( "qw/slist/empty", "QwSList operations on empty lists" ) {
+TEST_CASE("qw/slist/empty", "QwSList operations on empty lists") {
 
     TestSList a, b;
-    emptyListTest( a, b );
+    emptyListTest(a, b);
 }
 
-TEST_CASE( "qw/slist/one", "QwSList list operations with 1 node/element" ) {
+TEST_CASE("qw/slist/one", "QwSList list operations with 1 node/element") {
 
     TestNode node;
     node.value = 42;
 
-    TestSList a( &node );
+    TestSList a(&node);
     TestSList b;
 
-    singleItemSListTest( a, b, &node );
+    singleItemSListTest(a, b, &node);
 }
 
-TEST_CASE( "qw/slist/two", "QwSList list operations with 2 nodes/elements" ) {
+TEST_CASE("qw/slist/two", "QwSList list operations with 2 nodes/elements") {
 
     TestNode node1;
     node1.value = 0;
@@ -73,33 +73,33 @@ TEST_CASE( "qw/slist/two", "QwSList list operations with 2 nodes/elements" ) {
     TestNode node2;
     node2.value = 1;
 
-    TestSList a( &node2 );
+    TestSList a(&node2);
     TestSList b;
 
-    twoItemSListTest( a, b, &node1, &node2 );
+    twoItemSListTest(a, b, &node1, &node2);
 }
 
-TEST_CASE( "qw/slist/many", "QwSList list operations with many nodes/elements" ) {
+TEST_CASE("qw/slist/many", "QwSList list operations with many nodes/elements") {
 
     const int NODE_COUNT = 5;
     TestNode nodes[NODE_COUNT];
 
-    manyItemsSListTest<TestSList,NODE_COUNT>( nodes );
+    manyItemsSListTest<TestSList, NODE_COUNT>(nodes);
 }
 
-TEST_CASE( "qw/slist/stack", "QwSList front stack test" ) {
+TEST_CASE("qw/slist/stack", "QwSList front stack test") {
 
     TestSList a;
 
     const int NODE_COUNT = 10;
     TestNode nodes[NODE_COUNT];
-    for( int i=0; i < NODE_COUNT; ++i )
+    for (int i=0; i < NODE_COUNT; ++i)
         nodes[i].value = i;
 
-    frontStackTest( a, nodes, NODE_COUNT );
+    frontStackTest(a, nodes, NODE_COUNT);
 }
 
-TEST_CASE( "qw/slist/remove", "QwSList remove free function" ) {
+TEST_CASE("qw/slist/remove", "QwSList remove free function") {
 
     TestNode node0;
     node0.value = 0;
@@ -166,113 +166,113 @@ TEST_CASE( "qw/slist/remove", "QwSList remove free function" ) {
 // before_begin, begin, end
 // next
 
-static void requireEmptyInvariants( TestSList& a )
+static void requireEmptyInvariants(TestSList& a)
 {
     // size related attributes
 
-    REQUIRE( a.empty() == true );
-    REQUIRE( a.size_is_1() == false );
-    REQUIRE( a.size_is_greater_than_1() == false );
+    REQUIRE(a.empty() == true);
+    REQUIRE(a.size_is_1() == false);
+    REQUIRE(a.size_is_greater_than_1() == false);
 
     // front()
 
-    REQUIRE( a.front() == (TestNode*)nullptr );
+    REQUIRE(a.front() == (TestNode*)nullptr);
 
     // iterator sequence invariants
 
-    REQUIRE( a.begin() == a.end() );
+    REQUIRE(a.begin() == a.end());
 
     { // begin comes directly after before_begin (pre-increment)
         TestSList::iterator i = a.before_begin();
         ++i;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // begin comes directly after before_begin (post-increment)
         TestSList::iterator i = a.before_begin();
         i++;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 }
 
-static void requireSingleNodeInvariants( TestSList& a, TestNode *node )
+static void requireSingleNodeInvariants(TestSList& a, TestNode *node)
 {
     // size related attributes
 
-    REQUIRE( a.empty() == false );
-    REQUIRE( a.size_is_1() == true );
-    REQUIRE( a.size_is_greater_than_1() == false );
+    REQUIRE(a.empty() == false);
+    REQUIRE(a.size_is_1() == true);
+    REQUIRE(a.size_is_greater_than_1() == false);
 
     // front() invariants
 
-    REQUIRE( a.front() != (TestNode*)nullptr );
-    REQUIRE( a.front() == node );
+    REQUIRE(a.front() != (TestNode*)nullptr);
+    REQUIRE(a.front() == node);
 
-    REQUIRE( *a.begin() == node );
+    REQUIRE(*a.begin() == node);
 
-	// next() of front() is nullptr in a one item list
-    REQUIRE( a.next(a.front()) == (TestNode*)nullptr );
+    // next() of front() is nullptr in a one item list
+    REQUIRE(a.next(a.front()) == (TestNode*)nullptr);
 
     // iterator sequence invariants
 
-    REQUIRE( a.begin() != a.end() );
+    REQUIRE(a.begin() != a.end());
 
     { // begin comes directly after before_begin (pre-increment)
         TestSList::iterator i = a.before_begin();
         ++i;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // begin comes directly after before_begin (post-increment)
         TestSList::iterator i = a.before_begin();
         i++;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // end comes directly after begin in a one item list (pre-increment)
         TestSList::iterator i = a.begin();
-        REQUIRE( *i == node );
+        REQUIRE(*i == node);
         ++i;
-        REQUIRE( i == a.end() );
+        REQUIRE(i == a.end());
     }
 
     { // end comes directly after begin in a one item list (post-increment)
         TestSList::iterator i = a.begin();
-        REQUIRE( *i == node );
+        REQUIRE(*i == node);
         i++;
-        REQUIRE( i == a.end() );
+        REQUIRE(i == a.end());
     }
 }
 
-static void requireMoreThanOneNodeInvariants( TestSList& a, TestNode *nodes, int nodeCount )
+static void requireMoreThanOneNodeInvariants(TestSList& a, TestNode *nodes, int nodeCount)
 {
     // size related attributes
 
-    REQUIRE( a.empty() == false );
-    REQUIRE( a.size_is_1() == false );
-    REQUIRE( a.size_is_greater_than_1() == true );
+    REQUIRE(a.empty() == false);
+    REQUIRE(a.size_is_1() == false);
+    REQUIRE(a.size_is_greater_than_1() == true);
 
     // front() invariants
 
-    REQUIRE( a.front() != (TestNode*)nullptr );
-    REQUIRE( a.front() == &nodes[0] );
+    REQUIRE(a.front() != (TestNode*)nullptr);
+    REQUIRE(a.front() == &nodes[0]);
 
-    REQUIRE( *a.begin() == &nodes[0] );
+    REQUIRE(*a.begin() == &nodes[0]);
 
     // iterator sequence invariants
 
-    REQUIRE( a.begin() != a.end() );
+    REQUIRE(a.begin() != a.end());
 
     { // begin comes directly after before_begin (pre-increment)
         TestSList::iterator i = a.before_begin();
         ++i;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     { // begin comes directly after before_begin (post-increment)
         TestSList::iterator i = a.before_begin();
         i++;
-        REQUIRE( i == a.begin() );
+        REQUIRE(i == a.begin());
     }
 
     // nodes are in expected sequence according to iterators
@@ -285,134 +285,134 @@ static void requireMoreThanOneNodeInvariants( TestSList& a, TestNode *nodes, int
     TestNode *n = a.front();
     TestSList::iterator i_pre = a.begin();
     TestSList::iterator i_post = a.begin();
-    for( int j = 0; j < nodeCount; ++j ){
+    for (int j=0; j < nodeCount; ++j) {
 
-        REQUIRE( n == &nodes[j] );
+        REQUIRE(n == &nodes[j]);
         n = a.next(n);
 
-        REQUIRE( *i_pre == &nodes[j] );
+        REQUIRE(*i_pre == &nodes[j]);
         ++i_pre;
 
-        REQUIRE( *i_post == &nodes[j] );
+        REQUIRE(*i_post == &nodes[j]);
         i_post++;
     }
 
-    REQUIRE( n == (TestNode*)nullptr );
-    REQUIRE( i_pre == a.end() );
-    REQUIRE( i_post == a.end() );
+    REQUIRE(n == (TestNode*)nullptr);
+    REQUIRE(i_pre == a.end());
+    REQUIRE(i_post == a.end());
 }
 
-TEST_CASE( "qw/slist/axiomatic/baseline", "QwSList baseline axiomatic tests" ) {
-    axiomaticBaselineTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/baseline", "QwSList baseline axiomatic tests") {
+    axiomaticBaselineTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/node-ptr-ctor", "QwSList construct with raw node ptr" ) {
+TEST_CASE("qw/slist/axiomatic/node-ptr-ctor", "QwSList construct with raw node ptr") {
 
-	SECTION( "one", "init with front node ptr")
+    SECTION("one", "init with front node ptr")
     {
         TestNode node;
         node.links_[0] = nullptr;
-        TestSList a( &node );
-        requireSingleNodeInvariants( a, &node );
+        TestSList a(&node);
+        requireSingleNodeInvariants(a, &node);
         a.clear();
-        requireEmptyInvariants( a );
+        requireEmptyInvariants(a);
     }
 
-    SECTION( "many", "init with front node ptr")
+    SECTION("many", "init with front node ptr")
     {
-        for( int count = 2; count <= 5; ++count ){
+        for (int count = 2; count <= 5; ++count) {
             TestNode nodes[5];
-            for( int i=1; i < count; ++i ){
+            for (int i=1; i < count; ++i) {
                 nodes[i-1].links_[0] = &nodes[i];
                 nodes[i].links_[0] = nullptr;
             }
-            TestSList a( &nodes[0] );
-            requireMoreThanOneNodeInvariants( a, nodes, count );
+            TestSList a(&nodes[0]);
+            requireMoreThanOneNodeInvariants(a, nodes, count);
             a.clear();
-            requireEmptyInvariants( a );
+            requireEmptyInvariants(a);
         }
     }
 }
 
-TEST_CASE( "qw/slist/axiomatic/swap", "QwSList axiomatic test of swap" ) {
-    axiomaticSwapTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/swap", "QwSList axiomatic test of swap") {
+    axiomaticSwapTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/pop_front", "QwSList axiomatic test of pop_front" ) {
-    axiomaticPopFrontTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/pop_front", "QwSList axiomatic test of pop_front") {
+    axiomaticPopFrontTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/insert_after/node_ptr/empty", "QwSList axiomatic test of insert_after(node_ptr,n) for empty list" ) {
+TEST_CASE("qw/slist/axiomatic/insert_after/node_ptr/empty", "QwSList axiomatic test of insert_after(node_ptr, n) for empty list") {
 
-    SECTION( "empty", "initially empty list, insert after before_begin")
+    SECTION("empty", "initially empty list, insert after before_begin")
     { // empty
         TestSList a;
         TestNode node;
-        a.insert_after( *a.before_begin(), &node ); // strictly you shouldn't de-ref the before_begin iterator, it doesn't point to a node
-        requireSingleNodeInvariants( a, &node );
+        a.insert_after(*a.before_begin(), &node); // strictly you shouldn't de-ref the before_begin iterator, it doesn't point to a node
+        requireSingleNodeInvariants(a, &node);
     }
 }
 
-TEST_CASE( "qw/slist/axiomatic/insert_after/node_ptr", "QwSList axiomatic test of insert_after(node_ptr,n)" ) {
-    axiomaticInsertAfterNodePtrTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/insert_after/node_ptr", "QwSList axiomatic test of insert_after(node_ptr, n)") {
+    axiomaticInsertAfterNodePtrTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/insert_after/iter", "QwSList axiomatic test of insert_after(iter,n)" ) {
-    axiomaticInsertAfterIterTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/insert_after/iter", "QwSList axiomatic test of insert_after(iter, n)") {
+    axiomaticInsertAfterIterTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/remove_after/before_begin/node_ptr", "QwSList axiomatic test of remove_after(*before_begin())" ) {
-    axiomaticRemoveAfterBeforeBeginTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/remove_after/before_begin/node_ptr", "QwSList axiomatic test of remove_after(*before_begin())") {
+    axiomaticRemoveAfterBeforeBeginTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/remove_after/2/node_ptr", "QwSList axiomatic test of remove_after(node_ptr) using front" ) {
-    axiomaticRemoveAfter2NodePtrTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/remove_after/2/node_ptr", "QwSList axiomatic test of remove_after(node_ptr) using front") {
+    axiomaticRemoveAfter2NodePtrTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/remove_after/iter", "QwSList axiomatic test of remove_after(iter)" ) {
-    axiomaticRemoveAfterIterTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/remove_after/iter", "QwSList axiomatic test of remove_after(iter)") {
+    axiomaticRemoveAfterIterTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
-TEST_CASE( "qw/slist/axiomatic/erase_after/iter", "QwSList axiomatic test of erase_after(iter)" ) {
-    axiomaticEraseAfterIterTest<TestSList>( requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants );
+TEST_CASE("qw/slist/axiomatic/erase_after/iter", "QwSList axiomatic test of erase_after(iter)") {
+    axiomaticEraseAfterIterTest<TestSList>(requireEmptyInvariants, requireSingleNodeInvariants, requireMoreThanOneNodeInvariants);
 }
 
 /* fuzz test */
 
-static void verify( TestSList& list, int expectedCount )
+static void verify(TestSList& list, int expectedCount)
 {
-    verifyForwards( list, expectedCount );
+    verifyForwards(list, expectedCount);
 }
 
-static void randomisedInsert( TestSList& list, TestNode* node, int currentCount )
+static void randomisedInsert(TestSList& list, TestNode* node, int currentCount)
 {
-    switch( list.empty() ? 0 : rand() % 2 ){
+    switch (list.empty() ? 0 : rand() % 2) {
     case 0:
-        list.push_front( node );
+        list.push_front(node);
         break;
     case 1:
     default:
         {
             int atj = rand() % currentCount;
             TestSList::node_ptr_type at = list.front();
-            for( int i=0; i<atj; ++i )
+            for (int i=0; i<atj; ++i)
                 at = list.next(at);
-            list.insert_after( at, node ); // insert n after node before
+            list.insert_after(at, node); // insert n after node before
             break;
         }
     }
 }
 
-static TestNode* randomisedRemove( TestSList& list, int currentCount )
+static TestNode* randomisedRemove(TestSList& list, int currentCount)
 {
-    switch( currentCount > 1 ? rand() % 3 : 0 ){
+    switch (currentCount > 1 ? rand() % 3 : 0) {
     case 0:
         return list.pop_front();
     case 1:
         {
             int atj = rand() % currentCount;
             TestSList::node_ptr_type at = list.front();
-            for( int i=0; i<atj; ++i )
+            for (int i=0; i<atj; ++i)
                 at = list.next(at);
             remove(list, at);
             return at;
@@ -423,15 +423,15 @@ static TestNode* randomisedRemove( TestSList& list, int currentCount )
         {
             int atj = rand() % (currentCount - 1); // -1 because we can't remove after the last item
             TestSList::node_ptr_type at = list.front();
-            for( int i=0; i<atj; ++i )
+            for (int i=0; i<atj; ++i)
                 at = list.next(at);
-            return list.remove_after( at ); // returns the removed node
+            return list.remove_after(at); // returns the removed node
         }
     }
 }
 
-TEST_CASE( "qw/slist/fuzz", "[fuzz] QwSList fuzz test" ) {
-    fuzzTest<TestSList>( randomisedInsert, randomisedRemove, verify );
+TEST_CASE("qw/slist/fuzz", "[fuzz] QwSList fuzz test") {
+    fuzzTest<TestSList>(randomisedInsert, randomisedRemove, verify);
 }
 
 /* -----------------------------------------------------------------------

@@ -119,12 +119,12 @@ struct QwDefaultNonAtomicLinkTraitsImpl {
 
     static constexpr bool is_atomic = false;
 
-    static node_ptr_type load( const_node_ptr_type n )
+    static node_ptr_type load(const_node_ptr_type n)
     {
         return static_cast<node_ptr_type>(n->links_[ LINK_INDEX ]); // downcast to node_ptr_type in case links_[n] is a ptr to base class type
     }
 
-    static void store( node_ptr_type n, node_ptr_type x ) // n->link = x
+    static void store(node_ptr_type n, node_ptr_type x) // n->link = x
     {
         n->links_[ LINK_INDEX ] = x;
     }
@@ -150,12 +150,12 @@ struct QwDefaultAtomicLinkTraitsImpl {
     // Containers that require atomic link access check this tag at compile time.
     static constexpr bool is_atomic = true;
 
-    static node_ptr_type atomic_load( const_node_ptr_type n, std::memory_order order ) // downcast to node_ptr_type in case links_[n] is a ptr to base class type
+    static node_ptr_type atomic_load(const_node_ptr_type n, std::memory_order order) // downcast to node_ptr_type in case links_[n] is a ptr to base class type
     {
         return static_cast<node_ptr_type>(n->links_[LINK_INDEX].load(order));
     }
 
-    static void atomic_store( node_ptr_type n, node_ptr_type x, std::memory_order order ) // n->link = x
+    static void atomic_store(node_ptr_type n, node_ptr_type x, std::memory_order order) // n->link = x
     {
         n->links_[LINK_INDEX].store(x, order);
     }
@@ -168,12 +168,12 @@ struct QwDefaultAtomicLinkTraitsImpl {
     // Use memory_order_relaxed for the non-atomic accessors, since these will
     // be invoked by single-threaded containers.
 
-    static node_ptr_type load( const_node_ptr_type n )
+    static node_ptr_type load(const_node_ptr_type n)
     {
         return atomic_load(n, std::memory_order_relaxed);
     }
 
-    static void store( node_ptr_type n, node_ptr_type x ) // n->link = x
+    static void store(node_ptr_type n, node_ptr_type x) // n->link = x
     {
         atomic_store(n, x, std::memory_order_relaxed);
     }

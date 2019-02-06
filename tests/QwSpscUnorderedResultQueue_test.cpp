@@ -33,9 +33,9 @@ namespace {
         int value;
 
         TestNode()
-            : value( 0 )
+            : value(0)
         {
-            for( int i=0; i < LINK_COUNT; ++i )
+            for (int i=0; i < LINK_COUNT; ++i)
                 links_[i] = nullptr;
         }
     };
@@ -45,7 +45,7 @@ namespace {
 } // end anonymous namespace
 
 
-TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single threaded test" ) {
+TEST_CASE("qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single threaded test") {
 
     TestNode nodes[3];
     TestNode *a = &nodes[0];
@@ -55,37 +55,37 @@ TEST_CASE( "qw/spsc_undordered_result_queue", "QwSpscUnorderedResultQueue single
     TestSpscUnorderedResultQueue q;
     q.init();
 
-    REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == (TestNode*)nullptr );
+    REQUIRE(q.expectedResultCount() == 0);
+    REQUIRE(q.pop() == (TestNode*)nullptr);
 
     q.incrementExpectedResultCount();
-    q.push( a );
-    REQUIRE( q.expectedResultCount() == 1 );
-    REQUIRE( q.pop() == a );
-    REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == (TestNode*)nullptr );
+    q.push(a);
+    REQUIRE(q.expectedResultCount() == 1);
+    REQUIRE(q.pop() == a);
+    REQUIRE(q.expectedResultCount() == 0);
+    REQUIRE(q.pop() == (TestNode*)nullptr);
 
     q.incrementExpectedResultCount(3);
-    q.push( a );
-    q.push( b );
-    q.push( c );
+    q.push(a);
+    q.push(b);
+    q.push(c);
 
-    REQUIRE( q.expectedResultCount() == 3 );
+    REQUIRE(q.expectedResultCount() == 3);
     // the queue doesn't guarantee a result order
     {
         TestNode *x = q.pop();
-        REQUIRE( (x==a || x==b || x==c) );
+        REQUIRE((x==a || x==b || x==c));
     }
-    REQUIRE( q.expectedResultCount() == 2 );
+    REQUIRE(q.expectedResultCount() == 2);
     {
         TestNode *x = q.pop();
-        REQUIRE( (x==a || x==b || x==c) );
+        REQUIRE((x==a || x==b || x==c));
     }
-    REQUIRE( q.expectedResultCount() == 1 );
+    REQUIRE(q.expectedResultCount() == 1);
     {
         TestNode *x = q.pop();
-        REQUIRE( (x==a || x==b || x==c) );
+        REQUIRE((x==a || x==b || x==c));
     }
-    REQUIRE( q.expectedResultCount() == 0 );
-    REQUIRE( q.pop() == (TestNode*)nullptr );
+    REQUIRE(q.expectedResultCount() == 0);
+    REQUIRE(q.pop() == (TestNode*)nullptr);
 }

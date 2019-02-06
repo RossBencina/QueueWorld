@@ -46,19 +46,19 @@ static size_t roundUpToNextPowerOfTwo(size_t x)
 
 #ifdef _WIN32
 
-static void *qw_aligned_malloc( size_t size, size_t alignment )
+static void *qw_aligned_malloc(size_t size, size_t alignment)
 {
     return _aligned_malloc(size, alignment);
 }
 
-static void qw_aligned_free( void *memblock )
+static void qw_aligned_free(void *memblock)
 {
     _aligned_free(memblock);
 }
 
 #else
 
-static void *qw_aligned_malloc( size_t size, size_t alignment )
+static void *qw_aligned_malloc(size_t size, size_t alignment)
 {
     void *result = nullptr;
 
@@ -68,7 +68,7 @@ static void *qw_aligned_malloc( size_t size, size_t alignment )
     return result;
 }
 
-static void qw_aligned_free( void *memblock )
+static void qw_aligned_free(void *memblock)
 {
     free(memblock);
 }
@@ -77,25 +77,25 @@ static void qw_aligned_free( void *memblock )
 
 
 
-QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
+QwRawNodePool::QwRawNodePool(size_t nodeSize, size_t maxNodes)
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
     : allocCount_(0)
 #endif
 {
-    assert( sizeof(top_) >= sizeof(abapointer_type) );
+    assert(sizeof(top_) >= sizeof(abapointer_type));
 
     // Align nodes on cache line boundaries to avoid false sharing
     size_t minNodeSize = sizeof(nodeindex_type); // nodes need to be large enough to embed their next ptr
     // Make node size a power of two to allow for using bit shift to convert between pointers and indices
-    nodeSize_ = roundUpToNextPowerOfTwo(std::max(nodeSize, std::max(minNodeSize,CACHE_LINE_SIZE)));
+    nodeSize_ = roundUpToNextPowerOfTwo(std::max(nodeSize, std::max(minNodeSize, CACHE_LINE_SIZE)));
 
     // Aligned allocation
     // TODO: use posix_memalign on unix
     // see also http://cottonvibes.blogspot.com.au/2011/01/dynamically-allocate-aligned-memory.html
     // and http://stackoverflow.com/questions/17378444/stdalign-and-stdaligned-storage-for-aligned-allocation-of-memory-blocks
 
-    nodeStorage_ = (int8_t*)qw_aligned_malloc(nodeSize_*maxNodes,CACHE_LINE_SIZE);
-    assert( nodeStorage_ != nullptr );
+    nodeStorage_ = (int8_t*)qw_aligned_malloc(nodeSize_*maxNodes, CACHE_LINE_SIZE);
+    assert(nodeStorage_ != nullptr);
 
     nodeArrayBase_ = nodeStorage_ - nodeSize_; // node index 0 is the null index, so we want nodeArrayBase_[1] --> nodeStorage_[0]
 
@@ -105,14 +105,14 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
         x = x << 1;
         ++nodeBitShift_;
     }
-    assert( x == nodeSize_ ); // require node size to be a power of two
+    assert(x == nodeSize_); // require node size to be a power of two
 
     size_t maxNodeIndex = maxNodes; // since node indices are 1-based, max index is N, not N-1
 
     // index is stored in the low bits of the packed pointer.
     // generate a bit mask for it.
 
-    size_t nodeIndexEnd = roundUpToNextPowerOfTwo(maxNodeIndex); // valid node indices are [1,nodeIndexEnd)
+    size_t nodeIndexEnd = roundUpToNextPowerOfTwo(maxNodeIndex); // valid node indices are [1, nodeIndexEnd)
     if (nodeIndexEnd==maxNodeIndex) // need an extra bit
         nodeIndexEnd = nodeIndexEnd << 1;
     indexMask_ = nodeIndexEnd-1;
@@ -124,7 +124,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
     stack_init();
 
     int8_t *p = nodeStorage_;
-    for( size_t i=0; i < maxNodes; ++i ) {
+    for (size_t i=0; i < maxNodes; ++i) {
         stack_push_nonatomic(p);
         p += nodeSize_;
     }
@@ -133,7 +133,7 @@ QwRawNodePool::QwRawNodePool( size_t nodeSize, size_t maxNodes )
 QwRawNodePool::~QwRawNodePool()
 {
 #if (QW_DEBUG_COUNT_NODE_ALLOCATIONS == 1)
-    assert( allocCount_.load(std::memory_order_relaxed) == 0 );
+    assert(allocCount_.load(std::memory_order_relaxed) == 0);
 #endif
 
     qw_aligned_free(nodeStorage_);

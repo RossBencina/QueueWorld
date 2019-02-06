@@ -43,7 +43,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwMpscFifoQueue {
-    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT, NEXT_LINK_INDEX> nextlink;
 
 public:
     typedef typename nextlink::node_type node_type;
@@ -55,16 +55,16 @@ private:
     QwSTailList<NodePtrT, NEXT_LINK_INDEX> consumerLocalReversingQueue_;
 
 #if (QW_VALIDATE_NODE_LINKS == 1)
-    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    void CLEAR_NODE_LINKS_FOR_VALIDATION(node_ptr_type n) const
     {
         nextlink::store(n, nullptr);
     }
 #else
-    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
+    void CLEAR_NODE_LINKS_FOR_VALIDATION(node_ptr_type) const {}
 #endif
 
 public:
-    void push( node_ptr_type n )
+    void push(node_ptr_type n)
     {
         return mpscLifo_.push(n);
     }
@@ -72,13 +72,13 @@ public:
     // KNOWNBUG: push and push_multiple indicates wasEmpty
     // even if the consumer local-queue is non-empty.
     // not sure that will be fixed.
-    void push( node_ptr_type n, bool& wasEmpty )
+    void push(node_ptr_type n, bool& wasEmpty)
     {
         return mpscLifo_.push(n, wasEmpty);
     }
 
     // NOTE: back will be the first item to be dequeued
-    void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
+    void push_multiple(node_ptr_type front, node_ptr_type back, bool& wasEmpty)
     {
         return mpscLifo_.push_multiple(front, back, wasEmpty);
     }
@@ -126,5 +126,5 @@ Last reviewed: April 22, 2014
 Last reviewed by: Ross B.
 Status: OK
 Comments:
-- push( n, wasEmpty ) has a knownbug: wasEmpty is not accurate
+- push(n, wasEmpty) has a knownbug: wasEmpty is not accurate
 -------------------------------------------------------------------------- */

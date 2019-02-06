@@ -89,7 +89,7 @@
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
 class QwSList{
-    typedef QwLinkTraits<NodePtrT,NEXT_LINK_INDEX> nextlink;
+    typedef QwLinkTraits<NodePtrT, NEXT_LINK_INDEX> nextlink;
 
 public:
     typedef typename nextlink::node_type node_type;
@@ -101,25 +101,25 @@ private:
     node_ptr_type front_; // aka head. first link in list
 
 #if (QW_VALIDATE_NODE_LINKS == 1)
-    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type n ) const
+    void CHECK_NODE_IS_UNLINKED(const_node_ptr_type n) const
     {
 #ifndef NDEBUG
-        assert( nextlink::load(n) == nullptr ); // (require unlinked)
-        assert( n != front_ );
+        assert(nextlink::load(n) == nullptr); // (require unlinked)
+        assert(n != front_);
         // Note: we can't check that the node is not referenced by some other list
 #else
-        if(!( nextlink::load(n) == nullptr )) { std::abort(); } // (require unlinked)
-        if(!( n != front_ )) { std::abort(); }
+        if (!(nextlink::load(n) == nullptr)) { std::abort(); } // (require unlinked)
+        if (!(n != front_)) { std::abort(); }
 #endif
     }
 
-    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type n ) const
+    void CLEAR_NODE_LINKS_FOR_VALIDATION(node_ptr_type n) const
     {
         nextlink::store(n, nullptr);
     }
 #else
-    void CHECK_NODE_IS_UNLINKED( const_node_ptr_type ) const {}
-    void CLEAR_NODE_LINKS_FOR_VALIDATION( node_ptr_type ) const {}
+    void CHECK_NODE_IS_UNLINKED(const_node_ptr_type) const {}
+    void CLEAR_NODE_LINKS_FOR_VALIDATION(node_ptr_type) const {}
 #endif
 
 public:
@@ -128,12 +128,12 @@ public:
         node_ptr_type p_;
     public:
 #if (QW_VALIDATE_NODE_LINKS == 1)
-        iterator() : p_( nullptr ) {}
+        iterator() : p_(nullptr) {}
 #else
         iterator() {}
 #endif
 
-        explicit iterator( node_ptr_type p ) : p_( p ) {}
+        explicit iterator(node_ptr_type p) : p_(p) {}
 
         iterator& operator++ ()     // prefix ++
         {
@@ -160,13 +160,13 @@ public:
 
     // TODO also provides const_iterator?
 
-    QwSList() : front_( nullptr ) {}
-    explicit QwSList( node_ptr_type front ) // construct from raw head pointer
-        : front_( front ) {}
+    QwSList() : front_(nullptr) {}
+    explicit QwSList(node_ptr_type front) // construct from raw head pointer
+        : front_(front) {}
 
     void clear() {
 #if (QW_VALIDATE_NODE_LINKS == 1)
-        while( !empty() ) pop_front();
+        while (!empty()) pop_front();
 #else
         // this doesn't mark nodes as unlinked
         front_ = nullptr;
@@ -187,8 +187,8 @@ public:
         front_ = front;
     }
 
-    void swap( QwSList& other ) { std::swap( front_, other.front_ ); }
-    // see also void swap( QwSList& a, QwSList &b );
+    void swap(QwSList& other) { std::swap(front_, other.front_); }
+    // see also void swap(QwSList& a, QwSList &b);
 
     bool empty() const
     {
@@ -206,12 +206,12 @@ public:
     }
 
     // front returns nullptr when list is empty
-	node_ptr_type front() { return front_; }
+    node_ptr_type front() { return front_; }
     const_node_ptr_type front() const { return front_; }
 
-    void push_front( node_ptr_type n )
+    void push_front(node_ptr_type n)
     {
-        CHECK_NODE_IS_UNLINKED( n );
+        CHECK_NODE_IS_UNLINKED(n);
 
         nextlink::store(n, front_); // this works even if front_ is nullptr when the list is empty.
         front_ = n;
@@ -219,61 +219,61 @@ public:
 
     node_ptr_type pop_front()
     {
-        assert( !empty() ); // this version of pop_front doesn't work on an empty list.
-							// caller should check is_empty() first.
+        assert(!empty()); // this version of pop_front doesn't work on an empty list.
+                          // caller should check is_empty() first.
 
         node_ptr_type result = front_;
         front_ = nextlink::load(front_);
 
-        CLEAR_NODE_LINKS_FOR_VALIDATION( result );
+        CLEAR_NODE_LINKS_FOR_VALIDATION(result);
         return result;
     }
 
-    void insert_after( node_ptr_type before, node_ptr_type n ) // insert n after node before
+    void insert_after(node_ptr_type before, node_ptr_type n) // insert n after node before
     {
-        assert( before != nullptr );
-        assert( n != nullptr );
-        CHECK_NODE_IS_UNLINKED( n );
+        assert(before != nullptr);
+        assert(n != nullptr);
+        CHECK_NODE_IS_UNLINKED(n);
 
         nextlink::store(n, nextlink::load(before));
         nextlink::store(before, n);
     }
 
-    void insert_after( iterator before, node_ptr_type n ) // insert n after node before.
+    void insert_after(iterator before, node_ptr_type n) // insert n after node before.
                                                            // works even with before_begin() on an empty list.
     {
-        insert_after( *before, n );
+        insert_after(*before, n);
     }
 
-    node_ptr_type remove_after( node_ptr_type before ) // returns the removed node
+    node_ptr_type remove_after(node_ptr_type before) // returns the removed node
     {
-        assert( nextlink::load(before) != nullptr ); // can't remove an item after the last item
+        assert(nextlink::load(before) != nullptr); // can't remove an item after the last item
 
         node_ptr_type result = nextlink::load(before);
         nextlink::store(before, nextlink::load(result));
 
-        CLEAR_NODE_LINKS_FOR_VALIDATION( result );
+        CLEAR_NODE_LINKS_FOR_VALIDATION(result);
         return result;
     }
 
-    void remove_after( iterator before )
+    void remove_after(iterator before)
     {
-        remove_after( *before );
+        remove_after(*before);
     }
 
     // erase_after returns an iterator to the item past the
     // item that was erased or end() if it was the last item
-    iterator erase_after( iterator before )
+    iterator erase_after(iterator before)
     {
-        assert( before != end() );
+        assert(before != end());
 
         node_ptr_type before_node_ptr = *before;
 
         node_ptr_type erased_node_ptr = nextlink::load(before_node_ptr);
         nextlink::store(before_node_ptr, nextlink::load(erased_node_ptr));
 
-        CLEAR_NODE_LINKS_FOR_VALIDATION( erased_node_ptr );
-        return iterator( nextlink::load(before_node_ptr) );
+        CLEAR_NODE_LINKS_FOR_VALIDATION(erased_node_ptr);
+        return iterator(nextlink::load(before_node_ptr));
     }
 
     // forward_list provides remove() and remove_if()
@@ -283,7 +283,7 @@ public:
         // pretend our front_ field is actually the next link field in a node struct
         // offset backwards from front_ then cast to a node ptr and wrap in an iterator
         // this is probably not strictly portable but it allows us to insert at the beginning.
-        return iterator( reinterpret_cast<node_ptr_type>(reinterpret_cast<char*>(&front_) - nextlink::offsetof_link()) );
+        return iterator(reinterpret_cast<node_ptr_type>(reinterpret_cast<char*>(&front_) - nextlink::offsetof_link()));
     }
 
     iterator begin() const { return iterator(front_); }
@@ -292,22 +292,22 @@ public:
 
     // forward_list also provides const iterator and const iterator accessors
 
-    static node_ptr_type next( node_ptr_type n ) { return nextlink::load(n); }
+    static node_ptr_type next(node_ptr_type n) { return nextlink::load(n); }
 
 /*
-    bool is_front( const node_ptr_type node ) const
+    bool is_front(const node_ptr_type node) const
     {
         return node == front_;
     }
 
-    bool is_back( const node_ptr_type node ) const
+    bool is_back(const node_ptr_type node) const
     {
         return nextlink::load(node) == nullptr;
     }
 
     // identify terminator pointer (it's just a null ptr)
 
-    bool is_end( const node_ptr_type node ) const // node points to the element past back
+    bool is_end(const node_ptr_type node) const // node points to the element past back
     {
         return (node == nullptr);
     }
@@ -315,18 +315,18 @@ public:
 };
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
-inline void swap( QwSList<NodePtrT,NEXT_LINK_INDEX>& a, QwSList<NodePtrT,NEXT_LINK_INDEX>& b )
+inline void swap(QwSList<NodePtrT, NEXT_LINK_INDEX>& a, QwSList<NodePtrT, NEXT_LINK_INDEX>& b)
 {
     a.swap(b);
 }
 
 template<typename NodePtrT, int NEXT_LINK_INDEX>
-inline void remove( QwSList<NodePtrT,NEXT_LINK_INDEX>& slist, NodePtrT req)
+inline void remove(QwSList<NodePtrT, NEXT_LINK_INDEX>& slist, NodePtrT req)
 {
     assert(!slist.empty());
 
-    typename QwSList<NodePtrT,NEXT_LINK_INDEX>::iterator i = slist.before_begin();
-    typename QwSList<NodePtrT,NEXT_LINK_INDEX>::iterator j = slist.begin();
+    typename QwSList<NodePtrT, NEXT_LINK_INDEX>::iterator i = slist.before_begin();
+    typename QwSList<NodePtrT, NEXT_LINK_INDEX>::iterator j = slist.begin();
 
     do {
         if (*j == req) {

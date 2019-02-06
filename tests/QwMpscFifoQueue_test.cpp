@@ -33,9 +33,9 @@ namespace {
         int value;
 
         TestNode()
-            : value( 0 )
+            : value(0)
         {
-            for( int i=0; i < LINK_COUNT; ++i )
+            for (int i=0; i < LINK_COUNT; ++i)
                 links_[i] = nullptr;
         }
     };
@@ -47,7 +47,7 @@ namespace {
 } // end anonymous namespace
 
 
-TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
+TEST_CASE("qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test") {
 
     TestNode nodes[4];
     TestNode *a = &nodes[0];
@@ -57,48 +57,48 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
 
     TestMpscFifoQueue q;
 
-    REQUIRE( q.consumer_empty() == true );
-    REQUIRE( q.pop() == (TestNode*)nullptr );
+    REQUIRE(q.consumer_empty() == true);
+    REQUIRE(q.pop() == (TestNode*)nullptr);
 
-    // void push( node_ptr_type n )
+    // void push(node_ptr_type n)
     // bool consumer_empty() const
     // node_ptr_type pop()
 
-    q.push( a );
-    REQUIRE( q.consumer_empty() == false );
-    REQUIRE( q.pop() == a );
-    REQUIRE( q.consumer_empty() == true );
+    q.push(a);
+    REQUIRE(q.consumer_empty() == false);
+    REQUIRE(q.pop() == a);
+    REQUIRE(q.consumer_empty() == true);
 
-    q.push( a );
-    q.push( b );
-    q.push( c );
+    q.push(a);
+    q.push(b);
+    q.push(c);
 
-    REQUIRE( q.consumer_empty() == false );
-    REQUIRE( q.pop() == a );
-    REQUIRE( q.pop() == b );
-    REQUIRE( q.pop() == c );
-    REQUIRE( q.consumer_empty() == true );
+    REQUIRE(q.consumer_empty() == false);
+    REQUIRE(q.pop() == a);
+    REQUIRE(q.pop() == b);
+    REQUIRE(q.pop() == c);
+    REQUIRE(q.consumer_empty() == true);
 
-    // void push( node_ptr_type n, bool& wasEmpty )
+    // void push(node_ptr_type n, bool& wasEmpty)
 
     bool wasEmpty = false;
-    q.push( a, wasEmpty );
-    REQUIRE( wasEmpty == true );
+    q.push(a, wasEmpty);
+    REQUIRE(wasEmpty == true);
 
-    q.push( b, wasEmpty );
-    REQUIRE( wasEmpty == false );
+    q.push(b, wasEmpty);
+    REQUIRE(wasEmpty == false);
 
-    REQUIRE( q.consumer_empty() == false );
-    REQUIRE( q.pop() == a );
+    REQUIRE(q.consumer_empty() == false);
+    REQUIRE(q.pop() == a);
 
-    q.push( c, wasEmpty );
-    // REQUIRE( wasEmpty == false ); // <--- KNOWNBUG this fails.
+    q.push(c, wasEmpty);
+    // REQUIRE(wasEmpty == false); // <--- KNOWNBUG this fails.
 
-    REQUIRE( q.pop() == b );
-    REQUIRE( q.pop() == c );
-    REQUIRE( q.consumer_empty() == true );
+    REQUIRE(q.pop() == b);
+    REQUIRE(q.pop() == c);
+    REQUIRE(q.consumer_empty() == true);
 
-    // void push_multiple( node_ptr_type front, node_ptr_type back, bool& wasEmpty )
+    // void push_multiple(node_ptr_type front, node_ptr_type back, bool& wasEmpty)
 
     // Notice that when using push_multiple,
     // the last item in the list (a) is the first to be popped from the FIFO.
@@ -106,14 +106,14 @@ TEST_CASE( "qw/mpsc_fifo_queue", "QwMpscFifoQueue single threaded test" ) {
     next_(b) = a;
     next_(a) = nullptr;
     wasEmpty=false;
-    q.push_multiple( c, a, wasEmpty );
-    REQUIRE( wasEmpty == true );
+    q.push_multiple(c, a, wasEmpty);
+    REQUIRE(wasEmpty == true);
     next_(d) = nullptr;
-    q.push_multiple( d, d, wasEmpty );
-    REQUIRE( wasEmpty == false );
+    q.push_multiple(d, d, wasEmpty);
+    REQUIRE(wasEmpty == false);
 
-    REQUIRE( q.pop() == a );
-    REQUIRE( q.pop() == b );
-    REQUIRE( q.pop() == c );
-    REQUIRE( q.pop() == d );
+    REQUIRE(q.pop() == a);
+    REQUIRE(q.pop() == b);
+    REQUIRE(q.pop() == c);
+    REQUIRE(q.pop() == d);
 }
